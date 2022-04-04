@@ -72,9 +72,14 @@ const DocumentViewer: FC<DocumentViewerProps> = ({ document }) => {
     <>
       <Toolbar />
       <DocumentContainer>
-        <DocumentContent>
-          {annotatedText}
-        </DocumentContent>
+        {document ? (
+          <DocumentContent>
+            {annotatedText}
+          </DocumentContent>
+        ) : (
+          <LoaderSkeleton />
+        )}
+
       </DocumentContainer>
     </>
   )

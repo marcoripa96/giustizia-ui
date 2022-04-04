@@ -2,11 +2,7 @@ import { useState } from 'react';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-const LoaderSkeleton = ({ loading }: { loading: boolean }) => {
-  if (!loading) {
-    return null;
-  }
-
+const LoaderSkeleton = () => {
   return (
     <>
       <p>
