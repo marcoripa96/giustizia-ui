@@ -31,9 +31,9 @@ export default async function handler(
       return res.status(404);
     }
 
-    const documentPath = path.join(process.cwd(), document.content);
+    const documentPath = path.join(process.cwd(), '_files', document.content);
     const content = await fs.readFile(documentPath, 'utf-8');
-    const documentAnnotationPath = path.join(process.cwd(), document.annotation);
+    const documentAnnotationPath = path.join(process.cwd(), '_files', document.annotation);
     const annotation = JSON.parse(await fs.readFile(documentAnnotationPath, 'utf8'));
 
     res.status(200).json({ ...document, content, annotation })

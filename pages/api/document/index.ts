@@ -18,7 +18,7 @@ export default async function handler(
 
     const documents = await Promise.all(Object.keys(DOCUMENTS).map(async (key) => {
       const document = DOCUMENTS[key];
-      const documentPath = path.join(process.cwd(), document.content);
+      const documentPath = path.join(process.cwd(), '_files', document.content);
       const content = await fs.readFile(documentPath, 'utf-8');
       const preview = content.slice(0, 600);
       return {

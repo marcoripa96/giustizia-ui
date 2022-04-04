@@ -1,13 +1,10 @@
 {
   "functions": {
     "src/pages/api/document/index.ts": {
-      "includeFiles": "bologna.txt"
+      "includeFiles": "_files/**"
     },
     "src/pages/api/document/[id].ts": {
-      "includeFiles": [
-        "bologna.txt",
-        "bologna.json"
-      ]
+      "includeFiles": "_files/**"
     }
   }
 }
