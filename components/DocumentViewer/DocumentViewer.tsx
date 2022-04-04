@@ -1,14 +1,17 @@
+import { DocumentByIdResponse } from "@/pages/api/document/[id]";
 import { FC, useMemo } from "react";
 import styled from 'styled-components';
-import MentionTag from "./MentionTag";
+import LoaderSkeleton from "./LoaderSkeleton/LoaderSkeleton";
+import MentionTag from "./MentionTag/MentionTag";
+import { Toolbar } from "./Toolbar";
 import { Mention } from "./types";
 
 type DocumentViewerProps = {
-  content: string;
-  mentions: Mention[];
-}
+  document: DocumentByIdResponse | undefined;
+};
 
 const DocumentContainer = styled.div`
+  min-height: 100vh;
   background: #FFF;
   max-width: 900px;
   padding: 24px 36px;
@@ -22,13 +25,15 @@ const DocumentContent = styled.p`
   line-height: 1.7;
 `
 
-
 /**
  * Replace mentions with a component to visualize its type
  */
 const replaceMentions = (content: string, mentions: Mention[]) => {
-  let result: any = [];
+  if (!content || !mentions) {
+    return [];
+  }
 
+  let result: any = [];
   let lastPosition = 0;
 
   mentions.forEach((mention, index) => {
@@ -45,18 +50,37 @@ const replaceMentions = (content: string, mentions: Mention[]) => {
   return result;
 }
 
-const DocumentViewer: FC<DocumentViewerProps> = ({ content, mentions }) => {
-  // memoize, can be costly if the document is large
-  const annotatedText = useMemo(() => replaceMentions(content, mentions), [content, mentions]);
+const CommonLayout: FC<{}> = ({ children }) => (
+  <>
+    <Toolbar />
+    <DocumentContainer>
+      {children}
+    </DocumentContainer>
+  </>
+)
 
-  console.log(mentions)
+const DocumentViewer: FC<DocumentViewerProps> = ({ document }) => {
+
+  if (!document) {
+    return (
+      <CommonLayout>
+        <LoaderSkeleton loading />
+      </CommonLayout>
+    )
+  }
+
+  const { content, annotation } = document;
+  const annotatedText = useMemo(() => replaceMentions(content, annotation), [content, annotation]);
 
   return (
-    <DocumentContainer>
-      <DocumentContent>
-        {annotatedText}
-      </DocumentContent>
-    </DocumentContainer>
+    <>
+      <Toolbar />
+      <DocumentContainer>
+        <DocumentContent>
+          {annotatedText}
+        </DocumentContent>
+      </DocumentContainer>
+    </>
   )
 };
 

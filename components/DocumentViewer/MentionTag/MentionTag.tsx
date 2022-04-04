@@ -2,7 +2,7 @@ import { darken } from "polished";
 import { FC } from "react";
 import styled from "styled-components";
 import { MENTION_COLORS } from "./mention-tag-colors";
-import { Mention } from "./types";
+import { Mention } from "../types";
 
 type MentionTagProps = {
   mention: Mention;
