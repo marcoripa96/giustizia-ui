@@ -60,17 +60,13 @@ const CommonLayout: FC<{}> = ({ children }) => (
 )
 
 const DocumentViewer: FC<DocumentViewerProps> = ({ document }) => {
-
-  if (!document) {
-    return (
-      <CommonLayout>
-        <LoaderSkeleton loading />
-      </CommonLayout>
-    )
-  }
-
-  const { content, annotation } = document;
-  const annotatedText = useMemo(() => replaceMentions(content, annotation), [content, annotation]);
+  const annotatedText = useMemo(() => {
+    if (!document) {
+      return [];
+    }
+    const { content, annotation } = document;
+    return replaceMentions(content, annotation);
+  }, [document]);
 
   return (
     <>
