@@ -1,13 +1,15 @@
 import { DocumentByIdResponse } from "@/pages/api/document/[id]";
+import { DocumentState, VDoc } from "@/pages/documents/[id]";
 import { FC, useMemo } from "react";
-import styled from 'styled-components';
-import LoaderSkeleton from "./LoaderSkeleton/LoaderSkeleton";
+import styled, { CSSObject } from 'styled-components';
+import { ActionKey } from "../Toolbar/actions";
 import MentionTag from "./MentionTag/MentionTag";
-import { Toolbar } from "./Toolbar";
 import { Mention } from "./types";
 
 type DocumentViewerProps = {
-  document: DocumentByIdResponse | undefined;
+  document: DocumentState;
+  action: ActionKey;
+  onSelectionEnd: (selection: Selection) => void;
 };
 
 const DocumentContainer = styled.div`
@@ -19,69 +21,52 @@ const DocumentContainer = styled.div`
   margin: 0 auto;
 `
 
-const DocumentContent = styled.p`
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.7;
-`
-
-/**
- * Replace mentions with a component to visualize its type
- */
-const replaceMentions = (content: string, mentions: Mention[]) => {
-  if (!content || !mentions) {
-    return [];
-  }
-
-  let result: any = [];
-  let lastPosition = 0;
-
-  mentions.forEach((mention, index) => {
-    const { start_pos_original, end_pos_original } = mention;
-    const firstSplit = content.slice(lastPosition, start_pos_original);
-    const entity = content.slice(start_pos_original, end_pos_original);
-
-    result.push(firstSplit)
-    result.push(<MentionTag key={index} mention={mention}>{entity}</MentionTag>)
-
-    lastPosition = end_pos_original;
-  });
-
-  return result;
+type DocumentContentProps = {
+  action: ActionKey
 }
 
-const CommonLayout: FC<{}> = ({ children }) => (
-  <>
-    <Toolbar />
-    <DocumentContainer>
-      {children}
-    </DocumentContainer>
-  </>
-)
+const addStyles: CSSObject = {
+  '&::selection': {
+    background: 'rgb(170, 156, 252)'
+  }
+}
 
-const DocumentViewer: FC<DocumentViewerProps> = ({ document }) => {
-  const annotatedText = useMemo(() => {
-    if (!document) {
-      return [];
+const DocumentContent = styled('p')<DocumentContentProps>(({ action }) => ({
+  whiteSpace: 'pre-wrap',
+  wordWrap: 'break-word',
+  lineHeight: 1.7,
+  ...(action === 'add' && addStyles)
+}));
+
+const getSelection = () => {
+  const selection = window.getSelection();
+  if (!selection) {
+    return null
+  }
+  return selection;
+}
+
+const DocumentViewer: FC<DocumentViewerProps> = ({ document, action, onSelectionEnd }) => {
+  const { virtualDoc } = document;
+
+  const onMouseUp = () => {
+    if (action !== 'add') {
+      return;
     }
-    const { content, annotation } = document;
-    return replaceMentions(content, annotation);
-  }, [document]);
+    const selection = getSelection();
+
+    if (!selection) {
+      return;
+    }
+    onSelectionEnd(selection);
+  }
 
   return (
-    <>
-      <Toolbar />
-      <DocumentContainer>
-        {document ? (
-          <DocumentContent>
-            {annotatedText}
-          </DocumentContent>
-        ) : (
-          <LoaderSkeleton />
-        )}
-
-      </DocumentContainer>
-    </>
+    <DocumentContainer>
+      <DocumentContent onMouseUp={onMouseUp} action={action}>
+        {virtualDoc}
+      </DocumentContent>
+    </DocumentContainer>
   )
 };
 

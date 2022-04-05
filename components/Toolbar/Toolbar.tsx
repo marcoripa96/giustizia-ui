@@ -1,8 +1,7 @@
 import { ComponentType, FC, useEffect, useState } from "react";
-import { FaMousePointer as Cursor } from '@react-icons/all-files/fa/FaMousePointer';
-import { FaPlus as Plus } from '@react-icons/all-files/fa/FaPlus';
 import styled from "styled-components";
 import { darken } from "polished";
+import { ActionKey, mainActions } from "./actions";
 
 const Container = styled.div`
   position: fixed;
@@ -55,37 +54,33 @@ const IconButton = styled.button<{ selected: boolean }>`
 `
 
 type MainActionsProps = {
-  onSelect: (id: string) => void;
+  onSelect: (id: ActionKey) => void;
 }
-
-const MainActionsIcons = [
-  { id: 'select', Icon: Cursor },
-  { id: 'add', Icon: Plus }
-]
 
 const MainActions: FC<MainActionsProps> = ({ onSelect: onSelectProp }) => {
   // keep state of the current action
-  const [selected, setSelected] = useState<string>('select');
+  const [selected, setSelected] = useState<ActionKey>('select');
 
   // change action
-  const onSelect = (id: string) => {
+  const onSelect = (id: ActionKey) => {
     setSelected(id);
     onSelectProp(id);
   }
 
   return (
     <MainActionsContainer>
-      {MainActionsIcons.map(({ id, Icon }) => (
+      {mainActions.map(({ id, Icon }) => (
         <IconButton key={id} selected={id === selected} onClick={() => onSelect(id)}>{<Icon />}</IconButton>
       ))}
     </MainActionsContainer>
   )
 }
 
-const Toolbar = () => {
-  // do something when an action is selected
-  const onSelect = () => { }
+type ToolbarProps = {
+  onSelect: (id: ActionKey) => void;
+}
 
+const Toolbar: FC<ToolbarProps> = ({ onSelect }) => {
   return (
     <Container>
       <TopMenu>
