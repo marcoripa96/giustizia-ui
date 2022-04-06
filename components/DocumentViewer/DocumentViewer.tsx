@@ -1,15 +1,15 @@
-import { DocumentByIdResponse } from "@/pages/api/document/[id]";
-import { DocumentState, VDoc } from "@/pages/documents/[id]";
-import { FC, useMemo } from "react";
+import { FC, useReducer, useState } from "react";
 import styled, { CSSObject } from 'styled-components';
 import { ActionKey } from "../Toolbar/actions";
 import MentionTag from "./MentionTag/MentionTag";
+import { DocumentReducer, reducer } from "./reducer";
 import { Mention } from "./types";
+import { VDoc, _createVDoc, _renderContent } from "./virtual-doc";
 
 type DocumentViewerProps = {
-  document: DocumentState;
+  content: string;
+  annotations: Mention[];
   action: ActionKey;
-  onSelectionEnd: (selection: Selection) => void;
 };
 
 const DocumentContainer = styled.div`
@@ -38,7 +38,7 @@ const DocumentContent = styled('p')<DocumentContentProps>(({ action }) => ({
   ...(action === 'add' && addStyles)
 }));
 
-const getSelection = () => {
+const _getSelection = () => {
   const selection = window.getSelection();
   if (!selection) {
     return null
@@ -46,25 +46,46 @@ const getSelection = () => {
   return selection;
 }
 
-const DocumentViewer: FC<DocumentViewerProps> = ({ document, action, onSelectionEnd }) => {
-  const { virtualDoc } = document;
+const initialState = { textNodes: [], entityNodes: [] }
 
-  const onMouseUp = () => {
+const DocumentViewer: FC<DocumentViewerProps> = ({ content, annotations, action }) => {
+  const [virtualDoc, dispatch] = useReducer<DocumentReducer, VDoc>(
+    reducer,
+    initialState,
+    // lazily initialize virtualDoc
+    () => _createVDoc(content, annotations)
+  );
+
+  const onSelection = () => {
     if (action !== 'add') {
       return;
     }
-    const selection = getSelection();
-
-    if (!selection) {
+    // get user text selection
+    const selection = _getSelection();
+    if (!selection || !selection.anchorNode || selection.anchorOffset === selection.focusOffset) {
       return;
     }
-    onSelectionEnd(selection);
+
+    const {
+      anchorNode,
+      anchorOffset: startOffsetNode,
+      focusOffset: endOffsetNode } = selection;
+
+    dispatch({
+      type: 'ADD_ENTITY',
+      payload: {
+        selectedNode: anchorNode.nodeValue,
+        startOffsetNode,
+        endOffsetNode,
+        entityType: 'DATE'
+      }
+    })
   }
 
   return (
     <DocumentContainer>
-      <DocumentContent onMouseUp={onMouseUp} action={action}>
-        {virtualDoc}
+      <DocumentContent onMouseUp={onSelection} action={action}>
+        {_renderContent(virtualDoc)}
       </DocumentContent>
     </DocumentContainer>
   )

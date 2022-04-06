@@ -2,7 +2,7 @@ import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import { promises as fs } from 'fs'
 import path from 'path'
 import styled from 'styled-components'
-import { Document } from '@/components'
+import { DocumentCard } from '@/components'
 import { DocumentResponse } from './api/document'
 import { DOCUMENTS } from '@/documents'
 
@@ -40,7 +40,7 @@ const Home: NextPage<HomeProps> = ({ documents }) => {
     <Container>
       <PageTitle>Documents ({documents.length})</PageTitle>
       <DocumentsContainer>
-        {documents.map(({ id, ...props }, index) => <Document key={index} id={id} {...props} />)}
+        {documents.map(({ id, ...props }, index) => <DocumentCard key={index} id={id} {...props} />)}
       </DocumentsContainer>
     </Container>
   )

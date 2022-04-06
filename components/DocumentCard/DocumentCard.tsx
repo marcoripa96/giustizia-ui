@@ -2,7 +2,7 @@ import Link from "next/link"
 import { FC } from "react"
 import styled from "styled-components"
 
-const DocumentCard = styled.a`
+const DocumentCardContainer = styled.a`
   display: flex;
   flex-direction: column;
   height: 320px;
@@ -47,7 +47,7 @@ const DocumentPreview = styled.div`
   }
 `
 
-type DocumentProps = {
+type DocumentCardProps = {
   id: string;
   title: string;
   preview: string;
@@ -56,16 +56,16 @@ type DocumentProps = {
 /**
  * Card used to visualize a preview of a document in the Homepage
  */
-const Document: FC<DocumentProps> = ({ id, title, preview }) => {
+const DocumentCard: FC<DocumentCardProps> = ({ id, title, preview }) => {
   return (
     <Link href={`/documents/${id}`} passHref>
-      <DocumentCard>
+      <DocumentCardContainer>
         <DocumentTitle>{title}</DocumentTitle>
         <DocumentDate>Last modified yesterday</DocumentDate>
         <DocumentPreview>{preview}</DocumentPreview>
-      </DocumentCard>
+      </DocumentCardContainer>
     </Link>
   )
 }
 
-export default Document;
+export default DocumentCard;

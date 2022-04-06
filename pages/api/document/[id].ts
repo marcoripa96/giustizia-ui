@@ -11,7 +11,7 @@ export type DocumentByIdResponse = {
   id: string;
   title: string;
   content: string;
-  annotation: Annotation
+  annotations: Annotation
 };
 
 export default async function handler(
@@ -34,9 +34,9 @@ export default async function handler(
     const documentPath = path.join(process.cwd(), '_files', document.content);
     const content = await fs.readFile(documentPath, 'utf-8');
     const documentAnnotationPath = path.join(process.cwd(), '_files', document.annotation);
-    const annotation = JSON.parse(await fs.readFile(documentAnnotationPath, 'utf8'));
+    const annotations = JSON.parse(await fs.readFile(documentAnnotationPath, 'utf8'));
 
-    res.status(200).json({ ...document, content, annotation })
+    res.status(200).json({ ...document, content, annotations })
   } else {
     res.status(500)
   }

@@ -1,11 +1,11 @@
 import { DocumentViewer } from "./DocumentViewer";
-import { Document } from "./Document";
+import { DocumentCard } from "./DocumentCard";
 import { Toolbar } from './Toolbar';
 import { DocumentViewerSkeleton } from "./DocumentViewerSkeleton";
 
 export {
   DocumentViewer,
-  Document,
+  DocumentCard,
   Toolbar,
   DocumentViewerSkeleton
 }
