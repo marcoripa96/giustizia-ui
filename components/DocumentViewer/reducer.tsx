@@ -1,6 +1,6 @@
 import MentionTag from "./MentionTag/MentionTag";
 import { EntityType, Mention } from "./types";
-import { VDoc, VDocNode, _findOriginalOffset, _insertEntityNode, _insertSplittedNode, _splitNode } from "./virtual-doc";
+import { VDoc, VDocNode, _deleteEntityNode, _findOriginalOffset, _insertEntityNode, _insertSplittedNode, _splitNode } from "./virtual-doc";
 
 /**
  * Reducer types
@@ -17,7 +17,7 @@ export type DocumentReducer = Reducer<VDoc, DocumentReducerAction>;
 export const reducer: DocumentReducer = (state, action) => {
   const { type, payload } = action;
 
-  if (type === 'ADD_ENTITY') {
+  if (type in ACTIONS) {
     return ACTIONS[type](state, payload);
   }
 
@@ -56,12 +56,33 @@ const addEntityNodeReducer: AddEntityNodeReducer = (state, payload) => {
   const nodeEntity = {
     id: entityNodes.length + 1,
     text: entity,
-    elementToRender: <MentionTag key={entityNodes.length + 1} mention={mention}>{entity}</MentionTag>,
+    elementToRender: (
+      <MentionTag
+        key={entityNodes.length + 1}
+        virtualDocIndex={vDocIndex}
+        mention={mention}>
+        {entity}
+      </MentionTag>),
   };
   const newEntityNodes = _insertEntityNode(entityNodes, nodeEntity, vDocIndex);
   return { textNodes: newTextNodes, entityNodes: newEntityNodes };
 }
 
+
+type DeleteEntityNodeReducer = ReducerFn<VDoc, DeleteEntityNodeReducerPayload>;
+type DeleteEntityNodeReducerPayload = {
+  virtualDocIndex: number;
+};
+
+const deleteEntityNodeReducer: DeleteEntityNodeReducer = (state, payload) => {
+  const { textNodes, entityNodes } = state;
+  const { virtualDocIndex } = payload;
+
+  const newState = _deleteEntityNode(textNodes, entityNodes, virtualDocIndex);
+  return newState;
+}
+
 const ACTIONS = {
-  'ADD_ENTITY': addEntityNodeReducer
+  'ADD_ENTITY': addEntityNodeReducer,
+  'ERASE_ENTITY': deleteEntityNodeReducer
 };

@@ -1,4 +1,5 @@
-import MentionTag from "./MentionTag/MentionTag";
+import { cloneElement } from "react";
+import MentionTag, { MentionTagOnClickProps } from "./MentionTag/MentionTag";
 import { Mention } from "./types";
 
 export type VDoc = {
@@ -34,7 +35,7 @@ export const _createVDoc = (content: string, annotations: Mention[]) => {
     const nodeEntity = {
       id: index,
       text: entity,
-      elementToRender: <MentionTag key={index} mention={mention}>{entity}</MentionTag>,
+      elementToRender: <MentionTag key={index} virtualDocIndex={index} mention={mention}>{entity}</MentionTag>,
     };
 
     vDoc.textNodes.push(nodeText);
@@ -46,20 +47,61 @@ export const _createVDoc = (content: string, annotations: Mention[]) => {
   return vDoc;
 }
 
+
+type RenderContentOptions = {
+  entity: Partial<RenderEntityOptions>;
+}
+type RenderEntityOptions = {
+  onClick: (node: MentionTagOnClickProps) => void;
+}
+const defaultOptions = {
+  entity: {}
+}
+
 /**
  * Create rendering array from virtual document
  */
-export const _renderContent = (vDoc: VDoc) => {
+export const _renderContent = (vDoc: VDoc, options: RenderContentOptions = defaultOptions) => {
   const { textNodes, entityNodes } = vDoc;
+  const { entity } = options;
 
   let content = [];
 
   // cancatenation of textNode and entityNode
   for (let i = 0; i < textNodes.length - 1; i++) {
     content.push(textNodes[i]);
-    content.push(entityNodes[i].elementToRender);
+    // attach additional props
+    const entityNode = cloneElement(entityNodes[i].elementToRender, { ...entity, virtualDocIndex: i });
+    content.push(entityNode);
   }
   return content;
+}
+
+/**
+ * find offset on original document given the selection node
+ */
+export const _findOriginalOffset = (virtualDoc: VDoc, selectionNode: TextNode, startOffset: number) => {
+  let originalOffset = 0;
+  let vDocIndex = -1;
+
+  const { textNodes, entityNodes } = virtualDoc;
+
+  for (const node of textNodes) {
+    if (node === selectionNode) {
+      originalOffset += startOffset;
+      vDocIndex += 1;
+      return { originalOffset, vDocIndex };
+    }
+    if (entityNodes[vDocIndex]) {
+      originalOffset += entityNodes[vDocIndex].text.length;
+    }
+    vDocIndex += 1;
+  }
+
+  return {
+    originalOffset,
+    vDocIndex
+  };
 }
 
 /**
@@ -88,28 +130,15 @@ export const _insertEntityNode = (nodes: EntityNode[], entityNode: EntityNode, i
 }
 
 /**
- * find offset on original document given the selection node
+ *  Delete entity node
  */
-export const _findOriginalOffset = (virtualDoc: VDoc, selectionNode: TextNode, startOffset: number) => {
-  let originalOffset = 0;
-  let vDocIndex = -1;
-
-  const { textNodes, entityNodes } = virtualDoc;
-
-  for (const node of textNodes) {
-    if (node === selectionNode) {
-      originalOffset += startOffset;
-      vDocIndex += 1;
-      return { originalOffset, vDocIndex };
-    }
-    if (entityNodes[vDocIndex]) {
-      originalOffset += entityNodes[vDocIndex].text.length;
-    }
-    vDocIndex += 1;
-  }
-
-  return {
-    originalOffset,
-    vDocIndex
-  };
+export const _deleteEntityNode = (textNodes: TextNode[], entityNodes: EntityNode[], index: number) => {
+  const newEntityNode = [...entityNodes.slice(0, index), ...entityNodes.slice(index + 1, entityNodes.length)]
+  const entityNodeText = entityNodes[index].text;
+  const newTextNodes = [
+    ...textNodes.slice(0, index),
+    [textNodes[index], entityNodeText, textNodes[index + 1]].join(''),
+    ...textNodes.slice(index + 2, textNodes.length)
+  ];
+  return { textNodes: newTextNodes, entityNodes: newEntityNode }
 }

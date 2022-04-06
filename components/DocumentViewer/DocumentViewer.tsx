@@ -1,7 +1,7 @@
 import { FC, useReducer, useState } from "react";
 import styled, { CSSObject } from 'styled-components';
 import { ActionKey } from "../Toolbar/actions";
-import MentionTag from "./MentionTag/MentionTag";
+import MentionTag, { MentionTagOnClickProps } from "./MentionTag/MentionTag";
 import { DocumentReducer, reducer } from "./reducer";
 import { Mention } from "./types";
 import { VDoc, _createVDoc, _renderContent } from "./virtual-doc";
@@ -82,10 +82,29 @@ const DocumentViewer: FC<DocumentViewerProps> = ({ content, annotations, action 
     })
   }
 
+  const onEntityClick = ({ virtualDocIndex, ...props }: MentionTagOnClickProps) => {
+    if (action !== 'erase') {
+      return;
+    }
+
+    dispatch({
+      type: 'ERASE_ENTITY',
+      payload: {
+        virtualDocIndex
+      }
+    })
+  }
+
+  const renderOptions = {
+    entity: {
+      onClick: onEntityClick
+    }
+  }
+
   return (
     <DocumentContainer>
       <DocumentContent onMouseUp={onSelection} action={action}>
-        {_renderContent(virtualDoc)}
+        {_renderContent(virtualDoc, renderOptions)}
       </DocumentContent>
     </DocumentContainer>
   )
