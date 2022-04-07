@@ -11,7 +11,8 @@ export type TextNode = string;
 export type EntityNode = {
   id: number,
   text: string,
-  elementToRender: JSX.Element
+  mention: Mention
+  // elementToRender: JSX.Element
 };
 
 /**
@@ -35,7 +36,8 @@ export const _createVDoc = (content: string, annotations: Mention[]) => {
     const nodeEntity = {
       id: index,
       text: entity,
-      elementToRender: <MentionTag key={index} virtualDocIndex={index} mention={mention}>{entity}</MentionTag>,
+      mention: mention
+      // elementToRender: <MentionTag key={index} virtualDocIndex={index} mention={mention}>{entity}</MentionTag>,
     };
 
     vDoc.textNodes.push(nodeText);
@@ -49,13 +51,22 @@ export const _createVDoc = (content: string, annotations: Mention[]) => {
 
 
 type RenderContentOptions = {
-  entity: Partial<RenderEntityOptions>;
+  entity: RenderEntityOptions;
 }
+/**
+ * Options passed as props to a MentionTag component
+ */
 type RenderEntityOptions = {
+  // on click callback
   onClick: (node: MentionTagOnClickProps) => void;
+  // enable or disable ctrl click
+  ctrlEnabled: boolean;
 }
 const defaultOptions = {
-  entity: {}
+  entity: {
+    onClick: () => { },
+    ctrlEnabled: true
+  }
 }
 
 /**
@@ -70,8 +81,10 @@ export const _renderContent = (vDoc: VDoc, options: RenderContentOptions = defau
   // cancatenation of textNode and entityNode
   for (let i = 0; i < textNodes.length - 1; i++) {
     content.push(textNodes[i]);
-    // attach additional props
-    const entityNode = cloneElement(entityNodes[i].elementToRender, { ...entity, virtualDocIndex: i });
+    // build entity node and attach additional props
+    const { id, text, mention } = entityNodes[i];
+    const entityProps = { ...entity, virtualDocIndex: i }
+    const entityNode = <MentionTag key={id} mention={mention} {...entityProps}>{text}</MentionTag>
     content.push(entityNode);
   }
   return content;

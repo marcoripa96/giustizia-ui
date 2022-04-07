@@ -4,10 +4,11 @@ import styled from "styled-components";
 import { MENTION_COLORS } from "./mention-tag-colors";
 import { Mention } from "../types";
 
-type MentionTagProps = HTMLAttributes<HTMLDivElement> & {
+type MentionTagProps = {
   mention: Mention;
   virtualDocIndex: number;
-  onClick?: (props: MentionTagOnClickProps) => void;
+  ctrlEnabled: boolean;
+  onClick: (props: MentionTagOnClickProps) => void;
 };
 
 export type MentionTagOnClickProps = { virtualDocIndex: number, mention: Mention };
@@ -40,6 +41,7 @@ const MentionType = styled.span<TagProps>`
 const MentionTag: FC<MentionTagProps> = ({
   mention,
   virtualDocIndex,
+  ctrlEnabled,
   onClick,
   children,
   ...props
@@ -47,12 +49,16 @@ const MentionTag: FC<MentionTagProps> = ({
   const [isLinkAction, setIsLinkAction] = useState(false);
   const { ner_type, top_url } = mention;
 
-
-
   const onMouseEnter = (event: MouseEvent) => {
-    setIsLinkAction(event.ctrlKey);
+    if (!ctrlEnabled) {
+      return;
+    }
+    setIsLinkAction(event.ctrlKey || event.metaKey);
   }
   const onMouseLeave = (event: MouseEvent) => {
+    if (!ctrlEnabled) {
+      return;
+    }
     setIsLinkAction(false);
   }
 
@@ -72,7 +78,7 @@ const MentionTag: FC<MentionTagProps> = ({
     <Tag
       onMouseMove={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      onClick={() => onClick ? onClick(onClickProps) : {}}
+      onClick={() => onClick(onClickProps)}
       {...tagProps}>
       {children}
       <MentionType type={ner_type}>{ner_type}</MentionType>

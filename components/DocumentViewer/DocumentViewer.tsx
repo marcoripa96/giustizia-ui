@@ -97,7 +97,8 @@ const DocumentViewer: FC<DocumentViewerProps> = ({ content, annotations, action 
 
   const renderOptions = {
     entity: {
-      onClick: onEntityClick
+      onClick: onEntityClick,
+      ctrlEnabled: action === 'select'
     }
   }
 

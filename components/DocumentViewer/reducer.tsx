@@ -56,13 +56,7 @@ const addEntityNodeReducer: AddEntityNodeReducer = (state, payload) => {
   const nodeEntity = {
     id: entityNodes.length + 1,
     text: entity,
-    elementToRender: (
-      <MentionTag
-        key={entityNodes.length + 1}
-        virtualDocIndex={vDocIndex}
-        mention={mention}>
-        {entity}
-      </MentionTag>),
+    mention: mention
   };
   const newEntityNodes = _insertEntityNode(entityNodes, nodeEntity, vDocIndex);
   return { textNodes: newTextNodes, entityNodes: newEntityNodes };
