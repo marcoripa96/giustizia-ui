@@ -25,7 +25,7 @@ export const reducer: DocumentReducer = (state, action) => {
 }
 
 type AddEntityNodeReducer = ReducerFn<VDoc, AddEntityNodeReducerPayload>;
-type AddEntityNodeReducerPayload = {
+export type AddEntityNodeReducerPayload = {
   selectedNode: VDocNode,
   startOffsetNode: number,
   endOffsetNode: number,

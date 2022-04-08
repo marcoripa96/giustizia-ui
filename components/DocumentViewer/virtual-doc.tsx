@@ -15,10 +15,15 @@ export type EntityNode = {
   // elementToRender: JSX.Element
 };
 
+type CreateVDocProps = {
+  content: string;
+  annotations: Mention[]
+}
+
 /**
  * Create virtual doc given content and annotatins
  */
-export const _createVDoc = (content: string, annotations: Mention[]) => {
+export const _createVDoc = ({ content, annotations }: CreateVDocProps) => {
   if (!content || !annotations) {
     return { textNodes: [], entityNodes: [] };
   }
@@ -50,7 +55,7 @@ export const _createVDoc = (content: string, annotations: Mention[]) => {
 }
 
 
-type RenderContentOptions = {
+export type RenderContentOptions = {
   entity: RenderEntityOptions;
 }
 /**

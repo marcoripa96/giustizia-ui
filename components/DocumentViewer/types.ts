@@ -1,6 +1,6 @@
-import { MENTION_COLORS } from "./MentionTag/mention-tag-colors";
+import { MENTION_TYPES } from "./MentionTag/mention-tag-colors";
 
-export type EntityType = keyof typeof MENTION_COLORS;
+export type EntityType = keyof typeof MENTION_TYPES;
 
 export type Mention = {
   start_pos_original: number;

@@ -3,9 +3,9 @@ import { FaPlus as Plus } from '@react-icons/all-files/fa/FaPlus';
 import { FaEraser as Erase } from '@react-icons/all-files/fa/FaEraser';
 
 export const mainActions = [
-  { id: 'select', Icon: Cursor },
-  { id: 'add', Icon: Plus },
-  { id: 'erase', Icon: Erase }
+  { id: 'select', Icon: Cursor, shortcut: '1' },
+  { id: 'add', Icon: Plus, shortcut: '2' },
+  { id: 'erase', Icon: Erase, shortcut: '3' }
 ] as const;
 
 

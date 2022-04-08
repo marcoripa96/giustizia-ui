@@ -13,7 +13,7 @@ const Container = styled.div`
 
 const Document: NextPage = () => {
   const [data, setData] = useState<DocumentByIdResponse>();
-  const [action, setAction] = useState<ActionKey>('select');
+  const [action, setAction] = useState<{ key: ActionKey, payload: any }>({ key: 'select', payload: {} });
   const [id, isRouterReady] = useParam('id');
 
   useEffect(() => {
@@ -28,8 +28,8 @@ const Document: NextPage = () => {
       });
   }, [id, isRouterReady]);
 
-  const onActionSelect = (action: ActionKey) => {
-    setAction(action);
+  const onActionSelect = (key: ActionKey, payload: any) => {
+    setAction({ key, payload });
   }
 
   return (

@@ -1,7 +1,7 @@
 import { darken } from "polished";
 import { ElementType, FC, HTMLAttributes, KeyboardEvent, MouseEvent, useState } from "react";
 import styled from "styled-components";
-import { MENTION_COLORS } from "./mention-tag-colors";
+import { MENTION_TYPES } from "./mention-tag-colors";
 import { Mention } from "../types";
 
 type MentionTagProps = {
@@ -14,17 +14,17 @@ type MentionTagProps = {
 export type MentionTagOnClickProps = { virtualDocIndex: number, mention: Mention };
 
 type TagProps = {
-  type: keyof typeof MENTION_COLORS;
+  type: keyof typeof MENTION_TYPES;
 }
 
 const Tag = styled.span<TagProps>`
   padding: 2px 5px;
   border-radius: 6px;
-  background: ${({ type }) => MENTION_COLORS[type]};
+  background: ${({ type }) => MENTION_TYPES[type].color};
   transition: background 250ms ease-out;
 
   &:hover {
-    background: ${({ type }) => darken(0.15, MENTION_COLORS[type])}
+    background: ${({ type }) => darken(0.15, MENTION_TYPES[type].color)}
   }
 `
 
@@ -34,7 +34,7 @@ const MentionType = styled.span<TagProps>`
   text-transform: uppercase;
   margin-left: 6px;
   padding: 0 3px;
-  background: ${({ type }) => darken(0.1, MENTION_COLORS[type])};
+  background: ${({ type }) => darken(0.1, MENTION_TYPES[type].color)};
   border-radius: 4px;
 `
 

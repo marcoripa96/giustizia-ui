@@ -1,15 +1,16 @@
-import { FC, useReducer, useState } from "react";
+import { FC } from "react";
 import styled, { CSSObject } from 'styled-components';
 import { ActionKey } from "../Toolbar/actions";
-import MentionTag, { MentionTagOnClickProps } from "./MentionTag/MentionTag";
-import { DocumentReducer, reducer } from "./reducer";
-import { Mention } from "./types";
-import { VDoc, _createVDoc, _renderContent } from "./virtual-doc";
+import { MENTION_TYPES } from "./MentionTag/mention-tag-colors";
+import { MentionTagOnClickProps } from "./MentionTag/MentionTag";
+import { AddEntityNodeReducerPayload } from "./reducer";
+import { EntityType, Mention } from "./types";
+import useDocument from "./use-document";
 
 type DocumentViewerProps = {
   content: string;
   annotations: Mention[];
-  action: ActionKey;
+  action: { key: ActionKey, payload: any };
 };
 
 const DocumentContainer = styled.div`
@@ -22,20 +23,18 @@ const DocumentContainer = styled.div`
 `
 
 type DocumentContentProps = {
-  action: ActionKey
-}
-
-const addStyles: CSSObject = {
-  '&::selection': {
-    background: 'rgb(170, 156, 252)'
-  }
+  action: { key: ActionKey, payload: any }
 }
 
 const DocumentContent = styled('p')<DocumentContentProps>(({ action }) => ({
   whiteSpace: 'pre-wrap',
   wordWrap: 'break-word',
   lineHeight: 1.7,
-  ...(action === 'add' && addStyles)
+  ...(action.key === 'add' && {
+    '&::selection': {
+      background: MENTION_TYPES[action.payload.type as EntityType].color
+    }
+  })
 }));
 
 const _getSelection = () => {
@@ -46,18 +45,10 @@ const _getSelection = () => {
   return selection;
 }
 
-const initialState = { textNodes: [], entityNodes: [] }
-
 const DocumentViewer: FC<DocumentViewerProps> = ({ content, annotations, action }) => {
-  const [virtualDoc, dispatch] = useReducer<DocumentReducer, VDoc>(
-    reducer,
-    initialState,
-    // lazily initialize virtualDoc
-    () => _createVDoc(content, annotations)
-  );
 
   const onSelection = () => {
-    if (action !== 'add') {
+    if (action.key !== 'add') {
       return;
     }
     // get user text selection
@@ -71,41 +62,41 @@ const DocumentViewer: FC<DocumentViewerProps> = ({ content, annotations, action 
       anchorOffset: startOffsetNode,
       focusOffset: endOffsetNode } = selection;
 
-    dispatch({
-      type: 'ADD_ENTITY',
-      payload: {
-        selectedNode: anchorNode.nodeValue,
-        startOffsetNode,
-        endOffsetNode,
-        entityType: 'DATE'
-      }
-    })
+    const payload = {
+      selectedNode: anchorNode.nodeValue,
+      startOffsetNode,
+      endOffsetNode,
+      entityType: action.payload.type
+    } as AddEntityNodeReducerPayload;
+
+    addAnnotation(payload);
   }
 
   const onEntityClick = ({ virtualDocIndex, ...props }: MentionTagOnClickProps) => {
-    if (action !== 'erase') {
+    if (action.key !== 'erase') {
       return;
     }
 
-    dispatch({
-      type: 'ERASE_ENTITY',
-      payload: {
-        virtualDocIndex
-      }
-    })
+    eraseAnnotation(virtualDocIndex);
   }
 
   const renderOptions = {
     entity: {
       onClick: onEntityClick,
-      ctrlEnabled: action === 'select'
+      ctrlEnabled: action.key === 'select'
     }
   }
+
+  const {
+    renderContent,
+    addAnnotation,
+    eraseAnnotation
+  } = useDocument({ content, annotations }, renderOptions)
 
   return (
     <DocumentContainer>
       <DocumentContent onMouseUp={onSelection} action={action}>
-        {_renderContent(virtualDoc, renderOptions)}
+        {renderContent()}
       </DocumentContent>
     </DocumentContainer>
   )
