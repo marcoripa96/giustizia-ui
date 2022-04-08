@@ -211,12 +211,13 @@ const MainActions: FC<MainActionsProps> = ({ onSelect: onSelectProp }) => {
 
   // select an action with keydown
   const cb = useCallback((event: KeyboardEvent) => {
+    /* eslint-disable no-eval */
     const i = mainActions.findIndex((action) => action.shortcut === event.key);
     if (i === -1) {
       return;
     }
     setAction(i);
-  }, [setAction]);
+  }, []);
   // listen for keydown event
   useEventListener('keydown', cb);
 
