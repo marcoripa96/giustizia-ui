@@ -34,4 +34,6 @@ const Menu = forwardRef<HTMLDivElement, MenuProps>(({ activeIndex, offset, onClo
   )
 });
 
+Menu.displayName = 'Menu';
+
 export default Menu;
