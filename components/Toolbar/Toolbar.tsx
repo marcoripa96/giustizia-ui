@@ -216,7 +216,7 @@ const MainActions: FC<MainActionsProps> = ({ onSelect: onSelectProp }) => {
       return;
     }
     setAction(i);
-  }, []);
+  }, [setAction]);
   // listen for keydown event
   useEventListener('keydown', cb);
 
