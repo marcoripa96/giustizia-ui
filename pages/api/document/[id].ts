@@ -3,15 +3,21 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import path from 'path'
 import { promises as fs } from 'fs'
 import { DocumentResponse } from '.';
-import { Mention } from '@/components/DocumentViewer/types';
 
-export type Annotation = Mention[];
+
+export type Annotation = {
+  start_pos_original: number;
+  end_pos_original: number;
+  ner_type: any;
+  top_url: string;
+}
+
 
 export type DocumentByIdResponse = {
   id: string;
   title: string;
   content: string;
-  annotations: Annotation
+  annotations: Annotation[]
 };
 
 export default async function handler(

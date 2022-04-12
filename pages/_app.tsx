@@ -4,7 +4,7 @@ import GlobalStyle from '../styles/globalStyles'
 
 const Layout = styled.div`
   min-height: 100vh;
-  background: #fafafa;
+  background: #FFF;
 `
 
 function MyApp({ Component, pageProps }: AppProps) {

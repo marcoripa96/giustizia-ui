@@ -1,8 +1,9 @@
 import Link from "next/link"
 import { FC } from "react"
 import styled from "styled-components"
+import { Card } from "../Card"
 
-const DocumentCardContainer = styled.a`
+const DocumentCardContainer = styled(Card)`
   display: flex;
   flex-direction: column;
   height: 320px;
@@ -59,7 +60,7 @@ type DocumentCardProps = {
 const DocumentCard: FC<DocumentCardProps> = ({ id, title, preview }) => {
   return (
     <Link href={`/documents/${id}`} passHref>
-      <DocumentCardContainer>
+      <DocumentCardContainer as="a">
         <DocumentTitle>{title}</DocumentTitle>
         <DocumentDate>Last modified yesterday</DocumentDate>
         <DocumentPreview>{preview}</DocumentPreview>

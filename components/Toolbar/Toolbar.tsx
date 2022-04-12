@@ -4,9 +4,8 @@ import { darken } from "polished";
 import { ActionKey, mainActions } from "./actions";
 import { useEventListener } from "@/hooks";
 import { Menu, MenuItem } from "./Menu";
-import { EntityType } from "../DocumentViewer/types";
-import { MENTION_TYPES } from "../DocumentViewer/MentionTag/mention-tag-colors";
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck';
+import { annotationTypes } from "@/components/NERDocumentViewer";
 
 const Container = styled.div`
   position: fixed;
@@ -132,7 +131,7 @@ const AddActionItem = (
   { selected, color, type, label, onClick }:
     {
       selected: boolean, color: string,
-      type: EntityType, label: string,
+      type: string, label: string,
       onClick: () => void;
     }
 ) => {
@@ -150,18 +149,18 @@ const AddActionItem = (
 }
 
 const setInitialState = () => {
-  const types = Object.keys(MENTION_TYPES);
+  const types = Object.keys(annotationTypes);
   return [true, ...new Array(types.length - 1).fill(false)];
 }
 
-const AddActionMenu = ({ onAnnotationTypeChange }: { onAnnotationTypeChange: (type: EntityType) => void }) => {
+const AddActionMenu = ({ onAnnotationTypeChange }: { onAnnotationTypeChange: (type: string) => void }) => {
   const [state, setState] = useState<boolean[]>(setInitialState);
 
-  const types = Object.keys(MENTION_TYPES);
+  const types = Object.keys(annotationTypes);
 
   const onSelect = (i: number) => {
     setState((s) => s.map((_, index) => index === i ? true : false));
-    onAnnotationTypeChange(types[i] as EntityType);
+    onAnnotationTypeChange(types[i]);
   }
 
   return (
@@ -169,10 +168,10 @@ const AddActionMenu = ({ onAnnotationTypeChange }: { onAnnotationTypeChange: (ty
       {types.map((type, index) => (
         <AddActionItem
           key={type}
-          type={type as EntityType}
+          type={type}
           selected={state[index]}
           onClick={() => onSelect(index)}
-          {...MENTION_TYPES[type as EntityType]} />
+          {...annotationTypes[type as keyof typeof annotationTypes]} />
       ))}
     </AddActionContainer>
   )
@@ -181,10 +180,10 @@ const AddActionMenu = ({ onAnnotationTypeChange }: { onAnnotationTypeChange: (ty
 const ACTIONS_DISTANCE = 42;
 
 type MainActionsProps = {
-  onSelect: (id: ActionKey, payload: any) => void;
+  onActionChange: ({ key, payload }: { key: ActionKey, payload: any }) => void;
 }
 
-const MainActions: FC<MainActionsProps> = ({ onSelect: onSelectProp }) => {
+const MainActions: FC<MainActionsProps> = ({ onActionChange: onActionChangeProp }) => {
   // keep state of the current selected action index
   const [actionIndex, setActionIndex] = useState<number>(0);
   // hovered actionIndex
@@ -195,13 +194,13 @@ const MainActions: FC<MainActionsProps> = ({ onSelect: onSelectProp }) => {
 
   const setAction = (i: number) => {
     setActionIndex(i);
-    const payload = mainActions[i].id === 'add' ? { type: Object.keys(MENTION_TYPES)[0] } : {};
+    const payload = mainActions[i].id === 'add' ? { type: Object.keys(annotationTypes)[0] } : {};
 
-    onSelectProp(mainActions[i].id, payload);
+    onActionChangeProp({ key: mainActions[i].id, payload });
   }
 
-  const onAnnotationTypeChange = (type: EntityType) => {
-    onSelectProp('add', { type });
+  const onAnnotationTypeChange = (type: string) => {
+    onActionChangeProp({ key: 'add', payload: { type } });
   }
 
   // change action
@@ -260,17 +259,17 @@ const MainActions: FC<MainActionsProps> = ({ onSelect: onSelectProp }) => {
 }
 
 type ToolbarProps = {
-  onSelect: (id: ActionKey, payload: any) => void;
+  onActionChange: ({ key, payload }: { key: ActionKey, payload: any }) => void;
 }
 
-const Toolbar: FC<ToolbarProps> = ({ onSelect }) => {
+const Toolbar: FC<ToolbarProps> = ({ onActionChange }) => {
   return (
     <Container>
       <TopMenu>
         {/* Menu top left */}
         <div />
         {/* Menu center */}
-        <MainActions onSelect={onSelect} />
+        <MainActions onActionChange={onActionChange} />
         {/* Menu top left */}
         <div />
       </TopMenu>

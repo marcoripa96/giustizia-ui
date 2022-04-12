@@ -2,9 +2,12 @@ import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import { promises as fs } from 'fs'
 import path from 'path'
 import styled from 'styled-components'
-import { DocumentCard } from '@/components'
+import { Button, Card, DocumentCard, NERDocumentViewer } from '@/components'
 import { DocumentResponse } from './api/document'
 import { DOCUMENTS } from '@/documents'
+import { ChangeEvent, useState } from 'react'
+import { Annotation } from '@/components/NERDocumentViewer'
+import { withAuthSsr } from '@/lib/withAuthSsr'
 
 const Container = styled.div`
   display: flex;
@@ -15,57 +18,80 @@ const Container = styled.div`
   padding: 40px 20px;
 `
 
-const DocumentsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-gap: 20px;
-  margin: 0px auto;
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 160px;
 `
 
-const PageTitle = styled.h1`
-  font-size: 32px;
-  font-weight: 500;
-  margin-bottom: 48px;
+const TextArea = styled.textarea`
+  width: 100%;
+  min-height: 200px;
+  margin: 0;
+  padding: 10px;
+  outline: none;
+  border: none;
+  box-shadow: 0 0 #0000,0 0 #0000, 0 0 #0000,0 0 #0000, inset 0 2px 4px 0 rgba(0,0,0,0.06);
+  border: 1px solid rgba(229,231,235,1);
+  border-radius: 6px;
+  resize: vertical;
+  font-size: 16px;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen, Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
 `
 
-type HomeProps = {
-  documents: DocumentResponse;
-}
+const annotations = [
+  {
+    id: 1,
+    "start_pos_original": 0,
+    "end_pos_original": 17,
+    "ner_type": "PER",
+    "top_url": "https://it.wikipedia.org/wiki?curid=1075990"
+  },
+  {
+    id: 2,
+    "start_pos_original": 62,
+    "end_pos_original": 71,
+    "ner_type": "DATE",
+    "top_url": null
+  },
+] as Annotation[];
 
 /**
  * Homepage component
  */
-const Home: NextPage<HomeProps> = ({ documents }) => {
+const Home: NextPage<{}> = () => {
+  const [text, setText] = useState<string>('');
+
+  const onChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setText(event.target.value)
+  }
+
   return (
     <Container>
-      <PageTitle>Documents ({documents.length})</PageTitle>
-      <DocumentsContainer>
-        {documents.map(({ id, ...props }, index) => <DocumentCard key={index} id={id} {...props} />)}
-      </DocumentsContainer>
+      <Section>
+        <TextArea onChange={onChange} />
+        <Button>Compute</Button>
+        {/* <NERDocumentViewer content={text} annotations={annotations} /> */}
+        {/* <Card>
+          <TextArea />
+          <Button>Compute</Button>
+        </Card> */}
+      </Section>
+
     </Container>
   )
 }
 
-/**
- * Get all documents from the server before rendering the page
- */
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const documents = await Promise.all(Object.keys(DOCUMENTS).map(async (key) => {
-    const document = DOCUMENTS[key];
-    const documentPath = path.join(process.cwd(), '_files', document.content);
-    const content = await fs.readFile(documentPath, 'utf-8');
-    const preview = content.slice(0, 600);
-    return {
-      id: document.id,
-      title: document.title,
-      preview
-    }
-  }));
+export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context) => {
   return {
-    props: {
-      documents
-    }, // will be passed to the page component as props
+    props: {}
   }
-}
+});
+
 
 export default Home
