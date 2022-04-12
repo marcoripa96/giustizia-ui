@@ -49,7 +49,7 @@ const IconButton = styled.button<{ selected: boolean }>`
     background: #e2e2e2;
   }
 
-  ${({ selected }) => selected && `
+  ${({ selected }: any) => selected && `
     background: #1778F2;
     color: #FFF;
     > svg {
@@ -95,7 +95,7 @@ const AddActionItemContainer = styled.button<{ selected: boolean }>`
   background: #FFF;
   text-align: start;
   cursor: pointer;
-  ${({ selected }) => selected && { background: 'rgb(244, 242, 244)' }}
+  ${({ selected }: any) => selected && { background: 'rgb(244, 242, 244)' }}
   &:hover {
     background: rgb(244, 242, 244);
   }
@@ -106,7 +106,7 @@ const MentionTagColorBox = styled.div<{ color: string }>`
   justify-content: center;
   width: 30px;
   height: 30px;
-  background: ${({ color }) => color};
+  background: ${({ color }: any) => color};
   border-radius: 6px;
   > svg {
     fill: rgb(244, 242, 244);

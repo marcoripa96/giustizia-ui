@@ -8,7 +8,7 @@ const MenuContainer = styled.div<{ offset: number }>`
   border-radius: 6px;
   background: #fff;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 1%), 1px 1px 5px rgb(0 0 0 / 15%);
-  transform: ${({ offset }) => `translateX(${offset}px)`};
+  transform: ${({ offset }: any) => `translateX(${offset}px)`};
   transition: transform 250ms ease-out;
 `
 
