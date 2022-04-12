@@ -1,6 +1,7 @@
+import { Global } from '@emotion/react'
+import styled from '@emotion/styled'
 import type { AppProps } from 'next/app'
-import styled from 'styled-components'
-import GlobalStyle from '../styles/globalStyles'
+import GlobalStyles from '../styles/globalStyles'
 
 const Layout = styled.div`
   min-height: 100vh;
@@ -10,7 +11,7 @@ const Layout = styled.div`
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <GlobalStyle />
+      <Global styles={GlobalStyles} />
       <Layout>
         <Component {...pageProps} />
       </Layout>

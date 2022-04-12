@@ -1,5 +1,5 @@
 import { ComponentType, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
+import styled from '@emotion/styled';
 import { darken } from "polished";
 import { ActionKey, mainActions } from "./actions";
 import { useEventListener } from "@/hooks";
@@ -106,7 +106,7 @@ const MentionTagColorBox = styled.div<{ color: string }>`
   justify-content: center;
   width: 30px;
   height: 30px;
-  background: ${({ color }: any) => color};
+  background: ${({ color }) => color};
   border-radius: 6px;
   > svg {
     fill: rgb(244, 242, 244);

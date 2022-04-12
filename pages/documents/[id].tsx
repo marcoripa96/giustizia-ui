@@ -4,7 +4,7 @@ import { useParam } from "@/hooks";
 import { withAuthSsr } from "@/lib/withAuthSsr";
 import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled from '@emotion/styled';
 import { DocumentByIdResponse } from "../api/document/[id]";
 
 const Container = styled.div`

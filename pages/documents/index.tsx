@@ -1,11 +1,11 @@
 import type { GetServerSideProps, GetServerSidePropsContext, GetStaticProps, NextPage } from 'next'
 import { promises as fs } from 'fs'
 import path from 'path'
-import styled from 'styled-components'
 import { DocumentResponse } from '../api/document'
 import { DocumentCard } from '@/components'
 import { DOCUMENTS } from '@/documents'
 import { withAuthSsr } from '@/lib/withAuthSsr'
+import styled from '@emotion/styled'
 
 const Container = styled.div`
   display: flex;

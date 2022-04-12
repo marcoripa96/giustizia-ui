@@ -1,5 +1,5 @@
 import { FC } from "react"
-import styled from "styled-components"
+import styled from '@emotion/styled';
 
 const MenuItemContainer = styled.div`
   display: flex;

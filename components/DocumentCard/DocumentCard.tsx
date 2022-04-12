@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { FC } from "react"
-import styled from "styled-components"
+import styled from '@emotion/styled';
 import { Card } from "../Card"
 
 const DocumentCardContainer = styled(Card)`

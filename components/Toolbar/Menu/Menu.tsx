@@ -1,5 +1,5 @@
 import { Children, FC, forwardRef, MouseEventHandler, ReactElement } from "react";
-import styled from "styled-components";
+import styled from '@emotion/styled';
 import { MenuItemProps } from "./MenuItem";
 
 const MenuContainer = styled.div<{ offset: number }>`

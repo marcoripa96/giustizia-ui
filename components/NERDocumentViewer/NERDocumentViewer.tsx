@@ -1,5 +1,5 @@
 import { FC, useMemo } from "react";
-import styled from "styled-components";
+import styled from '@emotion/styled';
 import AnnotationTag from "./AnnotationTag/AnnotationTag";
 import { getNode, getOriginalOffset, getTextSelection, _render } from "./utils";
 

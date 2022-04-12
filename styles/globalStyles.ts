@@ -1,6 +1,6 @@
-import { createGlobalStyle } from 'styled-components';
+import { css } from "@emotion/react";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyles = css`
   html,
   body {
     min-height: 100vh;
@@ -22,6 +22,6 @@ const GlobalStyle = createGlobalStyle`
   #__next {
     min-height: 100vh;
   }
-`;
+`
 
-export default GlobalStyle;
+export default GlobalStyles;

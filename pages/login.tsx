@@ -1,11 +1,11 @@
 import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
-import styled from 'styled-components'
 import { FormEvent, useState } from 'react'
 import { Button, Card, InputText } from '@/components';
 import { useInput, useMutation } from '@/hooks';
 import fetchJson, { FetchError, FetchRequestInit } from '@/lib/fetchJson';
 import { useRouter } from 'next/router';
 import { withAuthSsr } from '@/lib/withAuthSsr';
+import styled from '@emotion/styled';
 
 const Container = styled.div`
   display: flex;
@@ -43,6 +43,7 @@ const mutationFetcher = (options?: FetchRequestInit) => fetchJson('/api/login', 
  */
 const Login: NextPage<{}> = () => {
   const [loginPassword, onChangePassword] = useInput();
+
   const router = useRouter();
   const { mutate: login, error } = useMutation(mutationFetcher);
 

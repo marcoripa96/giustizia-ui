@@ -1,6 +1,6 @@
 import { darken } from "polished";
 import { ElementType, FC, HTMLAttributes, useState, MouseEvent } from "react";
-import styled from "styled-components";
+import styled from '@emotion/styled';
 import { Annotation, annotationTypes } from "../NERDocumentViewer";
 
 type AnnotationTagProps = HTMLAttributes<HTMLSpanElement> & {
@@ -14,11 +14,11 @@ type TagProps = {
 const Tag = styled.span<TagProps>`
   padding: 2px 5px;
   border-radius: 6px;
-  background: ${({ type }: any) => annotationTypes[type as keyof typeof annotationTypes].color};
+  background: ${({ type }) => annotationTypes[type].color};
   transition: background 250ms ease-out;
 
   &:hover {
-    background: ${({ type }: any) => darken(0.15, annotationTypes[type as keyof typeof annotationTypes].color)}
+    background: ${({ type }) => darken(0.15, annotationTypes[type].color)}
   }
 `
 
@@ -28,7 +28,7 @@ const AnnotationType = styled.span<TagProps>`
   text-transform: uppercase;
   margin-left: 6px;
   padding: 0 3px;
-  background: ${({ type }: any) => darken(0.1, annotationTypes[type as keyof typeof annotationTypes].color)};
+  background: ${({ type }) => darken(0.1, annotationTypes[type].color)};
   border-radius: 4px;
 `
 
