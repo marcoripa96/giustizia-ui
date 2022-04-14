@@ -3,6 +3,7 @@ import { DOCUMENTS } from '@/documents';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import path from 'path'
 import { promises as fs } from 'fs'
+import { withAuthApi } from '@/lib/withAuthApi';
 
 export type DocumentResponse = {
   id: string;
@@ -10,7 +11,7 @@ export type DocumentResponse = {
   preview: string;
 }[]
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<DocumentResponse>
 ) {
@@ -34,6 +35,6 @@ export default async function handler(
   } else {
     res.status(500)
   }
-
-
 }
+
+export default withAuthApi(handler);

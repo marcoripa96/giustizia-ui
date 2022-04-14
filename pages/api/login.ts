@@ -23,5 +23,4 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
   } else {
     res.status(500);
   }
-
 }
