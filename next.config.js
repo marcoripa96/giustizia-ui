@@ -18,6 +18,9 @@ const nextConfig = {
   experimental: {
     emotion: true
   },
+  images: {
+    domains: ['upload.wikimedia.org'],
+  },
   ...(process.env.NODE_ENV === 'production' && prodConfig)
 }
 

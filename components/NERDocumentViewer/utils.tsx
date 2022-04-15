@@ -1,3 +1,4 @@
+import { MouseEvent } from "react";
 import AnnotationTag from "./AnnotationTag/AnnotationTag";
 import { Annotation, AnnotationClickEvent, DocumentNode } from "./NERDocumentViewer";
 
@@ -44,7 +45,7 @@ export const getOriginalOffset = (nodes: DocumentNode[], anchorNode: string, anc
 type RenderProps = {
   content: string;
   annotations: Annotation[];
-  onEntityClick: (event: AnnotationClickEvent) => void;
+  onEntityClick: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }
 
 export const _render = ({
@@ -63,9 +64,10 @@ export const _render = ({
     // node of type entity
     const nodeEntity = (
       <AnnotationTag
+        id={`entity-node-${id}`}
         key={id}
         annotation={annotation}
-        onClick={() => onEntityClick({ annotation })}>
+        onClick={(event) => onEntityClick(event, { annotation })}>
         {entity}
       </AnnotationTag>
     )

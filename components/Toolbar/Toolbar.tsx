@@ -12,6 +12,7 @@ const Container = styled.div`
   top: 2px;
   left: 2px;
   right: 2px;
+  z-index: 1;
 `
 
 const TopMenu = styled.div`

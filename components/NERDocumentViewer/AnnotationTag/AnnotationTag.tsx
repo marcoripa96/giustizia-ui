@@ -16,6 +16,7 @@ const Tag = styled.span<TagProps>`
   border-radius: 6px;
   background: ${({ type }) => annotationTypes[type].color};
   transition: background 250ms ease-out;
+  cursor: pointer;
 
   &:hover {
     background: ${({ type }) => darken(0.15, annotationTypes[type].color)}

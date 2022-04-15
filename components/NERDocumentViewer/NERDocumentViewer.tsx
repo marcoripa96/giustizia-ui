@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, MouseEvent, useMemo } from "react";
 import styled from '@emotion/styled';
 import AnnotationTag from "./AnnotationTag/AnnotationTag";
 import { getNode, getOriginalOffset, getTextSelection, _render } from "./utils";
@@ -10,7 +10,7 @@ type NERDocumentViewerProps = {
   content: string;
   annotations: Annotation[];
   onSelection?: (event: SelectionEvent) => void;
-  onEntityClick?: (event: AnnotationClickEvent) => void;
+  onEntityClick?: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }
 
 export type SelectionEvent = { startOffset: number, endOffset: number };
@@ -22,6 +22,18 @@ export type Annotation = {
   end_pos_original: number;
   ner_type: keyof typeof annotationTypes;
   top_url: string;
+  top_wikipedia_id?: string;
+  top_title?: string;
+  mention?: string;
+  candidates?: Candidate[];
+}
+
+type Candidate = {
+  id: string;
+  score: number;
+  title: string;
+  url: string;
+  wikipedia_id: string;
 }
 
 export type DocumentNode = string | JSX.Element;
@@ -88,11 +100,11 @@ const NERDocumentViewer: FC<NERDocumentViewerProps> = ({
   /**
    * 
    */
-  const onEntityClick = (event: AnnotationClickEvent) => {
+  const onEntityClick = (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => {
     if (!onEntityClickProp) {
       return;
     }
-    onEntityClickProp(event);
+    onEntityClickProp(event, annotationEvent);
   }
 
   // build nodes to render
