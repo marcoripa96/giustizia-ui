@@ -1,3 +1,4 @@
+import { withAuthApi } from "@/lib/withAuthApi";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export type AnnotationResponse = {
@@ -9,7 +10,7 @@ export type AnnotationResponse = {
   }
 }
 
-export default async function annotation(req: NextApiRequest, res: NextApiResponse<AnnotationResponse>) {
+async function handler(req: NextApiRequest, res: NextApiResponse<AnnotationResponse>) {
   const { query } = req;
 
   const endpoint = `action=query&pageids=${query.id}&prop=extracts|pageimages&exchars=200&explaintext=true&pithumbsize=480&format=json`;
@@ -22,3 +23,5 @@ export default async function annotation(req: NextApiRequest, res: NextApiRespon
   }
   res.json(processedData);
 }
+
+export default withAuthApi(handler);

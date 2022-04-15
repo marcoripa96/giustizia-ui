@@ -21,7 +21,6 @@ const useGet = <T = unknown, S = any>(
 ) => {
   const [data, setData] = useState<S>();
   const [error, setError] = useState<FetchError>();
-  const firstRender = useRef(true);
 
 
   const {
@@ -34,11 +33,6 @@ const useGet = <T = unknown, S = any>(
 
 
   useEffect(() => {
-    // prevent running the effect when the components initally mounts
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
     if (!key) {
       return;
     }
@@ -52,13 +46,12 @@ const useGet = <T = unknown, S = any>(
         return;
       }
     }
-
-    console.log('AAAA');
     // it's fine to call multiple setStates, the component will be optimized to rerender only once
     // setData(undefined);
     fetchJson<void, T>(key)
       .then((data) => {
         const state = transformFn ? transformFn(data) : data as unknown as S;
+        console.log(data);
         setData(state);
         setError(undefined);
         _cache.set(key, state)
