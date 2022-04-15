@@ -53,7 +53,7 @@ const useGet = <T = unknown, S = any>(
       }
     }
 
-
+    console.log('AAAA');
     // it's fine to call multiple setStates, the component will be optimized to rerender only once
     // setData(undefined);
     fetchJson<void, T>(key)
