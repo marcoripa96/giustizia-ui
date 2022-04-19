@@ -3,7 +3,7 @@ import { Annotation, AnnotationClickEvent, NERDocumentViewer, SelectionEvent } f
 import { useClickOutside, useParam } from "@/hooks";
 import { withAuthSsr } from "@/lib/withAuthSsr";
 import { GetServerSideProps, NextPage } from "next";
-import { MouseEvent, useRef, useState } from "react";
+import { FocusEvent, MouseEvent, useRef, useState } from "react";
 import styled from '@emotion/styled';
 import { AnnotationCard, AnnotationCardProps } from "@/modules/document/AnnotationCard";
 import { useDocument } from "@/lib/useDocument";
@@ -56,7 +56,6 @@ const Document: NextPage = () => {
 
   // handler to detect click outside of the annotation card
   const annotationCardRef = useClickOutside((event) => {
-    console.log(event.target);
     const id = (event.target as HTMLElement).getAttribute('id');
     // if the element is another annotation we do not want to unmount component
     if (id && id.startsWith('entity-node')) return;
@@ -73,6 +72,18 @@ const Document: NextPage = () => {
     if (documentAction.key === 'erase') {
       mutate((s) => deleteAnnotation(s, annotation))
     } else if (documentAction.key === 'select') {
+      if (!docRef.current) {
+        return;
+      }
+      const y = getAnnotationCardPosition(docRef.current, event.currentTarget);
+      setAnnotationCard({ annotation, y });
+    }
+  }
+
+  const onAnnotationFocus = (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => {
+    const { annotation } = annotationEvent;
+
+    if (documentAction.key === 'select') {
       if (!docRef.current) {
         return;
       }
@@ -99,7 +110,8 @@ const Document: NextPage = () => {
                 content={data.content}
                 annotations={data.annotations}
                 onSelection={onTextSelection}
-                onEntityClick={onAnnotationClick} />
+                onEntityClick={onAnnotationClick}
+                onEntityFocus={onAnnotationFocus} />
               {annotationCard && <AnnotationCard ref={annotationCardRef} {...annotationCard} />}
             </DocumentContainer>
           </>

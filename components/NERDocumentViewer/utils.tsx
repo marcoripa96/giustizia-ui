@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import { FocusEvent, MouseEvent } from "react";
 import AnnotationTag from "./AnnotationTag/AnnotationTag";
 import { Annotation, AnnotationClickEvent, DocumentNode } from "./NERDocumentViewer";
 
@@ -46,12 +46,14 @@ type RenderProps = {
   content: string;
   annotations: Annotation[];
   onEntityClick: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
+  onEntityFocus: (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }
 
 export const _render = ({
   content,
   annotations,
-  onEntityClick
+  onEntityClick,
+  onEntityFocus
 }: RenderProps) => {
   let contentToRender: DocumentNode[] = [];
   let lastPosition = 0;
@@ -67,6 +69,7 @@ export const _render = ({
         id={`entity-node-${id}`}
         key={id}
         annotation={annotation}
+        onFocus={(event) => onEntityFocus(event, { annotation })}
         onClick={(event) => onEntityClick(event, { annotation })}>
         {entity}
       </AnnotationTag>

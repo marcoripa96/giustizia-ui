@@ -51,7 +51,6 @@ const useGet = <T = unknown, S = any>(
     fetchJson<void, T>(key)
       .then((data) => {
         const state = transformFn ? transformFn(data) : data as unknown as S;
-        console.log(data);
         setData(state);
         setError(undefined);
         _cache.set(key, state)

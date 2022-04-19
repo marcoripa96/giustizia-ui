@@ -1,6 +1,5 @@
-import { FC, MouseEvent, useMemo } from "react";
+import { FC, FocusEvent, MouseEvent, useMemo } from "react";
 import styled from '@emotion/styled';
-import AnnotationTag from "./AnnotationTag/AnnotationTag";
 import { getNode, getOriginalOffset, getTextSelection, _render } from "./utils";
 
 /**
@@ -11,6 +10,7 @@ type NERDocumentViewerProps = {
   annotations: Annotation[];
   onSelection?: (event: SelectionEvent) => void;
   onEntityClick?: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
+  onEntityFocus?: (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }
 
 export type SelectionEvent = { startOffset: number, endOffset: number };
@@ -71,7 +71,8 @@ const DocumentContent = styled.p`
 const NERDocumentViewer: FC<NERDocumentViewerProps> = ({
   content, annotations,
   onSelection: onSelectionProp,
-  onEntityClick: onEntityClickProp
+  onEntityClick: onEntityClickProp,
+  onEntityFocus: onEntityFocusProp
 }) => {
   /**
    * On text selection
@@ -107,10 +108,17 @@ const NERDocumentViewer: FC<NERDocumentViewerProps> = ({
     onEntityClickProp(event, annotationEvent);
   }
 
+  const onEntityFocus = (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => {
+    if (!onEntityFocusProp) {
+      return;
+    }
+    onEntityFocusProp(event, annotationEvent);
+  }
+
   // build nodes to render
   const nodes = useMemo(() => {
-    return _render({ content, annotations, onEntityClick });
-  }, [content, annotations, onEntityClickProp]);
+    return _render({ content, annotations, onEntityClick, onEntityFocus });
+  }, [content, annotations, onEntityClickProp, onEntityFocusProp]);
 
   return (
     <DocumentContent onMouseUp={onSelection}>
