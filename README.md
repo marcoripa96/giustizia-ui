@@ -1,34 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Run locally with docker
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
+```
+docker-compose up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Run locally without docker
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+First of all you need `NodeJS` and `pnpm` installed on your machine.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+1. Install NodeJS following this [link](https://nodejs.org/it/download/).
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+2. Install pnpm packet manager following this [link](https://pnpm.io/it/installation).
 
-## Learn More
+Finally to run the project:
 
-To learn more about Next.js, take a look at the following resources:
+1. Install all dependencies:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+pnpm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. Run the project:
 
-## Deploy on Vercel
+```
+pnpm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Add documents
+You can follow these steps to add new documents with their annotations.
+
+1. Add a document file (`.txt`) and its annotations (`.json`) in the `_files` directory at the root of the application.
+For example:
+
+```
+.
+└── _files
+    ├── bologna.txt
+    └── bologna.json
+```
+2. Include the added files in the javascript object in the `documents.ts` file at the root of the application. Be sure each one of the added documents has a unique id.
+For example:
+
+```ts
+export const DOCUMENTS: Record<string, Document> = {
+  '1': {
+    id: '1',
+    title: 'Sentenza strage di Bologna',
+    content: 'bologna.txt',
+    annotation: 'bologna.json'
+  }
+}
+```
+
