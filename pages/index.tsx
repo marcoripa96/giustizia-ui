@@ -44,23 +44,6 @@ const TextArea = styled.textarea`
   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen, Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
 `
 
-const annotations = [
-  {
-    id: 1,
-    "start_pos_original": 0,
-    "end_pos_original": 17,
-    "ner_type": "PER",
-    "top_url": "https://it.wikipedia.org/wiki?curid=1075990"
-  },
-  {
-    id: 2,
-    "start_pos_original": 62,
-    "end_pos_original": 71,
-    "ner_type": "DATE",
-    "top_url": null
-  },
-] as Annotation[];
-
 /**
  * Homepage component
  */

@@ -5,7 +5,9 @@ type Document = {
   annotation: string;
 }
 
-
+/**
+ * Collection of documents
+ */
 export const DOCUMENTS: Record<string, Document> = {
   '1': {
     id: '1',

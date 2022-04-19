@@ -1,6 +1,6 @@
 import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import { FormEvent, useState } from 'react'
-import { Button, Card, InputText } from '@/components';
+import { Button, ButtonLoading, Card, InputText } from '@/components';
 import { useInput, useMutation } from '@/hooks';
 import fetchJson, { FetchError, FetchRequestInit } from '@/lib/fetchJson';
 import { useRouter } from 'next/router';
@@ -42,10 +42,10 @@ const mutationFetcher = (options?: FetchRequestInit) => fetchJson('/api/login', 
  * Login page component
  */
 const Login: NextPage<{}> = () => {
-  const [loginPassword, onChangePassword] = useInput();
+  const [loginPassword, onChangePassword] = useInput('');
 
   const router = useRouter();
-  const { mutate: login, error } = useMutation(mutationFetcher);
+  const { mutate: login, error, loading } = useMutation(mutationFetcher);
 
   const onFormSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -68,7 +68,7 @@ const Login: NextPage<{}> = () => {
             placeholder="Password"
             error={error?.data.message}
             onChange={onChangePassword} />
-          <Button>Login</Button>
+          <ButtonLoading disabled={!loginPassword || loading} loading={loading}>Login</ButtonLoading>
         </Box>
       </CardLogin>
     </Container>

@@ -7,6 +7,8 @@ import { NERDocumentViewer } from "./NERDocumentViewer";
 import { InputText } from "./InputText";
 import { Sidebar } from "./Sidebar";
 import { Link } from "./Link";
+import { Loader } from "./Loader";
+import { ButtonLoading } from "./ButtonLoading";
 
 export {
   DocumentCard,
@@ -15,7 +17,9 @@ export {
   NERDocumentViewer,
   Card,
   Button,
+  ButtonLoading,
   Link,
   InputText,
-  Sidebar
+  Sidebar,
+  Loader
 }

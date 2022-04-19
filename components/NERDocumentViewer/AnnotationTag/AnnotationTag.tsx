@@ -31,6 +31,7 @@ const AnnotationType = styled.span<TagProps>`
   padding: 0 3px;
   background: ${({ type }) => darken(0.1, annotationTypes[type].color)};
   border-radius: 4px;
+  pointer-events: none;
 `
 
 const AnnotationTag: FC<AnnotationTagProps> = ({ annotation, children, ...props }) => {

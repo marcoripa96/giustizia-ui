@@ -2,10 +2,21 @@
 
 const prodConfig = {
   async redirects() {
-    console.log('AAAA');
     return [
       {
         source: '/',
+        destination: '/documents',
+        permanent: true,
+      }
+    ]
+  },
+}
+
+const devConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/login',
         destination: '/documents',
         permanent: true,
       }
@@ -21,7 +32,8 @@ const nextConfig = {
   images: {
     domains: ['upload.wikimedia.org'],
   },
-  ...(process.env.NODE_ENV === 'production' && prodConfig)
+  ...(process.env.NODE_ENV === 'production' && prodConfig),
+  ...(process.env.NODE_ENV === 'development' && devConfig)
 }
 
 module.exports = nextConfig

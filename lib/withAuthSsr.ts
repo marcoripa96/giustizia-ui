@@ -13,19 +13,21 @@ const defaultOptions = {
 } as WithAuthSsrOptions;
 
 export const withAuthSsr = (handler: GetServerSideProps, options?: WithAuthSsrOptions) => withIronSessionSsr(async (context: GetServerSidePropsContext) => {
-  const { req } = context
-  const user = req.session.user
+  if (process.env.NODE_ENV === 'production') {
+    const { req } = context
+    const user = req.session.user
 
-  const { destination, redirectWhen } = { ...defaultOptions, ...options };
+    const { destination, redirectWhen } = { ...defaultOptions, ...options };
 
-  const condition = redirectWhen === 'isNotLoggedIn' ? !user : !(!user);
+    const condition = redirectWhen === 'isNotLoggedIn' ? !user : !(!user);
 
-  if (condition) {
-    return {
-      redirect: {
-        destination: destination || '/login',
-        statusCode: 302,
-      },
+    if (condition) {
+      return {
+        redirect: {
+          destination: destination || '/login',
+          statusCode: 302,
+        },
+      }
     }
   }
 
