@@ -11,7 +11,7 @@ type ButtonLoadingProps = ComponentProps<'button'> & {
 const SmallLoader = styled(Loader)`
   width: 20px;
   height: 20px;
-  border-color: #ffffff #464646 #464646;
+  border-color: rgba(0, 0, 0, 0.26) #464646 #464646;
 `
 
 
