@@ -1,28 +1,25 @@
 /** @type {import('next').NextConfig} */
 
-const prodConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/documents',
-        permanent: true,
-      }
-    ]
-  },
+const devRedirects = [
+  {
+    source: '/login',
+    destination: '/documents',
+    permanent: true,
+  }
+];
+
+const getRedirects = () => {
+  const dev = process.env.NODE_ENV === 'development' ? devRedirects : [];
+  return [
+    {
+      source: '/',
+      destination: '/documents',
+      permanent: true,
+    },
+    ...dev
+  ]
 }
 
-const devConfig = {
-  async redirects() {
-    return [
-      {
-        source: '/login',
-        destination: '/documents',
-        permanent: true,
-      }
-    ]
-  },
-}
 
 const nextConfig = {
   reactStrictMode: true,
@@ -32,8 +29,9 @@ const nextConfig = {
   images: {
     domains: ['upload.wikimedia.org'],
   },
-  ...(process.env.NODE_ENV === 'production' && prodConfig),
-  ...(process.env.NODE_ENV === 'development' && devConfig)
+  async redirects() {
+    return getRedirects();
+  },
 }
 
 module.exports = nextConfig
