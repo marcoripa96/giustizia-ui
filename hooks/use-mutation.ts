@@ -9,10 +9,8 @@ type MutationState<JSON = unknown> = {
   error: FetchError | null;
 }
 
-const emptyState = { data: null, loading: false, error: null }
-
-const useMutation = <JSON = unknown>(mutationFetcher: MutationFetcher<JSON>) => {
-  const [state, setState] = useState<MutationState<JSON>>(emptyState);
+const useMutation = <JSON = unknown>(mutationFetcher: MutationFetcher<JSON>, initialValue?: JSON) => {
+  const [state, setState] = useState<MutationState<JSON>>({ data: initialValue || null, loading: false, error: null });
 
   const mutate = (fetchOptions: FetchRequestInit = {}) => {
     setState({ data: null, loading: true, error: null });
@@ -22,7 +20,6 @@ const useMutation = <JSON = unknown>(mutationFetcher: MutationFetcher<JSON>) => 
         resolve(data);
       }).catch((error: any) => {
         setState({ data: null, loading: false, error });
-        // reject(error);
       })
     })
 

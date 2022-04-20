@@ -9,6 +9,8 @@ import { Sidebar } from "./Sidebar";
 import { Link } from "./Link";
 import { Loader } from "./Loader";
 import { ButtonLoading } from "./ButtonLoading";
+import { MainToolbar } from "./MainToolbar";
+import { AnnotationTypeList } from "./AnnotationTypeList";
 
 export {
   DocumentCard,
@@ -21,5 +23,7 @@ export {
   Link,
   InputText,
   Sidebar,
-  Loader
+  Loader,
+  MainToolbar,
+  AnnotationTypeList
 }

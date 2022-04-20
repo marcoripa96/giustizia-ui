@@ -1,3 +1,4 @@
+import { MainToolbar } from '@/components'
 import { Global } from '@emotion/react'
 import styled from '@emotion/styled'
 import type { AppProps } from 'next/app'
@@ -5,7 +6,7 @@ import GlobalStyles from '../styles/globalStyles'
 
 const Layout = styled.div`
   min-height: 100vh;
-  background: #F8F9FA;;
+  background: #FFFFFF;;
 `
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <Global styles={GlobalStyles} />
       <Layout>
+        <MainToolbar />
         <Component {...pageProps} />
       </Layout>
     </>

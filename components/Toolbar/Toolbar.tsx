@@ -9,7 +9,7 @@ import { annotationTypes } from "@/components/NERDocumentViewer";
 
 const Container = styled.div`
   position: fixed;
-  top: 2px;
+  top: 80px;
   left: 2px;
   right: 2px;
   z-index: 1;

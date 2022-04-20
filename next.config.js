@@ -3,7 +3,7 @@
 const devRedirects = [
   {
     source: '/login',
-    destination: '/documents',
+    destination: '/infer',
     permanent: true,
   }
 ];
@@ -13,7 +13,7 @@ const getRedirects = () => {
   return [
     {
       source: '/',
-      destination: '/documents',
+      destination: '/infer',
       permanent: true,
     },
     ...dev

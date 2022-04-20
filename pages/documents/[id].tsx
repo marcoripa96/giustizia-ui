@@ -12,7 +12,6 @@ import { addAnnotation, deleteAnnotation, getAnnotationCardPosition } from "@/mo
 const Container = styled.div`
   min-height: 100vh;
   padding: 100px 0 40px 0;
-  background: #F8F9FA;
 `
 
 export type DocumentAction = {
@@ -28,6 +27,9 @@ const DocumentContainer = styled(Card) <{ moveToSide: boolean }>`
   padding: 24px 36px;
   border-radius: 6px;
   margin: 0 auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.7;
   ${({ moveToSide }) => moveToSide && {
     transform: 'translateX(15%)'
   }};
