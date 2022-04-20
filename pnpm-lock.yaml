@@ -12,6 +12,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   iron-session: ^6.1.2
   next: 12.1.4
+  nextjs-progressbar: ^0.0.14
   polished: ^4.1.4
   prettier: ^2.6.1
   react: 18.0.0
@@ -26,6 +27,7 @@ dependencies:
   '@react-icons/all-files': 4.1.0_react@18.0.0
   iron-session: 6.1.2_next@12.1.4
   next: 12.1.4_react-dom@18.0.0+react@18.0.0
+  nextjs-progressbar: 0.0.14_next@12.1.4+react@18.0.0
   polished: 4.1.4
   react: 18.0.0
   react-dom: 18.0.0_react@18.0.0
@@ -1701,10 +1703,25 @@ packages:
       - babel-plugin-macros
     dev: false
 
+  /nextjs-progressbar/0.0.14_next@12.1.4+react@18.0.0:
+    resolution: {integrity: sha512-AXYXHDN6M52AwFnGqH/vlwyo0gbC9zM7QS/4ryOTI0RUqfze5FJl8uSrxKJMzK6hGFdDeQXcZoWsLGXeCVtTwg==}
+    peerDependencies:
+      next: '>= 6.0.0'
+      react: '>= 16.0.0'
+    dependencies:
+      next: 12.1.4_react-dom@18.0.0+react@18.0.0
+      nprogress: 0.2.0
+      prop-types: 15.8.1
+      react: 18.0.0
+    dev: false
+
+  /nprogress/0.2.0:
+    resolution: {integrity: sha1-y480xTIT2JVyP8urkH6UIq28r7E=}
+    dev: false
+
   /object-assign/4.1.1:
     resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=}
     engines: {node: '>=0.10.0'}
-    dev: true
 
   /object-inspect/1.12.0:
     resolution: {integrity: sha512-Ho2z80bVIvJloH+YzRmpZVQe87+qASmBUKZDWgx9cu+KDrX2ZDH/3tMy+gXbZETVGs2M8YdxObOh7XAtim9Y0g==}
@@ -1876,7 +1893,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /punycode/2.1.1:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
