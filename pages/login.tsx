@@ -54,7 +54,7 @@ const Login: NextPage<{}> = () => {
       body: { password: loginPassword },
       method: 'POST'
     }).then(() => {
-      router.push('/documents')
+      router.push('/infer')
     })
   }
 
