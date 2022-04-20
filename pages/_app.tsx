@@ -9,12 +9,12 @@ const Layout = styled.div`
   background: #FFFFFF;;
 `
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Global styles={GlobalStyles} />
       <Layout>
-        <MainToolbar />
+        {!(['/login'].includes(router.pathname)) && <MainToolbar />}
         <Component {...pageProps} />
       </Layout>
     </>
