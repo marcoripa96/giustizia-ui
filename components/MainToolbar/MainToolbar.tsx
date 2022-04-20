@@ -14,6 +14,7 @@ const Container = styled.div({
 const Nav = styled.nav({
   display: 'flex',
   flexDirection: 'row',
+  alignItems: 'center',
   justifyContent: 'space-between',
   width: '100%',
   maxWidth: '1260px',

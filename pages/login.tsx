@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context
   return {
     props: {}
   }
-}, { destination: '/documents', redirectWhen: 'isLoggedIn' });
+}, { destination: '/infer', redirectWhen: 'isLoggedIn' });
 
 
 
