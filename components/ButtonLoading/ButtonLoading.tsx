@@ -1,10 +1,10 @@
 
 import styled from "@emotion/styled";
 import { ComponentProps, HTMLAttributes, PropsWithChildren } from "react"
-import Button from "../Button/Button";
+import Button, { ButtonProps } from "../Button/Button";
 import { Loader } from "../Loader";
 
-type ButtonLoadingProps = ComponentProps<'button'> & {
+type ButtonLoadingProps = ButtonProps & {
   loading?: boolean;
 }
 

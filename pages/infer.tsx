@@ -43,7 +43,6 @@ const SubTitle = styled.h3`
  * Homepage component
  */
 const Home: NextPage<{}> = () => {
-
   return (
     <Container>
       <Section>

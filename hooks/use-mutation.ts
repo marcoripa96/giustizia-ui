@@ -22,12 +22,6 @@ const useMutation = <JSON = unknown>(mutationFetcher: MutationFetcher<JSON>, ini
         setState({ data: null, loading: false, error });
       })
     })
-
-    // mutationFetcher().then((data) => {
-    //   setState({ data, loading: false, error: null });
-    // }).catch((error) => {
-    //   setState({ data: null, loading: false, error });
-    // })
   }
 
   return {

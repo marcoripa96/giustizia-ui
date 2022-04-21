@@ -5,7 +5,6 @@ import { Card } from "./Card";
 import { Button } from "./Button";
 import { NERDocumentViewer } from "./NERDocumentViewer";
 import { InputText } from "./InputText";
-import { Sidebar } from "./Sidebar";
 import { Link } from "./Link";
 import { Loader } from "./Loader";
 import { ButtonLoading } from "./ButtonLoading";
@@ -22,7 +21,6 @@ export {
   ButtonLoading,
   Link,
   InputText,
-  Sidebar,
   Loader,
   MainToolbar,
   AnnotationTypeList

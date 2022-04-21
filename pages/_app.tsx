@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
       <Global styles={GlobalStyles} />
       <Layout>
         {!(['/login'].includes(router.pathname)) && <MainToolbar />}
-        <NextNProgress color='rgb(75 85 99)' />
+        <NextNProgress color='rgb(75 85 99)' showOnShallow={false} />
         <Component {...pageProps} />
       </Layout>
     </>

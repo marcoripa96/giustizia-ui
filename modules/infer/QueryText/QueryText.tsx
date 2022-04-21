@@ -1,16 +1,26 @@
 import { AnnotationTypeList, ButtonLoading, NERDocumentViewer } from "@/components";
 import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
-import { useMutation } from "@/hooks";
+import { useMutation, useQueryParams } from "@/hooks";
 import fetchJson, { FetchRequestInit } from "@/lib/fetchJson";
 import styled from "@emotion/styled";
-import { ChangeEvent, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { annotationsExample, contentExample } from "../utils/example";
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck';
+import { FaRegCopy } from '@react-icons/all-files/fa/FaRegCopy';
 
 type AnnotationTypes = Record<keyof typeof annotationTypes, number>;
 
-const TextArea = styled.textarea`
+const TextAreaWrapper = styled.div`
+  position: relative;
   width: 100%;
-  min-height: 200px;
+  height: 200px;
+`
+
+const TextArea = styled.textarea`
+  position: relative;
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 10px;
   outline: none;
@@ -22,7 +32,13 @@ const TextArea = styled.textarea`
   font-size: 16px;
   font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen, Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
   background-color: rgb(0 0 0/0.02);
-
+  &::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,.26)
+  }
   &:focus {
     box-shadow: 0 0 0 1px rgb(0 0 0/0.05);
     background-color: rgb(255 255 255);
@@ -64,21 +80,87 @@ const getAnnotationTypes = (annotations: Annotation[]) => {
   }))
 }
 
-const QueryText = () => {
-  const [content, setContent] = useState<string>(contentExample);
-  const { data: annotations, loading, mutate } = useMutation(mutationFetcher, annotationsExample);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+const fixedEncodeURIComponent = (value: string) => {
+  return encodeURIComponent(value).replaceAll(/[!'()*]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+  }).replaceAll('%20', '+');
+}
 
+const ButtonClipboard = styled.button({
+  position: 'absolute',
+  bottom: '3px',
+  right: '5px',
+  outline: 'none',
+  border: 'none',
+  color: 'rgb(0 0 0/0.50)',
+  backgroundColor: '#F0F0F0',
+  borderRadius: '6px',
+  padding: '10px',
+  svg: {
+    width: '18px',
+    height: '18px'
+  }
+})
+
+const CopyToClipboardButton = ({ value }: { value: string }) => {
+  const [clicked, setClicked] = useState(false)
+
+  useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>
+
+    if (clicked) {
+      timeoutId = setTimeout(() => {
+        setClicked(false)
+      }, 1000)
+    }
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [clicked])
+
+  const handleClick = () => {
+    navigator.clipboard.writeText(`${window.location.origin}${value}`)
+    setClicked(true)
+  }
+
+  return (
+    <ButtonClipboard onClick={handleClick}>
+      {clicked ? <FaCheck /> : <FaRegCopy />}
+    </ButtonClipboard>
+  )
+}
+
+const QueryText = () => {
+  // get query parameter if there is a query
+  const { query } = useQueryParams(['query']);
+
+  // set content to example if there is no query otherwise set it empty
+  // the content is the result not what's inside the text area (working with uncontrolled component)
+  const [content, setContent] = useState<string>(query ? '' : contentExample);
+  // same as above
+  const { data: annotations, loading, mutate } = useMutation(mutationFetcher, query ? [] : annotationsExample);
+
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (query) {
+      // when the query changes query for the annotations
+      mutate({
+        method: 'POST',
+        body: { data: query }
+      }).then((res) => {
+        setContent(query);
+      })
+    }
+  }, [query])
 
   const onClick = () => {
     if (textAreaRef.current) {
       const { value } = textAreaRef.current;
-      mutate({
-        method: 'POST',
-        body: { data: value }
-      }).then((res) => {
-        setContent(value);
-      })
+      // change the query parameter by shallow routing
+      router.push(`/infer?query=${fixedEncodeURIComponent(value)}`, undefined, { shallow: true })
     }
   }
 
@@ -89,20 +171,36 @@ const QueryText = () => {
     return [];
   }, [annotations])
 
+  const clipboardValue = useMemo(() => {
+    if (query) {
+      return router.asPath;
+    }
+    if (!content) {
+      return ''
+    }
+
+    return `/infer?query=${fixedEncodeURIComponent(content)}`
+  }, [query, content]);
+
   return (
     <>
-      <TextArea
-        ref={textAreaRef}
-        defaultValue={content}
-        autoComplete="off"
-        spellCheck="false" />
+      <TextAreaWrapper>
+        <TextArea
+          ref={textAreaRef}
+          defaultValue={content}
+          autoComplete="off"
+          spellCheck="false" />
+        <CopyToClipboardButton value={clipboardValue} />
+      </TextAreaWrapper>
+
       <Row>
         <SecondaryText>{content.split(' ').length} words</SecondaryText>
       </Row>
       <ButtonLoading onClick={onClick} loading={loading}>Compute</ButtonLoading>
+
       {annotations ? (
         <Column>
-          <AnnotationTypeList items={annotationTypesArray} />
+          {annotationTypesArray.length > 0 && <AnnotationTypeList items={annotationTypesArray} />}
           <NERDocumentViewer content={content} annotations={annotations} />
         </Column>
       ) : null}
