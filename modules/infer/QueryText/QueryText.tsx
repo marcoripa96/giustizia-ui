@@ -190,7 +190,7 @@ const QueryText = () => {
           defaultValue={content}
           autoComplete="off"
           spellCheck="false" />
-        {/* <CopyToClipboardButton value={clipboardValue} /> */}
+        <CopyToClipboardButton value={clipboardValue} />
       </TextAreaWrapper>
 
       <Row>
