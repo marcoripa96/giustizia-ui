@@ -96,6 +96,7 @@ const ButtonClipboard = styled.button({
   backgroundColor: '#F0F0F0',
   borderRadius: '6px',
   padding: '10px',
+  cursor: 'pointer',
   svg: {
     width: '18px',
     height: '18px'
