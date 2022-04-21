@@ -81,9 +81,9 @@ const getAnnotationTypes = (annotations: Annotation[]) => {
 }
 
 const fixedEncodeURIComponent = (value: string) => {
-  return encodeURIComponent(value).replaceAll(/[!'()*]/g, function (c) {
+  return encodeURIComponent(value).replace(/[!'()*]/g, function (c) {
     return '%' + c.charCodeAt(0).toString(16).toUpperCase();
-  }).replaceAll('%20', '+');
+  }).replace(/%20/g, '+');
 }
 
 const ButtonClipboard = styled.button({
