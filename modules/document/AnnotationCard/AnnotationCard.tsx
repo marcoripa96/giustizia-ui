@@ -2,10 +2,10 @@ import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
 import styled from "@emotion/styled";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { useAnnnotationById } from "@/lib/useAnnotationById";
 import Image from 'next/image';
 import { Link } from "@/components";
 import { forwardRef, memo } from "react";
+import { useQuery } from "@/utils/trpc";
 
 
 const AnnotationCardBox = styled.div<{ y: number }>(({ y }) => ({
@@ -141,42 +141,50 @@ const EmptyCard = () => {
   )
 }
 
+const AnnotationCardDetails = ({ annotation }: { annotation: Annotation }) => {
+  const { top_wikipedia_id: id, ner_type } = annotation;
+  // get annotation data
+  const { data, isLoading } = useQuery(['annotation.getAnnotationDetails', { id: id ? id : '' }]);
+
+  return (
+    <>
+      {data ? (
+        <>
+          {data.thumbnail && (
+            <ImgContainer>
+              <Image alt="" layout="fill" src={data.thumbnail.source} objectFit="cover" />
+            </ImgContainer>
+          )}
+          <AnnotationCardContent>
+            <Row>
+              <TitleCardAnnotation href={annotation.top_url}>{annotation.top_title}</TitleCardAnnotation>
+              <Tag type={ner_type}>{annotationTypes[ner_type].label}</Tag>
+            </Row>
+            <CardContent>
+              {data.extract}
+            </CardContent>
+          </AnnotationCardContent>
+          <Candidates candidates={annotation.candidates} />
+        </>
+      )
+        : <SkeletonCard />}
+    </>
+  )
+}
+
 
 /**
  * Annotation card showing information about an annotation.
  * ForwardRef so that we can detect click outside to close the annotation card.
  */
 const AnnotationCard = forwardRef<HTMLDivElement, AnnotationCardProps>(({ y, annotation }, ref) => {
-  const { top_wikipedia_id: id, ner_type } = annotation;
-
-  // get annotation data
-  const { data, isLoading } = useAnnnotationById(id);
-
   return (
     <AnnotationCardBox ref={ref} y={y}>
-      {data ?
-        annotation.candidates ? (
-          <>
-            {data.thumbnail && (
-              <ImgContainer>
-                <Image alt="" layout="fill" src={data.thumbnail.source} objectFit="cover" />
-              </ImgContainer>
-            )}
-            <AnnotationCardContent>
-              <Row>
-                <TitleCardAnnotation href={annotation.top_url}>{annotation.top_title}</TitleCardAnnotation>
-                <Tag type={ner_type}>{annotationTypes[ner_type].label}</Tag>
-              </Row>
-              <CardContent>
-                {data.extract}
-              </CardContent>
-            </AnnotationCardContent>
-            <Candidates candidates={annotation.candidates} />
-          </>
-        ) : (
-          <EmptyCard />
-        )
-        : <SkeletonCard />}
+      {annotation.candidates ? (
+        <AnnotationCardDetails annotation={annotation} />
+      ) : (
+        <EmptyCard />
+      )}
     </AnnotationCardBox>
   )
 });

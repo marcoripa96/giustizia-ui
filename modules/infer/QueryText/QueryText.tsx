@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { annotationsExample, contentExample } from "../utils/example";
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck';
 import { FaRegCopy } from '@react-icons/all-files/fa/FaRegCopy';
+import { useQuery } from "@/utils/trpc";
 
 type AnnotationTypes = Record<keyof typeof annotationTypes, number>;
 
@@ -139,8 +140,10 @@ const QueryText = () => {
   // set content to example if there is no query otherwise set it empty
   // the content is the result not what's inside the text area (working with uncontrolled component)
   const [content, setContent] = useState<string>(query ? '' : contentExample);
-  // same as above
-  const { data: annotations, loading, mutate } = useMutation(mutationFetcher, query ? [] : annotationsExample);
+
+  const { data: annotations, isFetching, refetch } = useQuery(
+    ['infer.getPipelineResults', { value: query }],
+    { enabled: false, initialData: query ? [] : annotationsExample })
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
@@ -148,10 +151,7 @@ const QueryText = () => {
   useEffect(() => {
     if (query) {
       // when the query changes query for the annotations
-      mutate({
-        method: 'POST',
-        body: { data: query }
-      }).then((res) => {
+      refetch().then(() => {
         setContent(query);
       })
     }
@@ -197,7 +197,7 @@ const QueryText = () => {
       <Row>
         <SecondaryText>{content.split(' ').length} words</SecondaryText>
       </Row>
-      <ButtonLoading onClick={onClick} loading={loading}>Compute</ButtonLoading>
+      <ButtonLoading onClick={onClick} loading={isFetching}>Compute</ButtonLoading>
 
       {annotations ? (
         <Column>

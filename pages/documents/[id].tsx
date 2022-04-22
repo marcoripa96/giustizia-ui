@@ -47,7 +47,7 @@ export type DocumentState = {
 
 const Document: NextPage = () => {
   // document data
-  const { data, mutate } = useDocument();
+  const { document, setDocument } = useDocument();
   // state of the document (keeps track of the action selected by the user)
   const [documentAction, setDocumentAction] = useState<DocumentAction>({ key: 'select', payload: {} });
   // state of the annotation card, keeps track of the annotation to show
@@ -72,7 +72,7 @@ const Document: NextPage = () => {
     const { annotation } = annotationEvent;
 
     if (documentAction.key === 'erase') {
-      mutate((s) => deleteAnnotation(s, annotation))
+      setDocument((s) => deleteAnnotation(s, annotation))
     } else if (documentAction.key === 'select') {
       if (!docRef.current) {
         return;
@@ -96,7 +96,7 @@ const Document: NextPage = () => {
 
   const onTextSelection = (event: SelectionEvent) => {
     if (documentAction.key === 'add') {
-      mutate((s) => addAnnotation(s, event, documentAction));
+      setDocument((s) => addAnnotation(s, event, documentAction));
     }
   }
 
@@ -105,12 +105,12 @@ const Document: NextPage = () => {
     <>
       <Toolbar onActionChange={onActionChange} />
       <Container>
-        {data ? (
+        {document ? (
           <>
             <DocumentContainer ref={docRef} moveToSide={!!annotationCard}>
               <NERDocumentViewer
-                content={data.content}
-                annotations={data.annotations}
+                content={document.content}
+                annotations={document.annotations}
                 onSelection={onTextSelection}
                 onEntityClick={onAnnotationClick}
                 onEntityFocus={onAnnotationFocus} />

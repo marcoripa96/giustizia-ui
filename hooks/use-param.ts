@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 
-const useParam = (param: string) => {
+const useParam = <T>(param: string) => {
   const router = useRouter();
-  return [router.query[param], router.isReady] as const;
+  return [router.query[param] as unknown as T, router.isReady] as const;
 };
 
 export default useParam;

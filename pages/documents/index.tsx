@@ -1,11 +1,8 @@
-import type { GetServerSideProps, GetServerSidePropsContext, GetStaticProps, NextPage } from 'next'
-import { promises as fs } from 'fs'
-import path from 'path'
-import { DocumentResponse } from '../api/document'
+import type { GetServerSideProps, NextPage } from 'next'
 import { DocumentCard } from '@/components'
-import { DOCUMENTS } from '@/documents'
 import { withAuthSsr } from '@/lib/withAuthSsr'
 import styled from '@emotion/styled'
+import { useQuery } from '@/utils/trpc'
 
 const Container = styled.div`
   display: flex;
@@ -29,14 +26,16 @@ const PageTitle = styled.h1`
   margin-bottom: 48px;
 `
 
-type DocumentsProps = {
-  documents: DocumentResponse;
-}
-
 /**
  * Homepage component
  */
-const Documents: NextPage<DocumentsProps> = ({ documents }) => {
+const Documents: NextPage = () => {
+  const { data: documents } = useQuery(['document.getAllDocuments']);
+
+  if (!documents) {
+    return null;
+  }
+
   return (
     <Container>
       <PageTitle>Documents ({documents.length})</PageTitle>
@@ -52,21 +51,8 @@ const Documents: NextPage<DocumentsProps> = ({ documents }) => {
  * Get all documents from the server before rendering the page
  */
 export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context) => {
-  const documents = await Promise.all(Object.keys(DOCUMENTS).map(async (key) => {
-    const document = DOCUMENTS[key];
-    const documentPath = path.join(process.cwd(), '_files', document.content);
-    const content = await fs.readFile(documentPath, 'utf-8');
-    const preview = content.slice(0, 600);
-    return {
-      id: document.id,
-      title: document.title,
-      preview
-    }
-  }));
   return {
-    props: {
-      documents
-    }, // will be passed to the page component as props
+    props: {}
   }
 });
 

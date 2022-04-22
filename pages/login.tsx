@@ -1,11 +1,11 @@
-import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
-import { FormEvent, useState } from 'react'
-import { Button, ButtonLoading, Card, InputText } from '@/components';
-import { useInput, useMutation } from '@/hooks';
-import fetchJson, { FetchError, FetchRequestInit } from '@/lib/fetchJson';
+import type { GetServerSideProps, NextPage } from 'next'
+import { FormEvent } from 'react'
+import { ButtonLoading, Card, InputText } from '@/components';
+import { useInput } from '@/hooks';
 import { useRouter } from 'next/router';
 import { withAuthSsr } from '@/lib/withAuthSsr';
 import styled from '@emotion/styled';
+import { useQuery } from '@/utils/trpc';
 
 const Container = styled.div`
   display: flex;
@@ -35,9 +35,6 @@ const LoginTitle = styled.h1`
   text-align: center;
 `
 
-
-const mutationFetcher = (options?: FetchRequestInit) => fetchJson('/api/login', { ...options });
-
 /**
  * Login page component
  */
@@ -45,16 +42,15 @@ const Login: NextPage<{}> = () => {
   const [loginPassword, onChangePassword] = useInput('');
 
   const router = useRouter();
-  const { mutate: login, error, loading } = useMutation(mutationFetcher);
+  const { isFetching, error, refetch } = useQuery(['auth.login', { password: loginPassword }], { enabled: false, retry: false })
 
   const onFormSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    login({
-      body: { password: loginPassword },
-      method: 'POST'
-    }).then(() => {
-      router.push('/infer')
+    refetch().then(({ isSuccess }) => {
+      if (isSuccess) {
+        router.push('/infer');
+      }
     })
   }
 
@@ -66,9 +62,9 @@ const Login: NextPage<{}> = () => {
           <InputText
             type="password"
             placeholder="Password"
-            error={error?.data.message}
+            error={error?.message}
             onChange={onChangePassword} />
-          <ButtonLoading disabled={!loginPassword || loading} loading={loading}>Login</ButtonLoading>
+          <ButtonLoading disabled={!loginPassword || isFetching} loading={isFetching}>Login</ButtonLoading>
         </Box>
       </CardLogin>
     </Container>
