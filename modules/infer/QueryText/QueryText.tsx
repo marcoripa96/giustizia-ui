@@ -1,6 +1,6 @@
 import { AnnotationTypeList, ButtonLoading, NERDocumentViewer } from "@/components";
 import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
-import { useMutation, useQueryParams } from "@/hooks";
+import { useQueryParams } from "@/hooks";
 import fetchJson, { FetchRequestInit } from "@/lib/fetchJson";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";

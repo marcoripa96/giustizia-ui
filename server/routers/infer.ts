@@ -1,8 +1,7 @@
 import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
 import fetchJson from "@/lib/fetchJson";
-import { withAuth } from "@/utils/withAuth";
 import { z } from "zod";
-import { createRouter } from "../context";
+import { createProtectedRouter } from "../context";
 
 type HuggingFaceAnnotation = {
   entity_group: keyof typeof annotationTypes;
@@ -37,14 +36,14 @@ const getNER = async (value: string) => {
 }
 
 
-export const infer = createRouter()
+export const infer = createProtectedRouter()
   .query('getPipelineResults', {
     input: z
       .object({
         value: z.string(),
       }),
-    resolve: withAuth(({ input }) => {
+    resolve: ({ input }) => {
       const { value } = input;
       return getNER(value);
-    }),
+    },
   })

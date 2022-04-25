@@ -1,6 +1,5 @@
-import { withAuth } from "@/utils/withAuth";
 import { z } from "zod";
-import { createRouter } from "../context";
+import { createProtectedRouter } from "../context";
 
 export type GetAnnotationDetails = {
   pageid: string;
@@ -23,14 +22,14 @@ const getAnnotationById = async (id: string | number): Promise<GetAnnotationDeta
   return processedData;
 }
 
-export const annotations = createRouter()
+export const annotations = createProtectedRouter()
   .query('getAnnotationDetails', {
     input: z
       .object({
         id: z.union([z.string(), z.number()]),
       }),
-    resolve: withAuth(({ input }) => {
+    resolve: ({ input }) => {
       const { id } = input;
       return getAnnotationById(id);
-    }),
+    },
   })

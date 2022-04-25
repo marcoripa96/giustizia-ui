@@ -1,5 +1,6 @@
 import { sessionOptions } from "@/lib/session";
 import * as trpc from "@trpc/server";
+import { TRPCError } from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { getIronSession, IronSession, } from "iron-session";
 
@@ -53,4 +54,21 @@ export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 // Helper function to create a router with your app's context
 export function createRouter() {
   return trpc.router<Context>();
+}
+
+export function createProtectedRouter() {
+  return trpc
+    .router<Context>()
+    .middleware(({ ctx, next }) => {
+      if (process.env.NODE_ENV === 'production') {
+        const { user } = ctx.req.session;
+        if (!user) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Resource requires authentication',
+          });
+        }
+      }
+      return next();
+    });
 }

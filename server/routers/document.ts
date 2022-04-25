@@ -2,8 +2,7 @@ import { DOCUMENTS } from "@/documents";
 import path from "path";
 import { promises as fs } from 'fs'
 import { z } from "zod";
-import { createRouter } from "../context";
-import { withAuth } from "@/utils/withAuth";
+import { createProtectedRouter } from "../context";
 import { TRPCError } from "@trpc/server";
 
 export type Document = {
@@ -57,19 +56,19 @@ const getDocuments = async (): Promise<GetAllDocuments> => {
   }));
 }
 
-export const documents = createRouter()
+export const documents = createProtectedRouter()
   .query('getDocument', {
     input: z
       .object({
         id: z.string(),
       }),
-    resolve: withAuth(({ input }) => {
+    resolve: ({ input }) => {
       const { id } = input;
       return getDocumentById(id);
-    }),
+    },
   })
   .query('getAllDocuments', {
-    resolve: withAuth(() => {
+    resolve: () => {
       return getDocuments();
-    }),
+    },
   })
