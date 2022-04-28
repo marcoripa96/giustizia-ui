@@ -1,27 +1,12 @@
-import { DocumentCard } from "./DocumentCard";
-import { Toolbar } from './Toolbar';
-import { DocumentViewerSkeleton } from "./DocumentViewerSkeleton";
-import { Card } from "./Card";
-import { Button } from "./Button";
-import { NERDocumentViewer } from "./NERDocumentViewer";
-import { InputText } from "./InputText";
-import { Link } from "./Link";
-import { Loader } from "./Loader";
-import { ButtonLoading } from "./ButtonLoading";
-import { MainToolbar } from "./MainToolbar";
-import { AnnotationTypeList } from "./AnnotationTypeList";
-
-export {
-  DocumentCard,
-  Toolbar,
-  DocumentViewerSkeleton,
-  NERDocumentViewer,
-  Card,
-  Button,
-  ButtonLoading,
-  Link,
-  InputText,
-  Loader,
-  MainToolbar,
-  AnnotationTypeList
-}
+export * from "./DocumentCard";
+export * from './Toolbar';
+export * from "./DocumentViewerSkeleton";
+export * from "./Card";
+export * from "./Button";
+export * from "./NERDocumentViewer";
+export * from "./InputText";
+export * from "./Link";
+export * from "./Loader";
+export * from "./ButtonLoading";
+export * from "./MainToolbar";
+export * from "./AnnotationTypeList";
