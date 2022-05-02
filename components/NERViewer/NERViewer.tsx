@@ -1,6 +1,6 @@
-import { Annotation, useNER } from "@/hooks/use-ner";
-import styled from "@emotion/styled";
-import { NERTag } from "../NERTag";
+import { Annotation, useNER } from '@/hooks/use-ner';
+import styled from '@emotion/styled';
+import { NERTag } from '../NERTag';
 
 type NERViewerProps<P> = {
   content: string;
@@ -8,9 +8,9 @@ type NERViewerProps<P> = {
 };
 
 const Container = styled.div({
-  whiteSpace: "pre-wrap",
-  wordWrap: "break-word",
-  lineHeight: 1.7
+  whiteSpace: 'pre-wrap',
+  wordWrap: 'break-word',
+  lineHeight: 1.7,
 });
 
 function NERViewer<P>({ content, annotations }: NERViewerProps<P>) {
@@ -19,7 +19,7 @@ function NERViewer<P>({ content, annotations }: NERViewerProps<P>) {
   return (
     <Container>
       {nodes.map((node) =>
-        node.type === "text" ? (
+        node.type === 'text' ? (
           node.text
         ) : (
           <NERTag key={node.props.id} annotation={node.props}>
