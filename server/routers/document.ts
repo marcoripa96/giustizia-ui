@@ -4,6 +4,7 @@ import { promises as fs } from 'fs'
 import { z } from "zod";
 import { createProtectedRouter } from "../context";
 import { TRPCError } from "@trpc/server";
+import { Annotation } from "@/hooks/use-ner";
 
 export type Document = {
   id: string;
@@ -12,12 +13,22 @@ export type Document = {
   annotations: Annotation[]
 };
 
-export type Annotation = {
-  start_pos_original: number;
-  end_pos_original: number;
-  ner_type: any;
-  top_url: string;
+export type Candidate = {
+  wikipedia_id: number;
+  title: string;
+  url: string;
+  score: number;
+  norm_score: number;
 }
+
+export type AdditionalAnnotationProps = {
+  top_title?: string,
+  top_wikipedia_id?: number,
+  top_url?: string;
+  candidates?: Candidate;
+};
+
+export type NERAnnotation = Annotation<AdditionalAnnotationProps>;
 
 
 const getDocumentById = async (id: string): Promise<Document> => {

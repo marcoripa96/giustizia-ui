@@ -1,4 +1,5 @@
 import { Annotation } from "@/components/NERDocumentViewer"
+import { NERAnnotation } from "@/server/routers/document";
 
 export const contentExample = `Wimbledon organisers are on the brink of announcing a full ban of all players from Russia and Belarus at this year’s championships.
 
@@ -130,4 +131,4 @@ export const annotationsExample = [
     "end_pos_original": 674,
     "mention": "The Times"
   }
-] as Annotation[];
+] as NERAnnotation[];

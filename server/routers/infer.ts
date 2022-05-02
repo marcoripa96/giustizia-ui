@@ -1,17 +1,17 @@
-import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
 import fetchJson from "@/lib/fetchJson";
 import { z } from "zod";
 import { createProtectedRouter } from "../context";
+import { NERAnnotation } from "./document";
 
 type HuggingFaceAnnotation = {
-  entity_group: keyof typeof annotationTypes;
+  entity_group: string;
   score: number;
   word: string;
   start: number;
   end: number
 }
 
-const processHuggingFaceResponse = (response: HuggingFaceAnnotation[]): Annotation[] => {
+const processHuggingFaceResponse = (response: HuggingFaceAnnotation[]): NERAnnotation[] => {
   return response.map((ann, index) => ({
     id: index,
     top_url: '',

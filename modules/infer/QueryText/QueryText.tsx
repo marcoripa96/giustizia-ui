@@ -1,5 +1,5 @@
-import { AnnotationTypeList, ButtonLoading, CopyToClipboardButton, NERDocumentViewer } from "@/components";
-import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
+import { AnnotationTypeList, ButtonLoading, CopyToClipboardButton, NERDocumentViewer, NERViewer } from "@/components";
+import { annotationTypes } from "@/components/NERDocumentViewer";
 import { useQueryParam } from "@/hooks";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
@@ -7,8 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { annotationsExample, contentExample } from "../utils/example";
 import { useQuery } from "@/utils/trpc";
 import { fixedEncodeURIComponent } from "@/utils/shared";
-
-type AnnotationTypes = Record<keyof typeof annotationTypes, number>;
+import { NERAnnotation } from "@/server/routers/document";
 
 const TextAreaWrapper = styled.div`
   position: relative;
@@ -46,6 +45,7 @@ const TextArea = styled.textarea`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 10px;
   margin-top: 15px;
 `
 
@@ -61,7 +61,7 @@ const SecondaryText = styled.div({
 })
 
 
-const getAnnotationTypes = (annotations: Annotation[]) => {
+const getAnnotationTypes = (annotations: NERAnnotation[]) => {
   const items = annotations.reduce((acc, ann) => {
     if (!acc[ann.ner_type]) {
       acc[ann.ner_type] = 1;
@@ -69,7 +69,7 @@ const getAnnotationTypes = (annotations: Annotation[]) => {
       acc[ann.ner_type] = acc[ann.ner_type] + 1;
     }
     return acc;
-  }, {} as AnnotationTypes);
+  }, {} as Record<string, number>);
   return Object.keys(items).map((item) => ({
     label: annotationTypes[item as keyof typeof annotationTypes].label,
     n: items[item as keyof typeof items]
@@ -92,11 +92,21 @@ const QueryText = () => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    if (!textAreaRef.current) return;
+
+    if (!query) {
+      // when navigating back and forth the query could be set to undefined and the example would break
+      textAreaRef.current.value = contentExample;
+      setContent(contentExample);
+      return;
+    }
+
     if (query) {
       // when the query changes query for the annotations
       refetch().then(() => {
         setContent(query);
       })
+      textAreaRef.current.value = query;
     }
   }, [query])
 
@@ -146,7 +156,7 @@ const QueryText = () => {
       {annotations ? (
         <Column>
           {annotationTypesArray.length > 0 && <AnnotationTypeList items={annotationTypesArray} />}
-          <NERDocumentViewer content={content} annotations={annotations} />
+          <NERViewer content={content} annotations={annotations} />
         </Column>
       ) : null}
     </>
