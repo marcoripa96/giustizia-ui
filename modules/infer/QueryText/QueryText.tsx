@@ -1,14 +1,12 @@
-import { AnnotationTypeList, ButtonLoading, NERDocumentViewer } from "@/components";
+import { AnnotationTypeList, ButtonLoading, CopyToClipboardButton, NERDocumentViewer } from "@/components";
 import { Annotation, annotationTypes } from "@/components/NERDocumentViewer";
-import { useQueryParams } from "@/hooks";
-import fetchJson, { FetchRequestInit } from "@/lib/fetchJson";
+import { useQueryParam } from "@/hooks";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { annotationsExample, contentExample } from "../utils/example";
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck';
-import { FaRegCopy } from '@react-icons/all-files/fa/FaRegCopy';
 import { useQuery } from "@/utils/trpc";
+import { fixedEncodeURIComponent } from "@/utils/shared";
 
 type AnnotationTypes = Record<keyof typeof annotationTypes, number>;
 
@@ -26,8 +24,6 @@ const TextArea = styled.textarea`
   padding: 10px;
   outline: none;
   border: none;
-  /* box-shadow: 0 0 #0000,0 0 #0000, 0 0 #0000,0 0 #0000, inset 0 2px 4px 0 rgba(0,0,0,0.06); */
-  /* border: 1px solid rgba(229,231,235,1); */
   border-radius: 12px;
   resize: none;
   font-size: 16px;
@@ -64,7 +60,6 @@ const SecondaryText = styled.div({
   color: 'rgb(75 85 99)'
 })
 
-const mutationFetcher = (options?: FetchRequestInit) => fetchJson<any, Annotation[]>('/api/infer', { ...options });
 
 const getAnnotationTypes = (annotations: Annotation[]) => {
   const items = annotations.reduce((acc, ann) => {
@@ -81,64 +76,13 @@ const getAnnotationTypes = (annotations: Annotation[]) => {
   }))
 }
 
-const fixedEncodeURIComponent = (value: string) => {
-  return encodeURIComponent(value).replace(/[!'()*]/g, function (c) {
-    return '%' + c.charCodeAt(0).toString(16).toUpperCase();
-  }).replace(/%20/g, '+');
-}
-
-const ButtonClipboard = styled.button({
-  position: 'absolute',
-  bottom: '3px',
-  right: '5px',
-  outline: 'none',
-  border: 'none',
-  color: 'rgb(0 0 0/0.50)',
-  backgroundColor: '#F0F0F0',
-  borderRadius: '6px',
-  padding: '10px',
-  cursor: 'pointer',
-  svg: {
-    width: '18px',
-    height: '18px'
-  }
-})
-
-const CopyToClipboardButton = ({ value }: { value: string }) => {
-  const [clicked, setClicked] = useState(false)
-
-  useEffect(() => {
-    let timeoutId: ReturnType<typeof setTimeout>
-
-    if (clicked) {
-      timeoutId = setTimeout(() => {
-        setClicked(false)
-      }, 1000)
-    }
-
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [clicked])
-
-  const handleClick = () => {
-    navigator.clipboard.writeText(`${window.location.origin}${value}`)
-    setClicked(true)
-  }
-
-  return (
-    <ButtonClipboard onClick={handleClick}>
-      {clicked ? <FaCheck /> : <FaRegCopy />}
-    </ButtonClipboard>
-  )
-}
-
 const QueryText = () => {
+  const router = useRouter();
   // get query parameter if there is a query
-  const { query } = useQueryParams(['query']);
+  const query = useQueryParam<string>('query');
 
   // set content to example if there is no query otherwise set it empty
-  // the content is the result not what's inside the text area (working with uncontrolled component)
+  // the content is only set when an annotation result is computed
   const [content, setContent] = useState<string>(query ? '' : contentExample);
 
   const { data: annotations, isFetching, refetch } = useQuery(
@@ -146,7 +90,6 @@ const QueryText = () => {
     { enabled: false, initialData: query ? [] : annotationsExample })
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     if (query) {
@@ -160,7 +103,8 @@ const QueryText = () => {
   const onClick = () => {
     if (textAreaRef.current) {
       const { value } = textAreaRef.current;
-      // change the query parameter by shallow routing
+      // change the query parameter by shallow routing (page is not reloaded, query param are just updated)
+      // this will trigger the useEffect to run and fetch the annotations
       router.push(`/infer?query=${fixedEncodeURIComponent(value)}`, undefined, { shallow: true })
     }
   }

@@ -1,7 +1,3 @@
-import { default as NERDocumentViewer } from './NERDocumentViewer';
-
-
-export {
-  NERDocumentViewer,
-}
+export { default as NERDocumentViewer } from './NERDocumentViewer';
 export * from './NERDocumentViewer';
+

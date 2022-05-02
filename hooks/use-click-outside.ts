@@ -5,7 +5,9 @@ const useClickOutside = <T extends HTMLDivElement>(cb: (event: DocumentEventMap[
 
   useEffect(() => {
     const handleClickOutside = (event: DocumentEventMap['mousedown']) => {
-      cb(event);
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        cb(event);
+      }
     }
     // Bind the event listener
     document.addEventListener("mousedown", handleClickOutside);

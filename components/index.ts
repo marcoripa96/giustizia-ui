@@ -10,3 +10,4 @@ export * from "./Loader";
 export * from "./ButtonLoading";
 export * from "./MainToolbar";
 export * from "./AnnotationTypeList";
+export * from "./CopyToClipboardButton";

@@ -1,4 +1,2 @@
-import { default as Button } from './Button';
-
-export { Button };
+export { default as Button } from './Button';
 export * from './Button'

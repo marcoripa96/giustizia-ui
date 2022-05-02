@@ -1,5 +1,2 @@
-import { default as InputText } from './InputText';
-
-export {
-  InputText
-}
+export { default as InputText } from './InputText';
+export * from './InputText';

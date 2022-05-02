@@ -1,5 +1,2 @@
-import { default as AnnotationTypeList } from './AnnotationTypeList';
-
-export {
-  AnnotationTypeList
-}
+export { default as AnnotationTypeList } from './AnnotationTypeList';
+export * from './AnnotationTypeList';

@@ -1,5 +1,2 @@
-import { default as DocumentCard } from './DocumentCard';
-
-export {
-  DocumentCard
-}
+export { default as DocumentCard } from './DocumentCard';
+export * from './DocumentCard';

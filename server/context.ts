@@ -51,7 +51,7 @@ export async function createContext({ req, res }: trpcNext.CreateNextContextOpti
 }
 export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
-// Helper function to create a router with your app's context
+// Helper function to create a router with your auth app context
 export function createRouter() {
   return trpc.router<Context>();
 }

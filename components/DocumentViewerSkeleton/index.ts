@@ -1,5 +1,2 @@
-import { default as DocumentViewerSkeleton } from './DocumentViewerSkeleton';
-
-export {
-  DocumentViewerSkeleton
-}
+export { default as DocumentViewerSkeleton } from './DocumentViewerSkeleton';
+export * from './DocumentViewerSkeleton';

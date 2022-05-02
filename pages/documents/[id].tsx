@@ -57,12 +57,7 @@ const Document: NextPage = () => {
   const docRef = useRef<HTMLDivElement>(null);
 
   // handler to detect click outside of the annotation card
-  const annotationCardRef = useClickOutside((event) => {
-    const id = (event.target as HTMLElement).getAttribute('id');
-    // if the element is another annotation we do not want to unmount component
-    if (id && id.startsWith('entity-node')) return;
-    setAnnotationCard(null);
-  })
+  const annotationCardRef = useClickOutside(() => setAnnotationCard(null))
 
   const onActionChange = (props: DocumentAction) => {
     setDocumentAction(props);

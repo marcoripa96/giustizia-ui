@@ -10,5 +10,5 @@ export * from './use-input';
 export { default as useClickOutside } from './use-click-outside';
 export * from './use-click-outside';
 
-export { default as useQueryParams } from './use-query-params';
-export * from './use-query-params';
+export { default as useQueryParam } from './use-query-param';
+export * from './use-query-param';
