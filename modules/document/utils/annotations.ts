@@ -1,11 +1,12 @@
 import { Annotation, SelectionEvent } from "@/components/NERDocumentViewer";
 import { DocumentState } from "@/lib/useDocument";
 import { DocumentAction } from "@/pages/documents/[id]";
+import { NERAnnotation } from "@/server/routers/document";
 
 /**
  * Delete annotation by id from previous state and returns a new state
  */
-export const deleteAnnotation = (s: DocumentState | undefined, annotation: Annotation) => {
+export const deleteAnnotation = (s: DocumentState | undefined, annotation: NERAnnotation) => {
   if (!s) {
     return s;
   }
@@ -23,15 +24,16 @@ export const addAnnotation = (s: DocumentState | undefined, event: SelectionEven
     return s;
   }
 
-  const { startOffset, endOffset } = event;
+  const { startOffset, endOffset, text } = event;
 
   const insIndex = s.annotations.findIndex((annotation) => startOffset < annotation.start_pos_original);
 
-  const newAnnotation: Annotation = {
+  const newAnnotation: NERAnnotation = {
     id: s.lastIndexId + 1,
     start_pos_original: startOffset,
     end_pos_original: endOffset,
     ner_type: documentAction.payload.type,
+    mention: text,
     top_url: ''
   }
 

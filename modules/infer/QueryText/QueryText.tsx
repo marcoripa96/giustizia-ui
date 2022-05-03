@@ -60,6 +60,11 @@ const SecondaryText = styled.div({
   color: 'rgb(75 85 99)'
 })
 
+const Error = styled.span`
+  font-size: 14px;
+  color: rgb(240, 62, 62);
+`
+
 
 const getAnnotationTypes = (annotations: NERAnnotation[]) => {
   const items = annotations.reduce((acc, ann) => {
@@ -86,9 +91,9 @@ const QueryText = () => {
   // the content is only set when an annotation result is computed
   const [content, setContent] = useState<string>(query ? '' : contentExample);
 
-  const { data: annotations, isFetching, refetch } = useQuery(
+  const { data: annotations, isFetching, error, refetch } = useQuery(
     ['infer.getPipelineResults', { value: query }],
-    { enabled: false, initialData: query ? [] : annotationsExample })
+    { enabled: false, initialData: query ? [] : annotationsExample, retry: false })
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -154,7 +159,7 @@ const QueryText = () => {
         <SecondaryText>{content.split(' ').length} words</SecondaryText>
       </Row>
       <ButtonLoading onClick={onClick} loading={isFetching}>Compute</ButtonLoading>
-
+      {error && <Error>Something went wrong :(</Error>}
       {annotations ? (
         <Column>
           {annotationTypesArray.length > 0 && <AnnotationTypeList items={annotationTypesArray} />}

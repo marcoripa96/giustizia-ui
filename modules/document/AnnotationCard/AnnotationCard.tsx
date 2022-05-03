@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Link } from "@/components";
 import { forwardRef, memo } from "react";
 import { useQuery } from "@/utils/trpc";
+import { NERAnnotation } from "@/server/routers/document";
 
 
 const AnnotationCardBox = styled.div<{ y: number }>(({ y }) => ({
@@ -83,7 +84,7 @@ const TagScore = styled(Tag)({
 })
 
 export type AnnotationCardProps = {
-  annotation: Annotation;
+  annotation: NERAnnotation;
   y: number;
 }
 
@@ -105,7 +106,7 @@ const TitleCandidates = styled.span({
 })
 
 type CandidatesProps = {
-  candidates: Annotation['candidates']
+  candidates: NERAnnotation['candidates']
 }
 
 const Candidates = ({ candidates }: CandidatesProps) => {
@@ -115,8 +116,8 @@ const Candidates = ({ candidates }: CandidatesProps) => {
         <AnnotationCardContent>
           <Column>
             <TitleCandidates>Candidates {`(${candidates.length})`}</TitleCandidates>
-            {candidates.map((candidate) => (
-              <Row key={candidate.id}>
+            {candidates.map((candidate, index) => (
+              <Row key={index}>
                 <TitleCandidate href={candidate.url} target="_blank">{candidate.title}</TitleCandidate>
                 <TagScore>Score: {candidate.score.toFixed(2)}</TagScore>
               </Row>
@@ -141,7 +142,7 @@ const EmptyCard = () => {
   )
 }
 
-const AnnotationCardDetails = ({ annotation }: { annotation: Annotation }) => {
+const AnnotationCardDetails = ({ annotation }: { annotation: NERAnnotation }) => {
   const { top_wikipedia_id: id, ner_type } = annotation;
   // get annotation data
   const { data, isLoading } = useQuery(['annotation.getAnnotationDetails', { id: id ? id : '' }]);

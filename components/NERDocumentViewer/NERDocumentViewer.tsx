@@ -1,20 +1,21 @@
 import { FC, FocusEvent, MouseEvent, useMemo } from "react";
 import styled from '@emotion/styled';
 import { getNode, getOriginalOffset, getTextSelection, _render } from "./utils";
+import { NERAnnotation } from "@/server/routers/document";
 
 /**
  * Data required
  */
 type NERDocumentViewerProps = {
   content: string;
-  annotations: Annotation[];
+  annotations: NERAnnotation[];
   onSelection?: (event: SelectionEvent) => void;
   onEntityClick?: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
   onEntityFocus?: (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }
 
-export type SelectionEvent = { startOffset: number, endOffset: number };
-export type AnnotationClickEvent = { annotation: Annotation };
+export type SelectionEvent = { startOffset: number, endOffset: number, text: string };
+export type AnnotationClickEvent = { annotation: NERAnnotation };
 
 export type Annotation = {
   id: number;
@@ -38,7 +39,7 @@ type Candidate = {
 
 export type DocumentNode = string | JSX.Element;
 
-export const annotationTypes = {
+export const annotationTypes: Record<string, { label: string, color: string }> = {
   PER: {
     label: 'Person',
     color: 'rgb(254, 202, 116)'
@@ -95,7 +96,8 @@ const NERDocumentViewer: FC<NERDocumentViewerProps> = ({
 
     const startOffset = getOriginalOffset(nodes, anchorNode, startOffsetNode);
     const endOffset = startOffset + (endOffsetNode - startOffsetNode);
-    onSelectionProp({ startOffset, endOffset });
+    const text = selection.toString()
+    onSelectionProp({ startOffset, endOffset, text });
   }
 
   /**

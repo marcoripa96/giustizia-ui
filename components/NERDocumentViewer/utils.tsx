@@ -1,3 +1,4 @@
+import { NERAnnotation } from "@/server/routers/document";
 import { FocusEvent, MouseEvent } from "react";
 import AnnotationTag from "./AnnotationTag/AnnotationTag";
 import { Annotation, AnnotationClickEvent, DocumentNode } from "./NERDocumentViewer";
@@ -44,7 +45,7 @@ export const getOriginalOffset = (nodes: DocumentNode[], anchorNode: string, anc
 
 type RenderProps = {
   content: string;
-  annotations: Annotation[];
+  annotations: NERAnnotation[];
   onEntityClick: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
   onEntityFocus: (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }

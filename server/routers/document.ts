@@ -25,7 +25,7 @@ export type AdditionalAnnotationProps = {
   top_title?: string,
   top_wikipedia_id?: number,
   top_url?: string;
-  candidates?: Candidate;
+  candidates?: Candidate[];
 };
 
 export type NERAnnotation = Annotation<AdditionalAnnotationProps>;

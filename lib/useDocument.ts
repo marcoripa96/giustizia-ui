@@ -1,4 +1,3 @@
-import { Annotation } from "@/components/NERDocumentViewer";
 import { useParam } from "@/hooks";
 
 import { useQuery } from "@/utils/trpc";

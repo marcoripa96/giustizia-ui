@@ -8,6 +8,7 @@ import styled from '@emotion/styled';
 import { AnnotationCard, AnnotationCardProps } from "@/modules/document/AnnotationCard";
 import { useDocument } from "@/lib/useDocument";
 import { addAnnotation, deleteAnnotation, getAnnotationCardPosition } from "@/modules/document/utils/annotations";
+import { NERAnnotation } from "@/server/routers/document";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -40,7 +41,7 @@ export type DocumentState = {
   id: string;
   title: string;
   content: string;
-  annotations: Annotation[];
+  annotations: NERAnnotation[];
   lastIndexId: number;
 };
 

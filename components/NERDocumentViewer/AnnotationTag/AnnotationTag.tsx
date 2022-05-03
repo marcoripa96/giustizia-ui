@@ -1,14 +1,15 @@
 import { darken } from "polished";
 import { ElementType, FC, HTMLAttributes, useState, MouseEvent } from "react";
 import styled from '@emotion/styled';
-import { Annotation, annotationTypes } from "../NERDocumentViewer";
+import { annotationTypes } from "../NERDocumentViewer";
+import { NERAnnotation } from "@/server/routers/document";
 
 type AnnotationTagProps = HTMLAttributes<HTMLSpanElement> & {
-  annotation: Annotation;
+  annotation: NERAnnotation;
 }
 
 type TagProps = {
-  type: keyof typeof annotationTypes;
+  type: string;
 }
 
 const Tag = styled.span<TagProps>`
