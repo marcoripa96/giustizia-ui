@@ -6,6 +6,7 @@ import GlobalStyles from '../styles/globalStyles'
 import NextNProgress from "nextjs-progressbar";
 import { withTRPC } from '@trpc/next';
 import { AppRouter } from '@/server/routers/_app'
+import { NextUIProvider } from '@nextui-org/react'
 
 
 const Layout = styled.div`
@@ -27,11 +28,13 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   return (
     <>
       <Global styles={GlobalStyles} />
-      <Layout>
-        {!(['/login'].includes(router.pathname)) && <MainToolbar />}
-        <NextNProgress color='rgb(75 85 99)' showOnShallow={false} />
-        <Component {...pageProps} />
-      </Layout>
+      <NextUIProvider>
+        <Layout>
+          {!(['/login'].includes(router.pathname)) && <MainToolbar />}
+          <NextNProgress color='rgb(75 85 99)' showOnShallow={false} />
+          <Component {...pageProps} />
+        </Layout>
+      </NextUIProvider>
     </>
   )
 }

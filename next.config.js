@@ -16,7 +16,7 @@ const getRedirects = () => {
       destination: '/infer',
       permanent: true,
     },
-    ...dev
+    // ...dev
   ]
 }
 
