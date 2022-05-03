@@ -1,11 +1,12 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { FormEvent } from 'react'
-import { ButtonLoading, Card, InputText } from '@/components';
+import { ButtonLoading, InputText } from '@/components';
 import { useInput } from '@/hooks';
 import { useRouter } from 'next/router';
 import { withAuthSsr } from '@/lib/withAuthSsr';
 import styled from '@emotion/styled';
 import { useQuery } from '@/utils/trpc';
+import { Card as NextUICard, Input, Button, Text, Spacer, Loading } from '@nextui-org/react';
 
 const Container = styled.div`
   display: flex;
@@ -24,10 +25,14 @@ const Box = styled.div`
   gap: 10px;
 `
 
-const CardLogin = styled(Card)`
-  max-width: 500px;
-  margin: 0 auto;
-`
+// const CardLogin = styled(Card)`
+//   max-width: 500px;
+//   margin: 0 auto;
+// `
+const Card = styled(NextUICard)({
+  maxWidth: '500px',
+  margin: '0 auto'
+})
 
 const LoginTitle = styled.h1`
   font-size: 34px;
@@ -56,17 +61,26 @@ const Login: NextPage<{}> = () => {
 
   return (
     <Container>
-      <CardLogin>
+      <Card>
         <Box as="form" onSubmit={onFormSubmit}>
-          <LoginTitle>GiustiziaUI 🔨</LoginTitle>
-          <InputText
+          <Text h2 css={{ textAlign: 'center' }}>GiustiziaUI 🔨</Text>
+          <Spacer y={0.5} />
+          <Input.Password
+            bordered
+            labelPlaceholder="Password"
+            onChange={onChangePassword}
+          />
+          {/* <InputText
             type="password"
             placeholder="Password"
             error={error?.message}
-            onChange={onChangePassword} />
-          <ButtonLoading disabled={!loginPassword || isFetching} loading={isFetching}>Login</ButtonLoading>
+            onChange={onChangePassword} /> */}
+          <Button disabled={!loginPassword || isFetching}>
+            {isFetching ? <Loading color="currentColor" size="sm" /> : 'Login'}
+          </Button>
+          {/* <ButtonLoading disabled={!loginPassword || isFetching} loading={isFetching}>Login</ButtonLoading> */}
         </Box>
-      </CardLogin>
+      </Card>
     </Container>
   )
 }
