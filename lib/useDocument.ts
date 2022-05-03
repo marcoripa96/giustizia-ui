@@ -3,20 +3,20 @@ import { useParam } from "@/hooks";
 
 import { useQuery } from "@/utils/trpc";
 import { useEffect, useState } from "react";
-import { Document } from '@/server/routers/document';
+import { Document, NERAnnotation } from '@/server/routers/document';
 
 export type DocumentState = {
   id: string;
   title: string;
   content: string;
-  annotations: Annotation[];
+  annotations: NERAnnotation[];
   lastIndexId: number;
 };
 
 const getState = (data: Document): DocumentState => {
   const state = {
     ...data,
-    annotations: data.annotations.map((annotation, index) => ({ id: index, ...annotation })),
+    annotations: data.annotations.map((annotation, index) => ({ ...annotation, id: index })),
     lastIndexId: data.annotations.length - 1
   };
 

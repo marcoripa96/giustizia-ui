@@ -80,6 +80,7 @@ const QueryText = () => {
   const router = useRouter();
   // get query parameter if there is a query
   const query = useQueryParam<string>('query');
+  const result = useQueryParam<string>('result');
 
   // set content to example if there is no query otherwise set it empty
   // the content is only set when an annotation result is computed
@@ -95,20 +96,21 @@ const QueryText = () => {
     if (!textAreaRef.current) return;
 
     if (!query) {
-      // when navigating back and forth the query could be set to undefined and the example would break
+      // when navigating back and forth the query could is set to undefined and the example would break
       textAreaRef.current.value = contentExample;
       setContent(contentExample);
       return;
     }
 
-    if (query) {
-      // when the query changes query for the annotations
+    if ((query && !result) || (query && !content)) {
       refetch().then(() => {
         setContent(query);
-      })
+        // append result=true to the end of the url so that I can query again when initiating a new request on button press
+        router.push(`/infer?query=${fixedEncodeURIComponent(query)}&result=true`, undefined, { shallow: true })
+      });
       textAreaRef.current.value = query;
     }
-  }, [query])
+  }, [query, result, content])
 
   const onClick = () => {
     if (textAreaRef.current) {
