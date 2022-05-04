@@ -1,16 +1,15 @@
-import { DOCUMENTS } from "@/documents";
-import path from "path";
-import { promises as fs } from 'fs'
 import { z } from "zod";
 import { createProtectedRouter } from "../context";
 import { TRPCError } from "@trpc/server";
 import { Annotation } from "@/hooks/use-ner";
+import fetchJson from "@/lib/fetchJson";
+import { getAuthHeader } from "../get-auth-header";
 
 export type Document = {
-  id: string;
+  id: number;
   title: string;
-  content: string;
-  annotations: Annotation[]
+  text: string;
+  annotation: NERAnnotation[]
 };
 
 export type Candidate = {
@@ -31,20 +30,20 @@ export type AdditionalAnnotationProps = {
 export type NERAnnotation = Annotation<AdditionalAnnotationProps>;
 
 
-const getDocumentById = async (id: string): Promise<Document> => {
-  const document = DOCUMENTS[id];
-  if (!document) {
+const getDocumentById = async (id: number): Promise<Document> => {
+  try {
+    const document = await fetchJson<any, Document>(`${process.env.API_BASE_URI}/mongo/document/${id}`, {
+      headers: {
+        Authorization: getAuthHeader()
+      }
+    });
+    return document;
+  } catch (err) {
     throw new TRPCError({
       code: 'NOT_FOUND',
       message: `Document with id '${id}' not found.`
     })
   }
-  const documentPath = path.join(process.cwd(), '_files', document.content);
-  const content = await fs.readFile(documentPath, 'utf-8');
-  const documentAnnotationPath = path.join(process.cwd(), '_files', document.annotation);
-  const annotations = JSON.parse(await fs.readFile(documentAnnotationPath, 'utf8'));
-
-  return { ...document, content, annotations };
 }
 
 export type GetAllDocuments = {
@@ -54,24 +53,19 @@ export type GetAllDocuments = {
 }[]
 
 const getDocuments = async (): Promise<GetAllDocuments> => {
-  return Promise.all(Object.keys(DOCUMENTS).map(async (key) => {
-    const document = DOCUMENTS[key];
-    const documentPath = path.join(process.cwd(), '_files', document.content);
-    const content = await fs.readFile(documentPath, 'utf-8');
-    const preview = content.slice(0, 600);
-    return {
-      id: document.id,
-      title: document.title,
-      preview
+  const documents = await fetchJson<any, GetAllDocuments>(`${process.env.API_BASE_URI}/mongo/document`, {
+    headers: {
+      Authorization: getAuthHeader()
     }
-  }));
+  });
+  return documents;
 }
 
 export const documents = createProtectedRouter()
   .query('getDocument', {
     input: z
       .object({
-        id: z.string(),
+        id: z.number(),
       }),
     resolve: ({ input }) => {
       const { id } = input;

@@ -6,3 +6,7 @@ export const fixedEncodeURIComponent = (value: string) => {
     return '%' + c.charCodeAt(0).toString(16).toUpperCase();
   }).replace(/%20/g, '+');
 }
+
+export const toBase64 = (data: string) => {
+  return Buffer.from(data).toString('base64');
+}

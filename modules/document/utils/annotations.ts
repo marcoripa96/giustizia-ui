@@ -12,7 +12,7 @@ export const deleteAnnotation = (s: DocumentState | undefined, annotation: NERAn
   }
   return {
     ...s,
-    annotations: s.annotations.filter((ann) => ann.id !== annotation.id)
+    annotation: s.annotation.filter((ann) => ann.id !== annotation.id)
   }
 }
 
@@ -26,12 +26,12 @@ export const addAnnotation = (s: DocumentState | undefined, event: SelectionEven
 
   const { startOffset, endOffset, text } = event;
 
-  const insIndex = s.annotations.findIndex((annotation) => startOffset < annotation.start_pos_original);
+  const insIndex = s.annotation.findIndex((annotation) => startOffset < annotation.start_pos);
 
   const newAnnotation: NERAnnotation = {
     id: s.lastIndexId + 1,
-    start_pos_original: startOffset,
-    end_pos_original: endOffset,
+    start_pos: startOffset,
+    end_pos: endOffset,
     ner_type: documentAction.payload.type,
     mention: text,
     top_url: ''
@@ -39,10 +39,10 @@ export const addAnnotation = (s: DocumentState | undefined, event: SelectionEven
 
   return {
     ...s,
-    annotations: [
-      ...s.annotations.slice(0, insIndex),
+    annotation: [
+      ...s.annotation.slice(0, insIndex),
       newAnnotation,
-      ...s.annotations.slice(insIndex, s.annotations.length)
+      ...s.annotation.slice(insIndex, s.annotation.length)
     ],
     lastIndexId: s.lastIndexId + 1
   }

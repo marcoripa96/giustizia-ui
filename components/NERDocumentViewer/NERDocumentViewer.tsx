@@ -8,7 +8,7 @@ import { NERAnnotation } from "@/server/routers/document";
  */
 type NERDocumentViewerProps = {
   content: string;
-  annotations: NERAnnotation[];
+  annotation: NERAnnotation[];
   onSelection?: (event: SelectionEvent) => void;
   onEntityClick?: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
   onEntityFocus?: (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
@@ -70,7 +70,7 @@ const DocumentContent = styled.p`
 
 
 const NERDocumentViewer: FC<NERDocumentViewerProps> = ({
-  content, annotations,
+  content, annotation,
   onSelection: onSelectionProp,
   onEntityClick: onEntityClickProp,
   onEntityFocus: onEntityFocusProp
@@ -119,8 +119,8 @@ const NERDocumentViewer: FC<NERDocumentViewerProps> = ({
 
   // build nodes to render
   const nodes = useMemo(() => {
-    return _render({ content, annotations, onEntityClick, onEntityFocus });
-  }, [content, annotations, onEntityClickProp, onEntityFocusProp]);
+    return _render({ content, annotation, onEntityClick, onEntityFocus });
+  }, [content, annotation, onEntityClickProp, onEntityFocusProp]);
 
   return (
     <DocumentContent onMouseUp={onSelection}>

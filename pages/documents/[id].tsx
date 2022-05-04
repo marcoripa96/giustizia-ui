@@ -105,8 +105,8 @@ const Document: NextPage = () => {
           <>
             <DocumentContainer ref={docRef} moveToSide={!!annotationCard}>
               <NERDocumentViewer
-                content={document.content}
-                annotations={document.annotations}
+                content={document.text}
+                annotation={document.annotation}
                 onSelection={onTextSelection}
                 onEntityClick={onAnnotationClick}
                 onEntityFocus={onAnnotationFocus} />

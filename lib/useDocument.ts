@@ -5,19 +5,21 @@ import { useEffect, useState } from "react";
 import { Document, NERAnnotation } from '@/server/routers/document';
 
 export type DocumentState = {
-  id: string;
+  id: number;
   title: string;
-  content: string;
-  annotations: NERAnnotation[];
+  text: string;
+  annotation: NERAnnotation[];
   lastIndexId: number;
 };
 
 const getState = (data: Document): DocumentState => {
   const state = {
     ...data,
-    annotations: data.annotations.map((annotation, index) => ({ ...annotation, id: index })),
-    lastIndexId: data.annotations.length - 1
+    annotation: data.annotation.map((annotation, index) => ({ ...annotation, id: index })),
+    lastIndexId: data.annotation.length - 1
   };
+
+  console.log(state);
 
   return state;
 }
@@ -27,7 +29,7 @@ const getState = (data: Document): DocumentState => {
  */
 export const useDocument = () => {
   const [id] = useParam<string>('id');
-  const { data } = useQuery(['document.getDocument', { id }]);
+  const { data } = useQuery(['document.getDocument', { id: parseInt(id) }]);
   const [document, setDocument] = useState<DocumentState | undefined>();
 
   useEffect(() => {

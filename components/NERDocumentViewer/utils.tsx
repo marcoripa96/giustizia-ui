@@ -45,40 +45,40 @@ export const getOriginalOffset = (nodes: DocumentNode[], anchorNode: string, anc
 
 type RenderProps = {
   content: string;
-  annotations: NERAnnotation[];
+  annotation: NERAnnotation[];
   onEntityClick: (event: MouseEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
   onEntityFocus: (event: FocusEvent<HTMLSpanElement>, annotationEvent: AnnotationClickEvent) => void;
 }
 
 export const _render = ({
   content,
-  annotations,
+  annotation,
   onEntityClick,
   onEntityFocus
 }: RenderProps) => {
   let contentToRender: DocumentNode[] = [];
   let lastPosition = 0;
 
-  annotations.forEach((annotation, index) => {
-    const { id, start_pos_original, end_pos_original } = annotation;
+  annotation.forEach((ann, index) => {
+    const { id, start_pos, end_pos } = ann;
     // node of type text
-    const nodeText = content.slice(lastPosition, start_pos_original);
-    const entity = content.slice(start_pos_original, end_pos_original);
+    const nodeText = content.slice(lastPosition, start_pos);
+    const entity = content.slice(start_pos, end_pos);
     // node of type entity
     const nodeEntity = (
       <AnnotationTag
         id={`entity-node-${id}`}
         key={id}
-        annotation={annotation}
-        onFocus={(event) => onEntityFocus(event, { annotation })}
-        onClick={(event) => onEntityClick(event, { annotation })}>
+        annotation={ann}
+        onFocus={(event) => onEntityFocus(event, { annotation: ann })}
+        onClick={(event) => onEntityClick(event, { annotation: ann })}>
         {entity}
       </AnnotationTag>
     )
     contentToRender.push(nodeText);
     contentToRender.push(nodeEntity)
 
-    lastPosition = end_pos_original;
+    lastPosition = end_pos;
   });
   const residualText = content.slice(lastPosition, content.length);
   contentToRender.push(residualText);

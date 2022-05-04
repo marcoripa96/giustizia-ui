@@ -91,7 +91,7 @@ const QueryText = () => {
   // the content is only set when an annotation result is computed
   const [content, setContent] = useState<string>(query ? '' : contentExample);
 
-  const { data: annotations, isFetching, error, refetch } = useQuery(
+  const { data: annotation, isFetching, error, refetch } = useQuery(
     ['infer.getPipelineResults', { value: query }],
     { enabled: false, initialData: query ? [] : annotationsExample, retry: false })
 
@@ -127,11 +127,11 @@ const QueryText = () => {
   }
 
   const annotationTypesArray = useMemo(() => {
-    if (annotations) {
-      return getAnnotationTypes(annotations);
+    if (annotation) {
+      return getAnnotationTypes(annotation);
     }
     return [];
-  }, [annotations])
+  }, [annotation])
 
   const clipboardValue = useMemo(() => {
     if (query) {
@@ -160,10 +160,10 @@ const QueryText = () => {
       </Row>
       <ButtonLoading onClick={onClick} loading={isFetching}>Compute</ButtonLoading>
       {error && <Error>Something went wrong :(</Error>}
-      {annotations ? (
+      {annotation ? (
         <Column>
           {annotationTypesArray.length > 0 && <AnnotationTypeList items={annotationTypesArray} />}
-          <NERViewer content={content} annotations={annotations} />
+          <NERViewer content={content} annotations={annotation} />
         </Column>
       ) : null}
     </>

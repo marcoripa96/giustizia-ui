@@ -15,10 +15,10 @@ type UseNERProps<P> = {
  * }>
  */
 export type Annotation<P = {}> = {
-  id: number | string;
+  id: number;
   ner_type: string;
-  start_pos_original: number;
-  end_pos_original: number;
+  start_pos: number;
+  end_pos: number;
   mention: string;
 } & P;
 
@@ -45,18 +45,18 @@ function _buildNodes<P>(content: string, annotations: Annotation<P>[]) {
   let lastPosition = 0;
 
   annotations.forEach((annotation) => {
-    const { id, start_pos_original, end_pos_original, ner_type } = annotation;
+    const { id, start_pos, end_pos, ner_type } = annotation;
     // node of type text
-    const textNode = content.slice(lastPosition, start_pos_original);
+    const textNode = content.slice(lastPosition, start_pos);
     // node of type entity
-    const entityNode = content.slice(start_pos_original, end_pos_original);
+    const entityNode = content.slice(start_pos, end_pos);
     nodes.push({ text: textNode, type: "text" });
     nodes.push({
       text: entityNode,
       type: "entity",
       props: { ...annotation }
     });
-    lastPosition = end_pos_original;
+    lastPosition = end_pos;
   });
 
   return nodes;
