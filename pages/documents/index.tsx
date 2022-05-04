@@ -11,6 +11,10 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0px auto;
   padding: 40px 20px;
+
+  @media (max-width: 1300px) {
+    max-width: 900px;
+  }
 `
 
 const DocumentsContainer = styled.div`
@@ -18,6 +22,18 @@ const DocumentsContainer = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 20px;
   margin: 0px auto;
+
+  @media (max-width: 1300px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  @media (max-width: 990px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (max-width: 660px) {
+    grid-template-columns: 1fr;
+  }
 `
 
 const PageTitle = styled.h1`
