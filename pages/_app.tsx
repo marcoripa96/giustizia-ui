@@ -14,8 +14,8 @@ const Layout = styled.div`
 `
 
 const getTRPCUrl = () => {
-  if (process.env.VERCEL_PUBLIC_URL) {
-    return `https://${process.env.VERCEL_PUBLIC_URL}/api/trpc`
+  if (process.env.NEXT_PUBLIC_PROD_VERCEL_URL) {
+    return `https://${process.env.NEXT_PUBLIC_PROD_VERCEL_URL}/api/trpc`
   }
   if (process.env.NEXT_PUBLIC_VERCEL_URL) {
     return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`
