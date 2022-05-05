@@ -1,12 +1,12 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { FormEvent } from 'react'
-import { ButtonLoading, InputText } from '@/components';
 import { useInput } from '@/hooks';
 import { useRouter } from 'next/router';
 import { withAuthSsr } from '@/lib/withAuthSsr';
 import styled from '@emotion/styled';
 import { useQuery } from '@/utils/trpc';
-import { Card as NextUICard, Input, Button, Text, Spacer, Loading } from '@nextui-org/react';
+import { Card, Input, Text, Spacer } from '@nextui-org/react';
+import { Button } from '@/components';
 
 const Container = styled.div`
   display: flex;
@@ -25,20 +25,11 @@ const Box = styled.div`
   gap: 10px;
 `
 
-// const CardLogin = styled(Card)`
-//   max-width: 500px;
-//   margin: 0 auto;
-// `
-const Card = styled(NextUICard)({
-  maxWidth: '500px',
-  margin: '0 auto'
-})
+// const Card = styled(NextUICard)({
+//   maxWidth: '500px',
+//   margin: '0 auto'
+// })
 
-const LoginTitle = styled.h1`
-  font-size: 34px;
-  margin: 0 0 24px 0;
-  text-align: center;
-`
 
 /**
  * Login page component
@@ -61,7 +52,7 @@ const Login: NextPage<{}> = () => {
 
   return (
     <Container>
-      <Card>
+      <Card css={{ maxWidth: '500px', margin: '0 auto' }}>
         <Box as="form" onSubmit={onFormSubmit}>
           <Text h2 css={{ textAlign: 'center' }}>GiustiziaUI 🔨</Text>
           <Spacer y={0.5} />
@@ -69,16 +60,12 @@ const Login: NextPage<{}> = () => {
             bordered
             labelPlaceholder="Password"
             onChange={onChangePassword}
+            status={error ? 'error' : 'default'}
           />
-          {/* <InputText
-            type="password"
-            placeholder="Password"
-            error={error?.message}
-            onChange={onChangePassword} /> */}
-          <Button disabled={!loginPassword || isFetching}>
-            {isFetching ? <Loading color="currentColor" size="sm" /> : 'Login'}
+          {error && <Text color="error">Invalid Password</Text>}
+          <Button type="submit" disabled={!loginPassword} loading={isFetching}>
+            Login
           </Button>
-          {/* <ButtonLoading disabled={!loginPassword || isFetching} loading={isFetching}>Login</ButtonLoading> */}
         </Box>
       </Card>
     </Container>

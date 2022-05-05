@@ -1,51 +1,69 @@
-import styled from '@emotion/styled';
-import { ComponentProps } from 'react';
+import { ButtonProps as NextUIButtonProps, Button as NextUIButton, Loading } from '@nextui-org/react';
 
-export type ButtonProps = ComponentProps<'button'> & {
-  appearance?: 'outlined' | 'filled'
+type ButtonProps = NextUIButtonProps & {
+  loading?: boolean;
 }
 
-const Button = styled.button<ButtonProps>(({ appearance = 'filled' }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '10px 20px',
-  outline: 'none',
-  border: '2px solid #000',
-  borderRadius: '6px',
-  fontSize: '14px',
-  fontWeight: 600,
+const Button = ({
+  loading,
+  children,
+  disabled,
+  ...props
+}: ButtonProps) => {
 
-  cursor: 'pointer',
-  transition: 'background 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+  const isDisabled = loading ? true : disabled;
+  return (
+    <NextUIButton disabled={isDisabled} {...props}>
+      {loading ? <Loading color="currentColor" size="sm" /> : children}
+    </NextUIButton>
+  )
+}
 
-  ...(appearance === 'filled' && {
-    color: '#FFF',
-    backgroundColor: '#000',
-    '&:hover': {
-      backgroundColor: '#2e2e2e'
-    },
-    '&:active': {
-      backgroundColor: '#3b3b3b',
-    }
-  }),
-  ...(appearance === 'outlined' && {
-    color: '#414141',
-    borderColor: '#414141',
-    backgroundColor: '#FFF',
-    '&:hover': {
-      borderColor: '#000',
-      color: '#000',
-    },
-  }),
+// export type ButtonProps = ComponentProps<'button'> & {
+//   appearance?: 'outlined' | 'filled'
+// }
 
-  '&:disabled': {
-    pointerRvents: 'none',
-    backgroundColor: '#E0E0E0',
-    borderColor: '#E0E0E0',
-    color: 'rgba(0, 0, 0, 0.26)'
-  }
-}));
+// const Button = styled.button<ButtonProps>(({ appearance = 'filled' }) => ({
+//   display: 'flex',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   padding: '10px 20px',
+//   outline: 'none',
+//   border: '2px solid #000',
+//   borderRadius: '6px',
+//   fontSize: '14px',
+//   fontWeight: 600,
+
+//   cursor: 'pointer',
+//   transition: 'background 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+
+//   ...(appearance === 'filled' && {
+//     color: '#FFF',
+//     backgroundColor: '#000',
+//     '&:hover': {
+//       backgroundColor: '#2e2e2e'
+//     },
+//     '&:active': {
+//       backgroundColor: '#3b3b3b',
+//     }
+//   }),
+//   ...(appearance === 'outlined' && {
+//     color: '#414141',
+//     borderColor: '#414141',
+//     backgroundColor: '#FFF',
+//     '&:hover': {
+//       borderColor: '#000',
+//       color: '#000',
+//     },
+//   }),
+
+//   '&:disabled': {
+//     pointerRvents: 'none',
+//     backgroundColor: '#E0E0E0',
+//     borderColor: '#E0E0E0',
+//     color: 'rgba(0, 0, 0, 0.26)'
+//   }
+// }));
 
 // const Button = styled.button<ButtonProps>`
 //   display: flex;

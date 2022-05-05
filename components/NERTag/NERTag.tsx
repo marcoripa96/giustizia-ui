@@ -1,9 +1,11 @@
-import { Annotation } from '@/hooks/use-ner';
+import { Annotation, annotationTypes } from '@/hooks/use-ner';
 import { NERAnnotation } from '@/server/routers/document';
 import styled from '@emotion/styled';
 import { darken } from 'polished';
 import { PropsWithChildren, MouseEvent, FocusEvent } from 'react';
 import { FaLink } from '@react-icons/all-files/fa/FaLink';
+import { Tooltip } from '@nextui-org/react';
+import { EntityCard } from '../EntityCard';
 
 type NERTagProps = PropsWithChildren<{
   annotation: NERAnnotation;
@@ -11,34 +13,7 @@ type NERTagProps = PropsWithChildren<{
   onFocus?: (event: FocusEvent, tag: Annotation) => void;
 }>;
 
-type AnnotationType = Record<string, { label: string; color: string }>;
-
-const annotationTypes: AnnotationType = {
-  PER: {
-    label: 'Person',
-    color: 'rgb(254, 202, 116)',
-  },
-  MISC: {
-    label: 'Miscellaneous',
-    color: 'rgb(97, 232, 225)',
-  },
-  DATE: {
-    label: 'Date',
-    color: 'rgb(170, 156, 252)',
-  },
-  LOC: {
-    label: 'Location',
-    color: 'rgb(191, 225, 217)',
-  },
-  ORG: {
-    label: 'Organization',
-    color: 'rgb(234, 193, 204)',
-  },
-};
-
 const Tag = styled.span<{ type: string }>(({ type }) => ({
-  // display: 'inline-flex',
-  // alignItems: 'center',
   padding: '2px 5px',
   borderRadius: '6px',
   background: annotationTypes[type].color,
@@ -77,14 +52,14 @@ function NERTag({
   onFocus = getDefaultProp,
   ...props
 }: NERTagProps) {
-  const { ner_type, top_url } = annotation;
+  const { ner_type, top_url, top_wikipedia_id } = annotation;
 
   const handleClick = (event: MouseEvent) => onClick(event, annotation);
   const handleOnFocus = (event: FocusEvent) => onFocus(event, annotation);
   // this prevents click and focus to trigger at the same time
   const handleOnMouseDown = (event: MouseEvent) => event.preventDefault();
 
-  const ComponentTag = top_url ? 'a' : 'span';
+  const component = top_url ? 'a' : 'span';
 
   const componentTagProps = {
     ...(top_url && {
@@ -94,9 +69,9 @@ function NERTag({
     ...props,
   };
 
-  return (
+  const TagComponent = (
     <Tag
-      as={ComponentTag}
+      as={component}
       tabIndex={0}
       onMouseDown={handleOnMouseDown}
       onClick={handleClick}
@@ -108,7 +83,18 @@ function NERTag({
       <TagLabel>{ner_type}</TagLabel>
       {top_url && <Icon />}
     </Tag>
-  );
+  )
+
+  if (top_wikipedia_id !== -1) {
+    return (
+      <Tooltip css={{ display: 'inline-block' }}
+        placement="top" content={top_wikipedia_id ? <EntityCard annotation={annotation} /> : 'Empty'}>
+        {TagComponent}
+      </Tooltip>
+    )
+  }
+
+  return TagComponent;
 }
 
 export default NERTag;

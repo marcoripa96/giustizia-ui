@@ -13,3 +13,5 @@ export * from "./AnnotationTypeList";
 export * from "./CopyToClipboardButton";
 export * from "./NERViewer";
 export * from "./NERTag";
+export * from "./EntityCard";
+export * from "./Tag";
