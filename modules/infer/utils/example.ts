@@ -6,128 +6,128 @@ Poi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - h
 export const annotationsExample = [
   {
     "context_left": "Nell'ultima puntata di ",
-    "context_right": " è l'arena, programma in onda la domenica sera su La7, si è parlato anche di armi nucleari.",
-    "mention": "Non",
+    "context_right": ", programma in onda la domenica sera su La7, si è parlato anche di armi nucleari.",
+    "mention": "Non è l'arena",
     "start_pos": 23,
-    "end_pos": 26,
+    "end_pos": 36,
     "sent_idx": 0,
-    "ner_type": "LOC",
+    "ner_type": "MISC",
     "normalized_date": "",
     "candidates": [
       {
-        "raw_score": 158.5225372314453,
-        "id": 625417,
-        "wikipedia_id": 8052966,
-        "title": "Non disturbare",
-        "url": "https://it.wikipedia.org/wiki?curid=8052966",
-        "type_": null,
-        "indexer": 130,
-        "score": 114.40618896484375,
-        "norm_score": 0.6586031929685546
-      },
-      {
-        "raw_score": 159.75881958007812,
+        "raw_score": 190.73341369628906,
         "id": 1445399,
         "wikipedia_id": 6591634,
         "title": "Non è l'Arena",
         "url": "https://it.wikipedia.org/wiki?curid=6591634",
         "type_": null,
         "indexer": 130,
-        "score": 113.78804016113281,
-        "norm_score": 0.6740477766641615
+        "score": 113.15785217285156,
+        "norm_score": 0.5870863388723311
       },
       {
-        "raw_score": 160.13978576660156,
+        "raw_score": 208.3998260498047,
+        "id": 47971,
+        "wikipedia_id": 6428360,
+        "title": "Non è il Sudamerica",
+        "url": "https://it.wikipedia.org/wiki?curid=6428360",
+        "type_": null,
+        "indexer": 130,
+        "score": 104.32463836669922,
+        "norm_score": 0.5412577988784032
+      },
+      {
+        "raw_score": 210.1240692138672,
         "id": 1370392,
         "wikipedia_id": 217875,
         "title": "Non è la Rai",
         "url": "https://it.wikipedia.org/wiki?curid=217875",
         "type_": null,
         "indexer": 130,
-        "score": 113.59754943847656,
-        "norm_score": 0.6721446717672521
+        "score": 103.46257019042969,
+        "norm_score": 0.5367852108984605
       },
       {
-        "raw_score": 161.12594604492188,
-        "id": 30881,
-        "wikipedia_id": 5581992,
-        "title": "Non uccidere (serie televisiva)",
-        "url": "https://it.wikipedia.org/wiki?curid=5581992",
-        "type_": null,
-        "indexer": 130,
-        "score": 113.10443115234375,
-        "norm_score": 0.6646514979520923
-      },
-      {
-        "raw_score": 161.52674865722656,
+        "raw_score": 211.76727294921875,
         "id": 876917,
         "wikipedia_id": 2079270,
         "title": "Non è Francesca",
         "url": "https://it.wikipedia.org/wiki?curid=2079270",
         "type_": null,
         "indexer": 130,
-        "score": 112.90404510498047,
-        "norm_score": 0.6591303772198824
+        "score": 102.64100646972656,
+        "norm_score": 0.5325227684105883
       },
       {
-        "raw_score": 161.58462524414062,
-        "id": 384417,
-        "wikipedia_id": 4658122,
-        "title": "Non passerai",
-        "url": "https://it.wikipedia.org/wiki?curid=4658122",
+        "raw_score": 212.15931701660156,
+        "id": 627960,
+        "wikipedia_id": 7859297,
+        "title": "Live - Non è la D'Urso",
+        "url": "https://it.wikipedia.org/wiki?curid=7859297",
         "type_": null,
         "indexer": 130,
-        "score": 112.87513732910156,
-        "norm_score": 0.6512563549064712
+        "score": 102.4449691772461,
+        "norm_score": 0.5315056863953782
       },
       {
-        "raw_score": 162.075927734375,
-        "id": 94938,
-        "wikipedia_id": 1234718,
-        "title": "Soliti ignoti (programma televisivo)",
-        "url": "https://it.wikipedia.org/wiki?curid=1234718",
+        "raw_score": 213.72166442871094,
+        "id": 1276090,
+        "wikipedia_id": 3903090,
+        "title": "Non è l'inferno",
+        "url": "https://it.wikipedia.org/wiki?curid=3903090",
         "type_": null,
         "indexer": 130,
-        "score": 112.62948608398438,
-        "norm_score": 0.6633413913085893
+        "score": 101.66370391845703,
+        "norm_score": 0.5274523206619072
       },
       {
-        "raw_score": 162.306640625,
+        "raw_score": 214.27651977539062,
         "id": 1359290,
         "wikipedia_id": 152928,
         "title": "L'isola dei famosi",
         "url": "https://it.wikipedia.org/wiki?curid=152928",
         "type_": null,
         "indexer": 130,
-        "score": 112.5141372680664,
-        "norm_score": 0.6843204707075492
+        "score": 101.3863754272461,
+        "norm_score": 0.5260134830961207
       },
       {
-        "raw_score": 162.60675048828125,
-        "id": 271595,
-        "wikipedia_id": 1332392,
-        "title": "L'isola dei famosi (quinta edizione)",
-        "url": "https://it.wikipedia.org/wiki?curid=1332392",
+        "raw_score": 214.65313720703125,
+        "id": 193477,
+        "wikipedia_id": 5079880,
+        "title": "L'Arena (programma televisivo)",
+        "url": "https://it.wikipedia.org/wiki?curid=5079880",
         "type_": null,
         "indexer": 130,
-        "score": 112.3640365600586,
-        "norm_score": 0.687245316463459
+        "score": 101.19805145263672,
+        "norm_score": 0.5250364193691915
       },
       {
-        "raw_score": 162.66094970703125,
-        "id": 1295546,
-        "wikipedia_id": 3912434,
-        "title": "Panariello non esiste",
-        "url": "https://it.wikipedia.org/wiki?curid=3912434",
+        "raw_score": 214.99533081054688,
+        "id": 109711,
+        "wikipedia_id": 1222301,
+        "title": "Non è una favola",
+        "url": "https://it.wikipedia.org/wiki?curid=1222301",
         "type_": null,
         "indexer": 130,
-        "score": 112.33695220947266,
-        "norm_score": 0.6519906075388804
+        "score": 101.0269546508789,
+        "norm_score": 0.5241487337777108
+      },
+      {
+        "raw_score": 215.35275268554688,
+        "id": 1181617,
+        "wikipedia_id": 1715115,
+        "title": "Non esiste più la mezza stagione",
+        "url": "https://it.wikipedia.org/wiki?curid=1715115",
+        "type_": null,
+        "indexer": 130,
+        "score": 100.84818267822266,
+        "norm_score": 0.5232212278123322
       }
     ],
-    "top_title": "Non disturbare",
-    "top_wikipedia_id": 8052966,
-    "top_url": "https://it.wikipedia.org/wiki?curid=8052966",
+    "top_title": "Non è l'Arena",
+    "top_wikipedia_id": 6591634,
+    "top_url": "https://it.wikipedia.org/wiki?curid=6591634",
     "id": 0
   },
   {
@@ -509,7 +509,7 @@ export const annotationsExample = [
     "id": 3
   },
   {
-    "context_left": "Lo strategico utilizzo è possibile solo quando ci sono esistenziali pericoli per il nostro Paese\".\n\nPoi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - ha tenuto a rassicurare che l'arma nucleare \"non può essere usata contro l'Ucraina\", in nessun modo.",
+    "context_left": "Lo strategico utilizzo è possibile solo quando ci sono esistenziali pericoli per il nostro Paese\".",
     "context_right": "",
     "mention": "Paese",
     "start_pos": 554,
@@ -519,114 +519,114 @@ export const annotationsExample = [
     "normalized_date": "",
     "candidates": [
       {
-        "raw_score": 115.60081481933594,
+        "raw_score": 112.15650177001953,
         "id": 878917,
         "wikipedia_id": 2021453,
         "title": "Stato",
         "url": "https://it.wikipedia.org/wiki?curid=2021453",
         "type_": null,
         "indexer": 130,
-        "score": 126.77115631103516,
-        "norm_score": 0.7965164350561323
+        "score": 127.44627380371094,
+        "norm_score": 0.8007582688782582
       },
       {
-        "raw_score": 118.53319549560547,
-        "id": 1187290,
-        "wikipedia_id": 28818,
-        "title": "Ucraina",
-        "url": "https://it.wikipedia.org/wiki?curid=28818",
-        "type_": null,
-        "indexer": 130,
-        "score": 125.3049545288086,
-        "norm_score": 0.7816663443726061
-      },
-      {
-        "raw_score": 121.59730529785156,
+        "raw_score": 119.71558380126953,
         "id": 598571,
         "wikipedia_id": 7796862,
         "title": "Stato sovrano",
         "url": "https://it.wikipedia.org/wiki?curid=7796862",
         "type_": null,
         "indexer": 130,
-        "score": 123.77291870117188,
-        "norm_score": 0.7953806879455189
+        "score": 123.66676330566406,
+        "norm_score": 0.7946985197265405
       },
       {
-        "raw_score": 123.10537719726562,
-        "id": 1315188,
-        "wikipedia_id": 124986,
-        "title": "Stato satellite",
-        "url": "https://it.wikipedia.org/wiki?curid=124986",
+        "raw_score": 120.2871322631836,
+        "id": 87550,
+        "wikipedia_id": 1213265,
+        "title": "Nazione",
+        "url": "https://it.wikipedia.org/wiki?curid=1213265",
         "type_": null,
         "indexer": 130,
-        "score": 123.01889038085938,
-        "norm_score": 0.778296902606208
+        "score": 123.38099670410156,
+        "norm_score": 0.8029387281792428
       },
       {
-        "raw_score": 123.37874603271484,
+        "raw_score": 120.81134033203125,
         "id": 650822,
         "wikipedia_id": 610224,
         "title": "Stato fantoccio",
         "url": "https://it.wikipedia.org/wiki?curid=610224",
         "type_": null,
         "indexer": 130,
-        "score": 122.88218688964844,
-        "norm_score": 0.7944982493832651
+        "score": 123.1188735961914,
+        "norm_score": 0.7960285539681725
       },
       {
-        "raw_score": 123.62907409667969,
-        "id": 876265,
-        "wikipedia_id": 1979467,
-        "title": "Kosovo",
-        "url": "https://it.wikipedia.org/wiki?curid=1979467",
+        "raw_score": 122.40011596679688,
+        "id": 1181893,
+        "wikipedia_id": 3490,
+        "title": "Stati del mondo",
+        "url": "https://it.wikipedia.org/wiki?curid=3490",
         "type_": null,
         "indexer": 130,
-        "score": 122.75701141357422,
-        "norm_score": 0.7716589797561049
+        "score": 122.3244857788086,
+        "norm_score": 0.7712554825169895
       },
       {
-        "raw_score": 124.17478942871094,
-        "id": 1333543,
-        "wikipedia_id": 2362505,
-        "title": "Crimea",
-        "url": "https://it.wikipedia.org/wiki?curid=2362505",
+        "raw_score": 122.62765502929688,
+        "id": 123539,
+        "wikipedia_id": 1115915,
+        "title": "Stato-nazione",
+        "url": "https://it.wikipedia.org/wiki?curid=1115915",
         "type_": null,
         "indexer": 130,
-        "score": 122.48421478271484,
-        "norm_score": 0.7740466089639073
+        "score": 122.21073150634766,
+        "norm_score": 0.7773711639777333
       },
       {
-        "raw_score": 124.23697662353516,
-        "id": 31353,
-        "wikipedia_id": 5725969,
-        "title": "Repubblica dell'Artsakh",
-        "url": "https://it.wikipedia.org/wiki?curid=5725969",
+        "raw_score": 123.78812408447266,
+        "id": 449802,
+        "wikipedia_id": 479359,
+        "title": "Paese transcontinentale",
+        "url": "https://it.wikipedia.org/wiki?curid=479359",
         "type_": null,
         "indexer": 130,
-        "score": 122.45307922363281,
-        "norm_score": 0.7552520574458935
+        "score": 121.6304931640625,
+        "norm_score": 0.7776271331145397
       },
       {
-        "raw_score": 124.40100860595703,
-        "id": 981131,
-        "wikipedia_id": 1926571,
-        "title": "Armenia",
-        "url": "https://it.wikipedia.org/wiki?curid=1926571",
+        "raw_score": 123.81730651855469,
+        "id": 762889,
+        "wikipedia_id": 79098,
+        "title": "Repubblica",
+        "url": "https://it.wikipedia.org/wiki?curid=79098",
         "type_": null,
         "indexer": 130,
-        "score": 122.37108612060547,
-        "norm_score": 0.7644359534169379
+        "score": 121.61589050292969,
+        "norm_score": 0.7900709051279143
       },
       {
-        "raw_score": 124.41500854492188,
-        "id": 1308775,
-        "wikipedia_id": 122854,
-        "title": "Tatarstan",
-        "url": "https://it.wikipedia.org/wiki?curid=122854",
+        "raw_score": 124.22280883789062,
+        "id": 1315188,
+        "wikipedia_id": 124986,
+        "title": "Stato satellite",
+        "url": "https://it.wikipedia.org/wiki?curid=124986",
         "type_": null,
         "indexer": 130,
-        "score": 122.36404418945312,
-        "norm_score": 0.7846995498322993
+        "score": 121.41311645507812,
+        "norm_score": 0.7681377403112779
+      },
+      {
+        "raw_score": 124.6346435546875,
+        "id": 895678,
+        "wikipedia_id": 835793,
+        "title": "Cittadinanza",
+        "url": "https://it.wikipedia.org/wiki?curid=835793",
+        "type_": null,
+        "indexer": 130,
+        "score": 121.20722198486328,
+        "norm_score": 0.7945505198099048
       }
     ],
     "top_title": "Stato",
@@ -635,12 +635,12 @@ export const annotationsExample = [
     "id": 4
   },
   {
-    "context_left": "Lo strategico utilizzo è possibile solo quando ci sono esistenziali pericoli per il nostro Paese\".\n\nPoi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - ha tenuto a rassicurare che l'arma nucleare \"non può essere usata contro l'Ucraina\", in nessun modo.",
+    "context_left": "\n\nPoi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - ha tenuto a rassicurare che l'arma nucleare \"non può essere usata contro l'Ucraina\", in nessun modo.",
     "context_right": "",
     "mention": "Solovyev",
     "start_pos": 567,
     "end_pos": 575,
-    "sent_idx": 4,
+    "sent_idx": 5,
     "ner_type": "PER",
     "normalized_date": "",
     "candidates": [
@@ -761,12 +761,12 @@ export const annotationsExample = [
     "id": 5
   },
   {
-    "context_left": "Lo strategico utilizzo è possibile solo quando ci sono esistenziali pericoli per il nostro Paese\".\n\nPoi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - ha tenuto a rassicurare che l'arma nucleare \"non può essere usata contro l'Ucraina\", in nessun modo.",
+    "context_left": "\n\nPoi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - ha tenuto a rassicurare che l'arma nucleare \"non può essere usata contro l'Ucraina\", in nessun modo.",
     "context_right": "",
     "mention": "Ucraina",
     "start_pos": 715,
     "end_pos": 722,
-    "sent_idx": 4,
+    "sent_idx": 5,
     "ner_type": "LOC",
     "normalized_date": "",
     "candidates": [
@@ -892,7 +892,7 @@ export const annotationsExample = [
     "mention": "Usa",
     "start_pos": 818,
     "end_pos": 821,
-    "sent_idx": 5,
+    "sent_idx": 6,
     "ner_type": "LOC",
     "normalized_date": "",
     "candidates": [
@@ -1018,7 +1018,7 @@ export const annotationsExample = [
     "mention": "Stati Uniti",
     "start_pos": 912,
     "end_pos": 923,
-    "sent_idx": 6,
+    "sent_idx": 7,
     "ner_type": "LOC",
     "normalized_date": "",
     "candidates": [
@@ -1144,7 +1144,7 @@ export const annotationsExample = [
     "mention": "Usa",
     "start_pos": 990,
     "end_pos": 993,
-    "sent_idx": 7,
+    "sent_idx": 8,
     "ner_type": "LOC",
     "normalized_date": "",
     "candidates": [
@@ -1270,7 +1270,7 @@ export const annotationsExample = [
     "mention": "Russia",
     "start_pos": 1015,
     "end_pos": 1021,
-    "sent_idx": 7,
+    "sent_idx": 8,
     "ner_type": "LOC",
     "normalized_date": "",
     "candidates": [
