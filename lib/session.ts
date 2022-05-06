@@ -15,6 +15,7 @@ export const sessionOptions: IronSessionOptions = {
 
 export type User = {
   isLoggedIn: boolean;
+  username: string;
   date: string;
 }
 

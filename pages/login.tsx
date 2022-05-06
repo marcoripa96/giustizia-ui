@@ -7,6 +7,8 @@ import styled from '@emotion/styled';
 import { useQuery } from '@/utils/trpc';
 import { Card, Input, Text, Spacer } from '@nextui-org/react';
 import { Button } from '@/components';
+import { FaRegUser } from '@react-icons/all-files/fa/FaRegUser';
+import { FaLock } from '@react-icons/all-files/fa/FaLock';
 
 const Container = styled.div`
   display: flex;
@@ -35,10 +37,11 @@ const Box = styled.div`
  * Login page component
  */
 const Login: NextPage<{}> = () => {
+  const [username, onChangeUsxername] = useInput('');
   const [loginPassword, onChangePassword] = useInput('');
 
   const router = useRouter();
-  const { isFetching, error, refetch } = useQuery(['auth.login', { password: loginPassword }], { enabled: false, retry: false })
+  const { isFetching, error, refetch } = useQuery(['auth.login', { username, password: loginPassword }], { enabled: false, retry: false })
 
   const onFormSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -56,14 +59,24 @@ const Login: NextPage<{}> = () => {
         <Box as="form" onSubmit={onFormSubmit}>
           <Text h2 css={{ textAlign: 'center' }}>GiustiziaUI 🔨</Text>
           <Spacer y={0.5} />
-          <Input.Password
+          <Input
             bordered
-            labelPlaceholder="Password"
-            onChange={onChangePassword}
+            placeholder="Username"
+            aria-label="username"
+            onChange={onChangeUsxername}
+            contentLeft={<FaRegUser />}
             status={error ? 'error' : 'default'}
           />
-          {error && <Text color="error">Invalid Password</Text>}
-          <Button type="submit" disabled={!loginPassword} loading={isFetching}>
+          <Input.Password
+            bordered
+            placeholder="Password"
+            aria-label="password"
+            onChange={onChangePassword}
+            contentLeft={<FaLock />}
+            status={error ? 'error' : 'default'}
+          />
+          {error && <Text color="error">Invalid username or password.</Text>}
+          <Button type="submit" disabled={!loginPassword || !username} loading={isFetching}>
             Login
           </Button>
         </Box>

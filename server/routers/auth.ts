@@ -3,8 +3,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createRouter } from "../context";
 
-const login = (password: string) => {
-  const isLoggedIn = password === process.env.ACCESS_PASSWORD;
+const login = (username: string, password: string) => {
+  const isLoggedIn = password === process.env.ACCESS_PASSWORD && username === process.env.ACCESS_USERNAME;
 
   if (!isLoggedIn) {
     throw new TRPCError({
@@ -12,7 +12,7 @@ const login = (password: string) => {
       message: 'Invalid password'
     })
   }
-  const user = { isLoggedIn, date: new Date().toISOString() } as User;
+  const user = { username, isLoggedIn, date: new Date().toISOString() } as User;
   return user;
 }
 
@@ -20,14 +20,39 @@ export const auth = createRouter()
   .query('login', {
     input: z
       .object({
+        username: z.string(),
         password: z.string(),
       }),
     resolve: async ({ input, ctx }) => {
       const { req } = ctx;
-      const { password } = input;
-      const user = login(password);
+      const { username, password } = input;
+      const user = login(username, password);
       req.session.user = user;
       await req.session.save();
       return user;
+    },
+  })
+  .query('logout', {
+    resolve: async ({ ctx }) => {
+      const { req } = ctx;
+      req.session.destroy();
+      return {
+        isLoggedIn: false,
+        date: '',
+        username: ''
+      };
+    },
+  })
+  .query('user', {
+    resolve: async ({ ctx }) => {
+      const { req } = ctx;
+      if (req.session.user) {
+        return req.session.user;
+      }
+      return {
+        isLoggedIn: false,
+        date: '',
+        username: ''
+      }
     },
   })

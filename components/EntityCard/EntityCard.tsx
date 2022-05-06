@@ -38,18 +38,19 @@ const EntityCard = ({ annotation }: EntityCardProps) => {
     <Container>
       <Grid.Container
         direction="row"
-        alignItems="center">
+        alignItems="flex-start">
         <ContainerImgTitle>
-          {data?.thumbnail && (<Image
-            css={{
-              border: '1px solid #EAECED',
-              margin: '0'
-            }}
-            width={100}
-            height={80}
-            objectFit="cover"
-            src={data?.thumbnail.source}
-            alt="" />)}
+          {data?.thumbnail && (
+            <Image
+              css={{
+                border: '1px solid #EAECED',
+                margin: '0'
+              }}
+              width={100}
+              height={80}
+              objectFit="cover"
+              src={data?.thumbnail.source}
+              alt="" />)}
           <Text h5 css={{
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -62,6 +63,7 @@ const EntityCard = ({ annotation }: EntityCardProps) => {
           as="a"
           href={top_url}
           target="_blank"
+          rounded
           css={{
             margin: '0 auto'
           }}
