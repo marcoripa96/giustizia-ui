@@ -3,6 +3,9 @@ import { withAuthSsr } from '@/lib/withAuthSsr'
 import styled from '@emotion/styled'
 import { QueryText } from '@/modules/infer/QueryText'
 import { Text } from '@nextui-org/react'
+import { NextPageWithLayout } from './_app'
+import { ReactElement } from 'react'
+import { MainToolbar } from '@/components'
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +37,7 @@ const SubTitle = styled(Text)`
 /**
  * Homepage component
  */
-const Home: NextPage<{}> = () => {
+const Home: NextPageWithLayout<{}> = () => {
   return (
     <Container>
       <Section>
@@ -43,6 +46,15 @@ const Home: NextPage<{}> = () => {
         <QueryText />
       </Section>
     </Container>
+  )
+}
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <>
+      <MainToolbar />
+      {page}
+    </>
   )
 }
 

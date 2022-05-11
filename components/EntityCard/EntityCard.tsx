@@ -64,10 +64,15 @@ const EntityCard = ({ annotation }: EntityCardProps) => {
           href={top_url}
           target="_blank"
           rounded
+          bordered
           css={{
-            margin: '0 auto'
+            margin: '0 auto',
+            color: '#000',
+            borderColor: '#000',
+            minWidth: 'min-content',
+            maxHeight: '30px'
           }}
-          size="xs">
+          size="sm">
           Details
         </Button>
       </Grid.Container>

@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@nextui-org/react": "^1.0.0-beta.6",
+    "@nextui-org/react": "^1.0.0-beta.7",
     "@react-icons/all-files": "^4.1.0",
     "@trpc/client": "^9.22.0",
     "@trpc/next": "^9.22.0",
