@@ -15,3 +15,4 @@ export * from "./NERTag";
 export * from "./EntityCard";
 export * from "./Tag";
 export * from "./ToolbarSidebarLayout";
+export * from "./LoginAvatar";

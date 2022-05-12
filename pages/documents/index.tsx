@@ -9,6 +9,7 @@ import { Card } from '@nextui-org/react'
 import ActionBar from '@/modules/documents/ActionBar'
 import DocumentCard from '@/modules/documents/DocumentCard'
 import DocumentsList from '@/modules/documents/DocumentsList'
+import ToolbarContent from '@/modules/documents/ToolbarContent'
 
 const Container = styled.div`
   display: flex;
@@ -77,7 +78,8 @@ const Documents: NextPageWithLayout = () => {
 
 Documents.getLayout = function getLayout(page: ReactElement) {
   return (
-    <ToolbarSidebarLayout>
+    <ToolbarSidebarLayout
+      toolbarContent={<ToolbarContent />}>
       {page}
     </ToolbarSidebarLayout>
   )

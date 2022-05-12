@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 
 const Content = styled.div({
-  paddingLeft: '240px',
+  paddingLeft: '70px',
   paddingTop: '48px'
 })
 
