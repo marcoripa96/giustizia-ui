@@ -16,6 +16,7 @@ class MyDocument extends Document {
         <Head>{CssBaseline.flush()}</Head>
         <body>
           <Main />
+          <div id="select-popup" />
           <NextScript />
         </body>
       </Html>

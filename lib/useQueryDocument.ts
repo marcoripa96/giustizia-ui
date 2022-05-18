@@ -27,9 +27,9 @@ const getState = (data: Document): DocumentState => {
 /**
  * Returns a document details and set state to modify it
  */
-export const useDocument = () => {
+export const useQueryDocument = () => {
   const [id] = useParam<string>('id');
-  const { data } = useQuery(['document.getDocument', { id: parseInt(id) }]);
+  const { data } = useQuery(['document.getDocument', { id: parseInt(id) }], { staleTime: Infinity });
   const [document, setDocument] = useState<DocumentState | undefined>();
 
   useEffect(() => {

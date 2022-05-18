@@ -16,3 +16,8 @@ export const toBase64 = (data: string) => {
 export const styles = (styles: CSS) => {
   return { css: styles };
 }
+
+export const isEmptyObject = (obj: any) => {
+  for (const key in obj) return false;
+  return true;
+}

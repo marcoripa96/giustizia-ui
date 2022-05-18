@@ -16,3 +16,5 @@ export * from "./EntityCard";
 export * from "./Tag";
 export * from "./ToolbarSidebarLayout";
 export * from "./LoginAvatar";
+export * from "./IconButton";
+export * from "./Select";

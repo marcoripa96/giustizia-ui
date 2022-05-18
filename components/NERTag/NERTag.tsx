@@ -4,11 +4,14 @@ import styled from '@emotion/styled';
 import { darken } from 'polished';
 import { PropsWithChildren, MouseEvent, FocusEvent } from 'react';
 import { FaLink } from '@react-icons/all-files/fa/FaLink';
-import { Tooltip } from '@nextui-org/react';
+import { Tooltip, TooltipProps } from '@nextui-org/react';
 import { EntityCard } from '../EntityCard';
 
 type NERTagProps = PropsWithChildren<{
   annotation: NERAnnotation;
+  tooltipPlacement?: TooltipProps['placement'],
+  disableLink?: boolean,
+  disablePreview?: boolean,
   onClick?: (event: MouseEvent, tag: Annotation) => void;
   onFocus?: (event: FocusEvent, tag: Annotation) => void;
 }>;
@@ -48,6 +51,9 @@ const getDefaultProp = () => ({});
 function NERTag({
   annotation,
   children,
+  tooltipPlacement = 'top',
+  disableLink = false,
+  disablePreview = false,
   onClick = getDefaultProp,
   onFocus = getDefaultProp,
   ...props
@@ -62,7 +68,7 @@ function NERTag({
   const component = top_url ? 'a' : 'span';
 
   const componentTagProps = {
-    ...(top_url && {
+    ...(!disableLink && top_url && {
       href: top_url,
       target: '_blank',
     }),
@@ -85,10 +91,10 @@ function NERTag({
     </Tag>
   )
 
-  if (top_wikipedia_id !== -1) {
+  if (!disablePreview && top_wikipedia_id !== -1) {
     return (
       <Tooltip css={{ display: 'inline-block' }}
-        placement="top" content={top_wikipedia_id ? <EntityCard annotation={annotation} /> : 'Empty'}>
+        placement={tooltipPlacement} content={top_wikipedia_id ? <EntityCard annotation={annotation} /> : 'Empty'}>
         {TagComponent}
       </Tooltip>
     )

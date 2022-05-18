@@ -40,12 +40,23 @@ export type NERNode<P> = _Node<P>["type"] extends infer T
   : _Node<P> & { type: T }
   : never;
 
-export type AnnotationType = Record<string, { label: string; color: string }>;
+export type AnnotationType = {
+  label: string;
+  color: string;
+  children?: Record<string, Omit<AnnotationType, 'color'>>
+};
 
-export const annotationTypes: AnnotationType = {
+export type AnnotationTypeMap = Record<string, AnnotationType>;
+
+export const annotationTypes: AnnotationTypeMap = {
   PER: {
     label: 'Person',
     color: 'rgb(254, 202, 116)',
+    children: {
+      JUDGE: {
+        label: 'Judge'
+      }
+    }
   },
   MISC: {
     label: 'Miscellaneous',
