@@ -1,5 +1,5 @@
 import { Annotation, SelectionEvent } from "@/components/NERDocumentViewer";
-import { DocumentState } from "@/lib/useDocument";
+import { DocumentState } from "@/lib/useQueryDocument";
 import { DocumentAction } from "@/pages/documents/[id]";
 import { NERAnnotation } from "@/server/routers/document";
 
