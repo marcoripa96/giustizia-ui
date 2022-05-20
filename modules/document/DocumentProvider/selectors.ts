@@ -38,4 +38,5 @@ export function useSelector<T>(cb: (state: State) => T) {
 
 export const useDocumentAction = () => useSelector((state) => state.ui.action);
 export const useDocumentTypes = () => useSelector((state) => state.types);
+export const useDocumentTypesFlattened = () => useSelector((state) => state.flattenedTypes);
 export const useDocumentActiveType = () => useSelector((state) => state.ui.action.data);

@@ -93,15 +93,16 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const types = useDocumentTypes();
 
   const items = useMemo(() => {
-    return Object.keys(types).flatMap((type) => {
-      const { label, children } = types[type];
-      const path = type;
-      const item = {
-        label: label,
-        value: path
-      };
-      return [item, ...getChildrenTypes(path, children)];
-    });
+    // return Object.keys(types).flatMap((type) => {
+    //   const { label, children } = types[type];
+    //   const path = type;
+    //   const item = {
+    //     label: label,
+    //     value: path
+    //   };
+    //   return [item, ...getChildrenTypes(path, children)];
+    // });
+    return [];
   }, [types]);
 
   const handleOnChange = (value: string) => {
@@ -170,15 +171,15 @@ const Form = ({ onClose }: FormProps) => {
 
   const { type } = value;
 
-  useEffect(() => {
-    if (!type) return;
-    const typeObj = getTypeFromPath(types, type);
-    if (!typeObj) return;
+  // useEffect(() => {
+  //   if (!type) return;
+  //   const typeObj = getTypeFromPath(types, type);
+  //   if (!typeObj) return;
 
-    setValue({
-      color: typeObj.color
-    })
-  }, [type, types])
+  //   setValue({
+  //     color: typeObj.color
+  //   })
+  // }, [type, types])
 
 
   const handleForm = (data: FormState) => {
