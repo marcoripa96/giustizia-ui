@@ -32,49 +32,72 @@ type ChildNodeProps = {
   nTotalSubChildren: number;
 };
 
-const SQUARE_SIZE = 20;
-const PADDING = SQUARE_SIZE + 10;
-const OFFSET = 10;
+// parent square size
+const PARENT_SQUARE_SIZE = 20;
+// child square size
+const CHILD_SQUARE_SIZE = 15;
+// padding of the container
+const PADDING = 5;
+// indentation
+const INDENTATION_OFFSET = 25;
+// container item size
+const CONTAINER_ITEM_SIZE = 34;
 
-const getPaddingLeft = (level: number, hasChildren: boolean) => {
-  if (level === 0) {
-    return 5 + level * OFFSET;
-  }
-  if (level === 1) {
-    return hasChildren ? PADDING : PADDING + OFFSET;
-  }
-  return hasChildren ? PADDING + (15 * level) + 10 : PADDING + OFFSET * level
+const getArchHeight = (nDirectSubChildren: number) => {
+  const half = CONTAINER_ITEM_SIZE / 2;
+  return nDirectSubChildren === 1 ? half : half + half * nDirectSubChildren
 }
 
-const Container = styled.div<{
+const getPaddingLeftArch = (level: number) => {
+  if (level === 0) {
+    return PARENT_SQUARE_SIZE / 2 + PADDING;
+  }
+  return INDENTATION_OFFSET * level + CHILD_SQUARE_SIZE / 2 - 1 + PADDING;
+}
+
+const getPaddingLeftChildrenArch = (level: number) => {
+  if (level === 1) {
+    return PARENT_SQUARE_SIZE / 2 + PADDING;
+  }
+  return PADDING + INDENTATION_OFFSET * (level - 1) + CHILD_SQUARE_SIZE / 2 - 1;
+}
+
+
+const Container = styled.div<{ selected: boolean; }>(({ selected }) => ({
+  position: 'relative',
+  height: `${CONTAINER_ITEM_SIZE}px`,
+  padding: `${PADDING}px`,
+  transition: 'background 150ms ease-out',
+  cursor: 'pointer',
+  '&:hover': {
+    background: 'rgba(0,0,0,0.03)'
+  },
+  '&:active': {
+    background: 'rgba(0,0,0,0.08)'
+  },
+  ...(selected && {
+    background: "rgba(0,0,0,0.05)"
+  })
+}));
+
+const InnerContainer = styled.div<{
   level: number;
   nDirectSubChildren: number;
-  selected: boolean,
   hasChildren: boolean,
   isExpanded: boolean
 }>(
-  ({ level, nDirectSubChildren, selected, hasChildren, isExpanded }) => ({
-    position: 'relative',
+  ({ level, nDirectSubChildren, isExpanded }) => ({
     display: "flex",
     flexDirection: "row",
+    height: '100%',
     gap: "10px",
     alignItems: "center",
-    paddingTop: "5px",
-    paddingBottom: "5px",
-    paddingLeft: getPaddingLeft(level, hasChildren),
-    transition: 'background 150ms ease-out',
-    cursor: 'pointer',
-    '&:hover': {
-      background: 'rgba(0,0,0,0.03)'
-    },
-    '&:active': {
-      background: 'rgba(0,0,0,0.08)'
-    },
+    paddingLeft: INDENTATION_OFFSET * level,
     ...(level > 0 && {
       '&:before': {
         content: "''",
         position: 'absolute',
-        left: 5 + (SQUARE_SIZE / 2) + ((SQUARE_SIZE / 2) + OFFSET) * (level - 1),
+        left: getPaddingLeftChildrenArch(level),
         top: '50%',
         height: '1px',
         width: '5px',
@@ -85,23 +108,20 @@ const Container = styled.div<{
       '&:after': {
         content: "''",
         position: 'absolute',
-        left: 5 + (SQUARE_SIZE / 2) + ((SQUARE_SIZE / 2) + OFFSET) * level,
+        left: getPaddingLeftArch(level),
         top: '100%',
-        height: nDirectSubChildren === 1 ? 17 : 17 + 17 * nDirectSubChildren,
+        height: getArchHeight(nDirectSubChildren),
         width: '1px',
         background: 'rgba(0,0,0,0.2)'
       }
-    }),
-    ...(selected && {
-      background: "rgba(0,0,0,0.05)"
     })
   })
 );
 
 const ColoredSquared = styled.div<{ color: string }>(({ color }) => ({
   position: 'relative',
-  width: `${SQUARE_SIZE}px`,
-  height: `${SQUARE_SIZE}px`,
+  width: `${PARENT_SQUARE_SIZE}px`,
+  height: `${PARENT_SQUARE_SIZE}px`,
   borderRadius: "5px",
   background: color,
   boxShadow: `inset 0 0 0 1px ${darken(0.15, color)}`
@@ -115,8 +135,8 @@ const NumberSquare = styled.div<{ color: string }>(({ color }) => ({
   position: 'absolute',
   bottom: '-3px',
   right: '-3px',
-  width: '15px',
-  height: '15px',
+  width: `${CHILD_SQUARE_SIZE}px`,
+  height: `${CHILD_SQUARE_SIZE}px`,
   background: darken(0.1, color)
 }));
 
@@ -176,21 +196,23 @@ function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
   return (
     <Container
       selected={selected}
-      hasChildren={hasChildren}
-      onClick={handleClick}
-      nDirectSubChildren={nDirectSubChildren}
-      {...props}>
-      {isTopLevelItem(item) ? (
-        <TopLevelNode
-          item={item}
-          hasChildren={hasChildren}
-          nTotalSubChildren={nTotalSubChildren} />
-      ) : (
-        <ChildNode
-          item={item}
-          hasChildren={hasChildren}
-          nTotalSubChildren={nTotalSubChildren} />
-      )}
+      onClick={handleClick} >
+      <InnerContainer
+        hasChildren={hasChildren}
+        nDirectSubChildren={nDirectSubChildren}
+        {...props}>
+        {isTopLevelItem(item) ? (
+          <TopLevelNode
+            item={item}
+            hasChildren={hasChildren}
+            nTotalSubChildren={nTotalSubChildren} />
+        ) : (
+          <ChildNode
+            item={item}
+            hasChildren={hasChildren}
+            nTotalSubChildren={nTotalSubChildren} />
+        )}
+      </InnerContainer>
     </Container>
   );
 }

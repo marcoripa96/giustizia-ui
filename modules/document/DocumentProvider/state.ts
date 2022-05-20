@@ -43,7 +43,13 @@ const entityTypes: Taxonomy = [
           },
           {
             key: 'JDGCRIM',
-            label: 'Criminal Judge'
+            label: 'Criminal Judge',
+            children: [
+              {
+                key: 'LULL',
+                label: 'Provissima'
+              },
+            ]
           },
         ]
       }
