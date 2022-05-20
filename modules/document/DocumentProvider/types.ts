@@ -1,4 +1,6 @@
 import { DocumentState } from "@/lib/useQueryDocument";
+import { TreeItem } from "../SidebarAddAnnotation/Tree";
+import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
 export type Action =
   | { type: 'setData', payload: { data: DocumentState } }
@@ -17,9 +19,22 @@ export type AnnotationTypeMap = Record<string, AnnotationType>;
 
 export type UIAction = 'select' | 'add' | 'delete' | 'filter';
 
+export type Taxonomy = TreeItem[];
+export type FlattenedTaxonomy = FlatTreeObj
+
 export type State = {
+  /**
+   * Document data
+   */
   data: DocumentState | undefined;
-  types: AnnotationTypeMap,
+  /**
+   * Taxonomy in tree structure
+   */
+  types: Taxonomy,
+  /**
+   * Flattened taxonomy for easier access
+   */
+  flattenedTypes: FlattenedTaxonomy,
   ui: {
     action: {
       value: UIAction;

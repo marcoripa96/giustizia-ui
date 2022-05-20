@@ -23,7 +23,7 @@ export function documentReducer(state: State, action: Action): State {
     case 'addType': {
       return {
         ...state,
-        types: addType(state.types, action.payload)
+        // types: addType(state.types, action.payload)
       }
     }
     default: {

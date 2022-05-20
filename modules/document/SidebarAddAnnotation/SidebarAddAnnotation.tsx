@@ -1,33 +1,11 @@
-import { AnnotationType } from "@/hooks/use-ner";
 import styled from "@emotion/styled";
 import { Divider, Text } from "@nextui-org/react";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import { FiUpload } from "@react-icons/all-files/fi/FiUpload";
-import { Fragment, ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDocumentActiveType, useDocumentDispatch, useDocumentTypes } from "../DocumentProvider/selectors";
 import AddAnnotationModal from "./AddAnnotationModal";
-
-export type Item = {
-  label: string;
-  color: string;
-  children?: Record<string, Omit<Item, 'color'>>
-};
-
-type TreeListProps = {
-  items: Record<string, Item>;
-  value: string | undefined;
-  onChange: (path: string) => void;
-}
-
-/**
- * Item which displays a type
- */
-type ItemType = AnnotationType & {
-  active: boolean;
-  // path to the type (e.g., type1.subtype1)
-  path: string;
-  onClick: (path: string) => void;
-};
+import { Tree } from "./Tree";
 
 
 const ItemContainer = styled.button<{ active?: boolean, paddingLeft?: number }>(({ active, paddingLeft = 14 }) => ({
@@ -53,33 +31,11 @@ const ItemContainer = styled.button<{ active?: boolean, paddingLeft?: number }>(
   })
 }));
 
-const ItemColor = styled.div<{ color: string }>(({ color }) => ({
-  width: '20px',
-  height: '20px',
-  borderRadius: '4px',
-  background: color,
-  border: '2px solid rgba(0,0,0,0.1)'
-}));
-
 const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   height: '100%'
 })
-
-const ItemType = ({ active, color, label, path, onClick }: ItemType) => {
-  const splittedPath = path.split('.');
-  const paddingLeft = (splittedPath.length - 1) * 30 + 14
-  return (
-    <ItemContainer
-      paddingLeft={paddingLeft}
-      active={active}
-      onClick={() => onClick(path)} >
-      <ItemColor color={color} />
-      <Text css={{ fontSize: '18px' }}>{label}</Text>
-    </ItemContainer>
-  )
-};
 
 const TreeContainer = styled.div({
   display: 'flex',
@@ -94,65 +50,6 @@ const TreeContainer = styled.div({
   }
 });
 
-/**
- * Component which renders the types as a tree
- */
-const TreeList = ({ items, value, onChange }: TreeListProps) => {
-  const onClick = (path: string) => {
-    onChange(path);
-  }
-
-  /**
-   * Renders subtypes recursively
-   */
-  const renderSubTypes = (
-    color: string,
-    childrenTypes: Record<string, Omit<AnnotationType, "color">> | undefined,
-    path: string
-  ): ReactNode => {
-    if (!childrenTypes) {
-      return null;
-    }
-
-    return Object.keys(childrenTypes).map((subTypeKey) => {
-      const { children, label } = childrenTypes[subTypeKey];
-      const subPath = `${path}.${subTypeKey}`;
-      const isActive = subPath === value;
-      return (
-        <Fragment key={subPath}>
-          <ItemType
-            label={label}
-            color={color}
-            active={isActive}
-            path={subPath}
-            onClick={onClick} />
-          {renderSubTypes(color, children, subPath)}
-        </Fragment>
-      )
-    });
-  }
-
-  return (
-    <>
-      {Object.keys(items).map((typeKey) => {
-        const { color, label, children } = items[typeKey];
-        const path = typeKey;
-        const isActive = path === value;
-        return (
-          <Fragment key={typeKey}>
-            <ItemType
-              color={color}
-              label={label}
-              path={path}
-              active={isActive}
-              onClick={onClick} />
-            {renderSubTypes(color, children, path)}
-          </Fragment>
-        )
-      })}
-    </>
-  )
-}
 
 
 const ContentTitle = styled.div({
@@ -184,14 +81,13 @@ const SidebarAddAnnotation = () => {
     })
   }, [types])
 
-  const handleOnChange = (path: string) => {
-    // change type
+  const handleNodeSelect = (key: string) => {
     dispatch({
       type: 'changeAction',
       payload: {
         action: {
           value: 'add',
-          data: path
+          data: key
         },
       }
     })
@@ -212,7 +108,7 @@ const SidebarAddAnnotation = () => {
         </ContentTitle>
         <Divider css={{ background: '#F3F3F5' }} />
         <TreeContainer>
-          <TreeList items={types} value={activeType} onChange={handleOnChange} />
+          <Tree items={types} onNodeSelect={handleNodeSelect} selected={activeType} />
         </TreeContainer>
         <Divider css={{ background: '#F3F3F5' }} />
         <ItemContainer onClick={() => setAddModalVisible(true)}>

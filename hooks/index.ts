@@ -14,3 +14,6 @@ export { default as useQueryParam } from './use-query-param';
 export * from './use-query-param';
 
 export * from './use-form';
+
+export { default as useToggle } from './use-toggle';
+export * from './use-toggle';
