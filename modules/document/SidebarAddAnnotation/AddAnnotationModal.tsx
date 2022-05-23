@@ -125,7 +125,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   return (
     <ContainerSelectType>
       <Checkbox aria-label="Enable sub-type" isSelected={checked} onChange={handleCheck} />
-      <Text css={{ margin: 0 }}>Sub-type of</Text>
+      <Text css={{ margin: 0 }}>Subclass of</Text>
       <SelectContainer>
         <Select
           inputProps={{
@@ -205,7 +205,7 @@ const Form = ({ onClose }: FormProps) => {
     <FormContainer onSubmit={onSubmit(handleForm)}>
       <Modal.Header>
         <Col css={{ textAlign: 'left' }}>
-          <Text b size={18}>Add annotation type</Text>
+          <Text b size={18}>Add entity type</Text>
           <Text color="rgba(0,0,0,0.5)" css={{ lineHeight: 1.1 }} >
             Create a new type to be used to annotate entities in your documents.
           </Text>
