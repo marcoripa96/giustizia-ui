@@ -1,3 +1,5 @@
+import { removeProp } from "@/utils/shared";
+import { getPathToNode } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
 import { addType } from "./utils";
 
@@ -20,6 +22,15 @@ export function documentReducer(state: State, action: Action): State {
     case 'addAnnotation': {
       return state;
     }
+    case 'deleteTaxonomyType': {
+      const { taxonomy } = state;
+      const { key } = action.payload;
+      // const path = getPathToNode(flattenedTaxonomy, key);
+      return {
+        ...state,
+        taxonomy: removeProp(taxonomy, key)
+      };
+    }
     case 'addType': {
       return {
         ...state,
@@ -27,7 +38,7 @@ export function documentReducer(state: State, action: Action): State {
       }
     }
     default: {
-      throw new Error(`Unhandled action type: ${action.type}`)
+      throw new Error(`Unhandled action type`)
     }
   }
 }

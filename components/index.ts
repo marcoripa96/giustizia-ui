@@ -18,3 +18,4 @@ export * from "./ToolbarSidebarLayout";
 export * from "./LoginAvatar";
 export * from "./IconButton";
 export * from "./Select";
+export * from "./ConfirmationDialog";

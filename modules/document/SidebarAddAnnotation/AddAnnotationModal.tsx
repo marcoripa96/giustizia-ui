@@ -5,7 +5,7 @@ import { isEmptyObject } from "@/utils/shared";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { useDocumentDispatch, useDocumentTypes } from "../DocumentProvider/selectors";
+import { useDocumentDispatch, useDocumentTaxonomy } from "../DocumentProvider/selectors";
 import { getTypeFromPath } from "../DocumentProvider/utils";
 
 type SelectColorProps = {
@@ -90,7 +90,7 @@ const getChildrenTypes = (path: string, children: Record<string, Omit<Annotation
 const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const [value, setValue] = useState(valueProp);
   const [checked, setChecked] = useState(false);
-  const types = useDocumentTypes();
+  const taxonomy = useDocumentTaxonomy();
 
   const items = useMemo(() => {
     // return Object.keys(types).flatMap((type) => {
@@ -103,7 +103,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
     //   return [item, ...getChildrenTypes(path, children)];
     // });
     return [];
-  }, [types]);
+  }, [taxonomy]);
 
   const handleOnChange = (value: string) => {
     setValue(value);
@@ -166,7 +166,7 @@ const Form = ({ onClose }: FormProps) => {
     type: '',
     color: '#AA9CFC'
   });
-  const types = useDocumentTypes();
+  const taxonomy = useDocumentTaxonomy();
   const dispatch = useDocumentDispatch();
 
   const { type } = value;

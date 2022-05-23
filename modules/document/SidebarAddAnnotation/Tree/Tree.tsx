@@ -7,6 +7,7 @@ type TreeProps = {
   items: TreeItem[];
   selected?: string;
   onNodeSelect?: (key: string) => void;
+  onNodeDelete?: (key: string) => void;
 };
 
 export type TreeItem = {
@@ -25,7 +26,12 @@ const Container = styled.div({
 });
 
 function Tree(props: TreeProps) {
-  const { items, selected, onNodeSelect: onNodeSelectProp } = props;
+  const {
+    items,
+    selected,
+    onNodeSelect: onNodeSelectProp,
+    onNodeDelete: onNodeDeleteProp
+  } = props;
 
   const onNodeSelect = useCallback(
     (key: string) => {
@@ -36,12 +42,22 @@ function Tree(props: TreeProps) {
     [onNodeSelectProp]
   );
 
+  const onNodeDelete = useCallback(
+    (key: string) => {
+      if (onNodeDeleteProp) {
+        onNodeDeleteProp(key);
+      }
+    },
+    [onNodeDeleteProp]
+  );
+
   const isSelected = useCallback((key: string) => key === selected, [selected]);
 
   return (
     <TreeContext.Provider
       value={{
         onNodeSelect,
+        onNodeDelete,
         isSelected
       }}
     >

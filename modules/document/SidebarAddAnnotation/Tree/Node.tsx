@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
-import { darken, rgba } from "polished";
-import { useMemo } from "react";
+import { borderRadius, darken, rgba } from "polished";
+import { MouseEvent, useMemo } from "react";
 import { ChildTreeItem, TreeItem } from "./Tree";
 import { useTreeContext } from "./TreeContext";
 import { countChildren } from "./utils";
+import { FiX } from '@react-icons/all-files/fi/FiX'
 
 type NodeProps = {
   item: TreeItem | ChildTreeItem;
@@ -24,12 +25,14 @@ type TopLevelNodeProps = {
   item: TreeItem;
   hasChildren: boolean;
   nTotalSubChildren: number;
+  onNodeDelete: (event: MouseEvent) => void;
 };
 
 type ChildNodeProps = {
   item: ChildTreeItem;
   hasChildren: boolean;
   nTotalSubChildren: number;
+  onNodeDelete: (event: MouseEvent) => void;
 };
 
 // parent square size
@@ -86,7 +89,7 @@ const InnerContainer = styled.div<{
   hasChildren: boolean,
   isExpanded: boolean
 }>(
-  ({ level, nDirectSubChildren, isExpanded }) => ({
+  ({ level, nDirectSubChildren, hasChildren, isExpanded }) => ({
     display: "flex",
     flexDirection: "row",
     height: '100%',
@@ -104,7 +107,7 @@ const InnerContainer = styled.div<{
         background: 'rgba(0,0,0,0.2)'
       }
     }),
-    ...(isExpanded && {
+    ...(isExpanded && hasChildren && {
       '&:after': {
         content: "''",
         position: 'absolute',
@@ -142,6 +145,7 @@ const NumberSquare = styled.div<{ color: string }>(({ color }) => ({
 
 const SoloNumberSquare = styled.div({
   display: 'flex',
+  flexShrink: 0,
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: "5px",
@@ -150,7 +154,46 @@ const SoloNumberSquare = styled.div({
   background: 'rgba(0,0,0,0.1)'
 });
 
-function TopLevelNode({ item, hasChildren, nTotalSubChildren }: TopLevelNodeProps) {
+const NodeTextContainer = styled.div({
+  flexGrow: 1,
+  position: 'relative',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  paddingRight: '20px',
+  '&:hover': {
+    paddingRight: '35px',
+    '> button': {
+      visibility: 'visible'
+    }
+  }
+})
+
+const DeleteButton = styled.button({
+  position: 'absolute',
+  height: '20px',
+  width: '20px',
+  top: '50%',
+  right: '10px',
+  padding: 0,
+  border: 'none',
+  outline: 'none',
+  borderRadius: '6px',
+  background: 'transparent',
+  transform: 'translateY(-50%)',
+  visibility: 'hidden',
+  cursor: 'pointer',
+  '&:hover': {
+    background: 'rgba(0,0,0,0.1)',
+  },
+  '> svg': {
+    width: '100%',
+    height: '100%',
+    color: 'rgba(0,0,0,0.5)'
+  }
+})
+
+function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: TopLevelNodeProps) {
   return (
     <>
       <ColoredSquared color={item.color}>
@@ -160,12 +203,17 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren }: TopLevelNodeProp
           </NumberSquare>
         )}
       </ColoredSquared>
-      {hasChildren ? <b>{item.label}</b> : item.label}
+      <NodeTextContainer>
+        {hasChildren ? <b>{item.label}</b> : item.label}
+        <DeleteButton onClick={onNodeDelete}>
+          <FiX />
+        </DeleteButton>
+      </NodeTextContainer>
     </>
   );
 }
 
-function ChildNode({ item, hasChildren, nTotalSubChildren }: ChildNodeProps) {
+function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: ChildNodeProps) {
   return (
     <>
       {hasChildren && (
@@ -173,14 +221,18 @@ function ChildNode({ item, hasChildren, nTotalSubChildren }: ChildNodeProps) {
           <Text size={11} b>{nTotalSubChildren}</Text>
         </SoloNumberSquare>
       )}
-
-      {hasChildren ? <b>{item.label}</b> : item.label}
+      <NodeTextContainer>
+        {hasChildren ? <b>{item.label}</b> : item.label}
+        <DeleteButton onClick={onNodeDelete}>
+          <FiX />
+        </DeleteButton>
+      </NodeTextContainer>
     </>
   )
 }
 
 function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
-  const { isSelected, onNodeSelect } = useTreeContext();
+  const { isSelected, onNodeSelect, onNodeDelete } = useTreeContext();
 
   const handleClick = () => {
     if (hasChildren) {
@@ -188,6 +240,11 @@ function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
     }
     onNodeSelect(item.key);
   };
+
+  const handleDelete = (event: MouseEvent) => {
+    event.stopPropagation();
+    onNodeDelete(item.key);
+  }
 
   const nTotalSubChildren = useMemo(() => hasChildren ? countChildren(item) : 0, [item, hasChildren]);
   const nDirectSubChildren = item.children ? item.children.length : 0;
@@ -205,12 +262,14 @@ function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
           <TopLevelNode
             item={item}
             hasChildren={hasChildren}
-            nTotalSubChildren={nTotalSubChildren} />
+            nTotalSubChildren={nTotalSubChildren}
+            onNodeDelete={handleDelete} />
         ) : (
           <ChildNode
             item={item}
             hasChildren={hasChildren}
-            nTotalSubChildren={nTotalSubChildren} />
+            nTotalSubChildren={nTotalSubChildren}
+            onNodeDelete={handleDelete} />
         )}
       </InnerContainer>
     </Container>

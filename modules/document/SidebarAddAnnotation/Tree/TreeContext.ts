@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 type TreeContextProps = {
   isSelected: (key: string) => boolean;
   onNodeSelect: (key: string) => void;
+  onNodeDelete: (key: string) => void;
 };
 
 export const TreeContext = createContext<TreeContextProps | undefined>(

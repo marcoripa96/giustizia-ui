@@ -1,11 +1,16 @@
+import { ConfirmationDialog, useConfirmationDialog } from "@/components";
 import styled from "@emotion/styled";
 import { Divider, Text } from "@nextui-org/react";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import { FiUpload } from "@react-icons/all-files/fi/FiUpload";
 import { useEffect, useState } from "react";
-import { useDocumentActiveType, useDocumentDispatch, useDocumentTypes } from "../DocumentProvider/selectors";
+import { useDocumentActiveType, useDocumentDispatch, useDocumentTaxonomy, useDocumentTaxonomyTree } from "../DocumentProvider/selectors";
 import AddAnnotationModal from "./AddAnnotationModal";
 import { Tree } from "./Tree";
+
+type DeleteModalProps = {
+  onConfirm: () => void;
+}
 
 
 const ItemContainer = styled.button<{ active?: boolean, paddingLeft?: number }>(({ active, paddingLeft = 14 }) => ({
@@ -61,15 +66,16 @@ const ContentTitle = styled.div({
 const SidebarAddAnnotation = () => {
   const dispatch = useDocumentDispatch();
   // get all types
-  const types = useDocumentTypes();
+  const taxonomyTree = useDocumentTaxonomyTree();
   // get currently active type
   const activeType = useDocumentActiveType();
 
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [deleteModalState, setDeleteModalState] = useConfirmationDialog<DeleteModalProps>();
 
   useEffect(() => {
     // set initial type
-    const initialValue = Object.keys(types)[0];
+    const initialValue = taxonomyTree[0].key;
     dispatch({
       type: 'changeAction',
       payload: {
@@ -79,7 +85,7 @@ const SidebarAddAnnotation = () => {
         },
       }
     })
-  }, [types])
+  }, [taxonomyTree])
 
   const handleNodeSelect = (key: string) => {
     dispatch({
@@ -93,8 +99,23 @@ const SidebarAddAnnotation = () => {
     })
   }
 
+  const handleNodeDelete = (key: string) => {
+    const onConfirm = () => {
+      dispatch({
+        type: 'deleteTaxonomyType',
+        payload: { key }
+      })
+      setDeleteModalState({ open: false })
+    }
+    setDeleteModalState({ open: true, props: { onConfirm } })
+  }
+
   const handleCloseAddModal = () => {
     setAddModalVisible(false);
+  }
+
+  const handleCloseDeleteModal = () => {
+    setDeleteModalState({ open: false });
   }
 
   return (
@@ -108,7 +129,7 @@ const SidebarAddAnnotation = () => {
         </ContentTitle>
         <Divider css={{ background: '#F3F3F5' }} />
         <TreeContainer>
-          <Tree items={types} onNodeSelect={handleNodeSelect} selected={activeType} />
+          <Tree items={taxonomyTree} onNodeSelect={handleNodeSelect} onNodeDelete={handleNodeDelete} selected={activeType} />
         </TreeContainer>
         <Divider css={{ background: '#F3F3F5' }} />
         <ItemContainer onClick={() => setAddModalVisible(true)}>
@@ -123,6 +144,11 @@ const SidebarAddAnnotation = () => {
         <Divider css={{ background: '#F3F3F5' }} />
       </Container>
       <AddAnnotationModal open={addModalVisible} onClose={handleCloseAddModal} />
+      <ConfirmationDialog
+        open={deleteModalState.open}
+        onClose={handleCloseDeleteModal}
+        {...deleteModalState.props}
+        content="By deleting this type from the taxonomy you will also delete all annotations with this entity type. Are you sure?" />
     </>
   );
 }

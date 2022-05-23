@@ -21,3 +21,8 @@ export const isEmptyObject = (obj: any) => {
   for (const key in obj) return false;
   return true;
 }
+
+export const removeProp = <T>(obj: T, prop: keyof T) => {
+  const { [prop]: remove, ...rest } = obj;
+  return rest;
+}

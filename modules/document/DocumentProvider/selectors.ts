@@ -1,4 +1,5 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
+import { buildTreeFromFlattenedObject } from "../SidebarAddAnnotation/Tree";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
 
@@ -36,7 +37,18 @@ export function useSelector<T>(cb: (state: State) => T) {
   return cb(_state);
 }
 
+export function useMemoSelector<T>(cb: (state: State) => T, cbDeps: (state: State) => Array<any>) {
+  const _state = useDocumentState();
+  const deps = cbDeps(_state);
+  const value = useMemo(() => {
+    return cb(_state);
+  }, deps);
+  return value;
+}
+
 export const useDocumentAction = () => useSelector((state) => state.ui.action);
-export const useDocumentTypes = () => useSelector((state) => state.types);
-export const useDocumentTypesFlattened = () => useSelector((state) => state.flattenedTypes);
+export const useDocumentTaxonomy = () => useSelector((state) => state.taxonomy);
+export const useDocumentTaxonomyTree = () => useMemoSelector(
+  (state) => buildTreeFromFlattenedObject(state.taxonomy),
+  ({ taxonomy }) => [taxonomy]);
 export const useDocumentActiveType = () => useSelector((state) => state.ui.action.data);

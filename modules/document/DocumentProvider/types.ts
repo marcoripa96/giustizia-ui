@@ -6,7 +6,7 @@ export type Action =
   | { type: 'setData', payload: { data: DocumentState } }
   | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
   | { type: 'addAnnotation' }
-  | { type: 'deleteAnnotation' }
+  | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addType', payload: { label: string, color?: string, path: string } };
 export type Dispatch = (action: Action) => void
 
@@ -30,11 +30,8 @@ export type State = {
   /**
    * Taxonomy in tree structure
    */
-  types: Taxonomy,
-  /**
-   * Flattened taxonomy for easier access
-   */
-  flattenedTypes: FlattenedTaxonomy,
+  taxonomy: FlattenedTaxonomy,
+
   ui: {
     action: {
       value: UIAction;

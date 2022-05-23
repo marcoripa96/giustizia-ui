@@ -27,7 +27,7 @@ export const annotationTypes: AnnotationTypeMap = {
   },
 };
 
-const entityTypes: Taxonomy = [
+const baseTaxonomy: Taxonomy = [
   {
     key: 'PER',
     label: 'Person',
@@ -82,8 +82,11 @@ const entityTypes: Taxonomy = [
  */
 export const documentState: State = {
   data: undefined,
-  types: entityTypes,
-  flattenedTypes: flattenTree(entityTypes),
+  /**
+   * The idea is to let the user provide the taxonomy as a tree structure, then it is converted to an internal representation.
+   * The component utilizes the tree structure so it is converted to it when needed.
+   */
+  taxonomy: flattenTree(baseTaxonomy),
   ui: {
     action: {
       value: 'select'

@@ -8,6 +8,41 @@ export type FlatTreeNode = ParentNode | ChildNode;
 
 export type FlatTreeObj = Record<string, FlatTreeNode>;
 
+export const getParents = (obj: FlatTreeObj) => {
+  return Object.values(obj).reduce((acc, item) => {
+    const { parent, ...rest } = item;
+    if (parent === null) {
+      acc.push(rest as TreeItem);
+    }
+    return acc;
+  }, [] as TreeItem[]);
+};
+
+export const getChildren = (obj: FlatTreeObj, key: string) => {
+  return Object.values(obj).reduce((acc, item) => {
+    const { parent, ...childProps } = item;
+    if (parent === key) {
+      const child = {
+        ...childProps,
+        children: getChildren(obj, childProps.key)
+      } as ChildTreeItem;
+
+      acc.push(child);
+    }
+    return acc;
+  }, [] as ChildTreeItem[]);
+};
+
+export const buildTreeFromFlattenedObject = (obj: FlatTreeObj) => {
+  const tree = getParents(obj).map((parent) => {
+    return {
+      ...parent,
+      children: getChildren(obj, parent.key)
+    };
+  });
+  return tree;
+};
+
 export const transformChildrenToFlatObject = (
   objAccumulator: FlatTreeObj,
   parent: string,
@@ -128,6 +163,10 @@ export const addNode = (
     return item;
   });
 };
+
+export const deleteNode = (items: TreeItem[], flatItems: FlatTreeObj, path: string) => {
+
+}
 
 export const countChildren = (item: TreeItem | ChildTreeItem, accumulator: number = 0) => {
   if (!item.children || item.children.length === 0) {
