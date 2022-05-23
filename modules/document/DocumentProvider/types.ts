@@ -1,5 +1,5 @@
 import { DocumentState } from "@/lib/useQueryDocument";
-import { TreeItem } from "../SidebarAddAnnotation/Tree";
+import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
 import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
 export type Action =
@@ -7,7 +7,7 @@ export type Action =
   | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
   | { type: 'addAnnotation' }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
-  | { type: 'addType', payload: { label: string, color?: string, path: string } };
+  | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } };
 export type Dispatch = (action: Action) => void
 
 export type AnnotationType = {

@@ -1,5 +1,5 @@
 import { removeProp } from "@/utils/shared";
-import { getPathToNode } from "../SidebarAddAnnotation/Tree";
+import { FlatTreeNode, getPathToNode } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
 import { addType } from "./utils";
 
@@ -31,10 +31,31 @@ export function documentReducer(state: State, action: Action): State {
         taxonomy: removeProp(taxonomy, key)
       };
     }
-    case 'addType': {
+    case 'addTaxonomyType': {
+      const { type } = action.payload;
+      const { taxonomy } = state;
+      const { key, label, parent, ...rest } = type;
+
+      const newType = {
+        key,
+        label,
+        ...(!parent && { ...rest }),
+        parent: parent || null
+      } as FlatTreeNode
+
+      const newTaxonomy = {
+        ...taxonomy,
+        [key]: newType
+      }
+
+      console.log(newTaxonomy);
+
       return {
         ...state,
-        // types: addType(state.types, action.payload)
+        taxonomy: {
+          ...taxonomy,
+          [key]: newType
+        }
       }
     }
     default: {

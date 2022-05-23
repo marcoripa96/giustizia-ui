@@ -13,6 +13,12 @@ type SelectColorProps = {
   onChange: (value: string) => void;
 }
 
+const Row = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '10px'
+})
+
 const SelectContainer = styled.div({
   flexGrow: 1
 })
@@ -93,16 +99,12 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const taxonomy = useDocumentTaxonomy();
 
   const items = useMemo(() => {
-    // return Object.keys(types).flatMap((type) => {
-    //   const { label, children } = types[type];
-    //   const path = type;
-    //   const item = {
-    //     label: label,
-    //     value: path
-    //   };
-    //   return [item, ...getChildrenTypes(path, children)];
-    // });
-    return [];
+    return Object.values(taxonomy).map((type) => {
+      return {
+        label: type.label,
+        value: type.key
+      }
+    })
   }, [taxonomy]);
 
   const handleOnChange = (value: string) => {
@@ -146,8 +148,9 @@ type FormProps = {
 }
 
 type FormState = {
-  name: string;
-  type: string;
+  label: string;
+  key: string;
+  parent: string;
   color: string;
 }
 
@@ -162,14 +165,15 @@ const FormContainer = styled.form({
  */
 const Form = ({ onClose }: FormProps) => {
   const { value, register, onSubmit, setValue } = useForm<FormState>({
-    name: '',
-    type: '',
+    label: '',
+    key: '',
+    parent: '',
     color: '#AA9CFC'
   });
   const taxonomy = useDocumentTaxonomy();
   const dispatch = useDocumentDispatch();
 
-  const { type } = value;
+  const { label, key } = value;
 
   // useEffect(() => {
   //   if (!type) return;
@@ -181,15 +185,18 @@ const Form = ({ onClose }: FormProps) => {
   //   })
   // }, [type, types])
 
+  const handleOnBlurName = () => {
+    if (label === '') return;
+    if (key !== '') return;
+    const typeKey = label.slice(0, 3).toUpperCase();
+    setValue({ key: typeKey })
+  }
+
 
   const handleForm = (data: FormState) => {
     dispatch({
-      type: 'addType',
-      payload: {
-        label: data.name,
-        path: data.type,
-        color: data.color
-      }
+      type: 'addTaxonomyType',
+      payload: { type: data }
     })
     onClose();
   }
@@ -205,15 +212,25 @@ const Form = ({ onClose }: FormProps) => {
         </Col>
       </Modal.Header>
       <Modal.Body>
-        <Input
-          aria-label="Name of the type"
-          bordered
-          placeholder="Name of new type"
-          shadow={false}
-          {...register('name')}
-        />
+        <Row>
+          <Input
+            aria-label="Name of the type"
+            bordered
+            placeholder="Name of new type"
+            shadow={false}
+            onBlur={handleOnBlurName}
+            {...register('label')}
+          />
+          <Input
+            aria-label="Name of the type"
+            bordered
+            placeholder="Type key"
+            shadow={false}
+            {...register('key')}
+          />
+        </Row>
         <SelectType
-          {...register('type')} />
+          {...register('parent')} />
         <SelectColor {...register('color')} />
       </Modal.Body>
       <Modal.Footer>

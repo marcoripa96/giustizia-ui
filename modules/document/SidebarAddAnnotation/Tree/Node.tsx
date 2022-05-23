@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
-import { borderRadius, darken, rgba } from "polished";
+import { darken } from "polished";
 import { MouseEvent, useMemo } from "react";
 import { ChildTreeItem, TreeItem } from "./Tree";
 import { useTreeContext } from "./TreeContext";
 import { countChildren } from "./utils";
 import { FiX } from '@react-icons/all-files/fi/FiX'
+import { CONTAINER_ITEM_SIZE, PARENT_SQUARE_SIZE, PADDING, INDENTATION_OFFSET, CHILD_SQUARE_SIZE } from "./Branch";
 
 type NodeProps = {
   item: TreeItem | ChildTreeItem;
@@ -16,9 +17,10 @@ type NodeProps = {
 };
 
 export function isTopLevelItem(
-  value: TreeItem | ChildTreeItem
+  value: TreeItem | ChildTreeItem,
+  level: number
 ): value is TreeItem {
-  return value.hasOwnProperty("color");
+  return level === 0;
 }
 
 type TopLevelNodeProps = {
@@ -34,29 +36,6 @@ type ChildNodeProps = {
   nTotalSubChildren: number;
   onNodeDelete: (event: MouseEvent) => void;
 };
-
-// parent square size
-const PARENT_SQUARE_SIZE = 20;
-// child square size
-const CHILD_SQUARE_SIZE = 15;
-// padding of the container
-const PADDING = 5;
-// indentation
-const INDENTATION_OFFSET = 25;
-// container item size
-const CONTAINER_ITEM_SIZE = 34;
-
-const getArchHeight = (nDirectSubChildren: number) => {
-  const half = CONTAINER_ITEM_SIZE / 2;
-  return nDirectSubChildren === 1 ? half : half + half * nDirectSubChildren
-}
-
-const getPaddingLeftArch = (level: number) => {
-  if (level === 0) {
-    return PARENT_SQUARE_SIZE / 2 + PADDING;
-  }
-  return INDENTATION_OFFSET * level + CHILD_SQUARE_SIZE / 2 - 1 + PADDING;
-}
 
 const getPaddingLeftChildrenArch = (level: number) => {
   if (level === 1) {
@@ -85,11 +64,10 @@ const Container = styled.div<{ selected: boolean; }>(({ selected }) => ({
 
 const InnerContainer = styled.div<{
   level: number;
-  nDirectSubChildren: number;
   hasChildren: boolean,
   isExpanded: boolean
 }>(
-  ({ level, nDirectSubChildren, hasChildren, isExpanded }) => ({
+  ({ level, hasChildren, isExpanded }) => ({
     display: "flex",
     flexDirection: "row",
     height: '100%',
@@ -107,13 +85,13 @@ const InnerContainer = styled.div<{
         background: 'rgba(0,0,0,0.2)'
       }
     }),
-    ...(isExpanded && hasChildren && {
+    ...(isExpanded && hasChildren && level === 0 && {
       '&:after': {
         content: "''",
         position: 'absolute',
-        left: getPaddingLeftArch(level),
+        left: PARENT_SQUARE_SIZE / 2 + PADDING,
         top: '100%',
-        height: getArchHeight(nDirectSubChildren),
+        height: CONTAINER_ITEM_SIZE / 2,
         width: '1px',
         background: 'rgba(0,0,0,0.2)'
       }
@@ -231,7 +209,7 @@ function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: Child
   )
 }
 
-function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
+function Node({ item, toggle, hasChildren, level, ...props }: NodeProps) {
   const { isSelected, onNodeSelect, onNodeDelete } = useTreeContext();
 
   const handleClick = () => {
@@ -247,7 +225,6 @@ function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
   }
 
   const nTotalSubChildren = useMemo(() => hasChildren ? countChildren(item) : 0, [item, hasChildren]);
-  const nDirectSubChildren = item.children ? item.children.length : 0;
   const selected = isSelected(item.key);
 
   return (
@@ -255,10 +232,10 @@ function Node({ item, toggle, hasChildren, ...props }: NodeProps) {
       selected={selected}
       onClick={handleClick} >
       <InnerContainer
+        level={level}
         hasChildren={hasChildren}
-        nDirectSubChildren={nDirectSubChildren}
         {...props}>
-        {isTopLevelItem(item) ? (
+        {isTopLevelItem(item, level) ? (
           <TopLevelNode
             item={item}
             hasChildren={hasChildren}

@@ -34,6 +34,10 @@ const ItemContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
   position: 'absolute',
   display: 'flex',
   flexDirection: 'column',
+  maxHeight: '250px',
+  overflowY: 'auto',
+  paddingTop: '5px',
+  paddingBottom: '5px',
   ...anchor,
   '> div': {
     padding: 0

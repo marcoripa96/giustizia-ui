@@ -44,13 +44,7 @@ const baseTaxonomy: Taxonomy = [
           {
             key: 'JDGCRIM',
             label: 'Criminal Judge',
-            children: [
-              {
-                key: 'LULL',
-                label: 'Provissima'
-              },
-            ]
-          },
+          }
         ]
       }
     ]

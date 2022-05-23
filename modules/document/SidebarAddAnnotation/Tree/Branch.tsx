@@ -1,11 +1,46 @@
 import { ChildTreeItem, TreeItem } from "./Tree";
 import Node from "./Node";
 import { useToggle } from "@/hooks";
+import styled from "@emotion/styled";
 
 type BranchProps = {
   item: TreeItem | ChildTreeItem;
   level: number;
 };
+
+// parent square size
+export const PARENT_SQUARE_SIZE = 20;
+// child square size
+export const CHILD_SQUARE_SIZE = 15;
+// padding of the container
+export const PADDING = 5;
+// indentation
+export const INDENTATION_OFFSET = 25;
+// container item size
+export const CONTAINER_ITEM_SIZE = 34;
+
+const getPaddingLeftChildrenArch = (level: number) => {
+  if (level === 1) {
+    return PARENT_SQUARE_SIZE / 2 + PADDING;
+  }
+  return PADDING + INDENTATION_OFFSET * (level - 1) + CHILD_SQUARE_SIZE / 2 - 1;
+}
+
+const Container = styled.div<{ level: number, hasChildren: boolean }>(({ level, hasChildren }) => ({
+  position: 'relative',
+  ...(level > 0 && {
+    '&:before': {
+      position: 'absolute',
+      top: 34,
+      bottom: 17,
+      left: getPaddingLeftChildrenArch(level + 1),
+      display: 'block',
+      width: 0,
+      borderLeft: '1px solid rgba(0,0,0,0.2)',
+      content: "''"
+    }
+  })
+}));
 
 function Branch({ item, level }: BranchProps) {
   const [expanded, toggle] = useToggle(false);
@@ -24,7 +59,7 @@ function Branch({ item, level }: BranchProps) {
   };
 
   return (
-    <>
+    <Container level={level} hasChildren={hasChildren}>
       <Node
         item={item}
         hasChildren={hasChildren}
@@ -33,7 +68,7 @@ function Branch({ item, level }: BranchProps) {
         toggle={toggle}
       />
       {expanded && renderBranches()}
-    </>
+    </Container>
   );
 }
 
