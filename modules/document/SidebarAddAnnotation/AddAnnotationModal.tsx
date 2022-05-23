@@ -7,6 +7,7 @@ import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useDocumentDispatch, useDocumentTaxonomy } from "../DocumentProvider/selectors";
 import { getTypeFromPath } from "../DocumentProvider/utils";
+import { ascend, ParentNode } from "./Tree";
 
 type SelectColorProps = {
   value: string;
@@ -173,17 +174,15 @@ const Form = ({ onClose }: FormProps) => {
   const taxonomy = useDocumentTaxonomy();
   const dispatch = useDocumentDispatch();
 
-  const { label, key } = value;
+  const { label, key, parent } = value;
 
-  // useEffect(() => {
-  //   if (!type) return;
-  //   const typeObj = getTypeFromPath(types, type);
-  //   if (!typeObj) return;
-
-  //   setValue({
-  //     color: typeObj.color
-  //   })
-  // }, [type, types])
+  useEffect(() => {
+    if (!parent) return;
+    const parentNode = ascend(taxonomy, parent) as ParentNode;
+    setValue({
+      color: parentNode.color
+    })
+  }, [taxonomy, parent, dispatch])
 
   const handleOnBlurName = () => {
     if (label === '') return;
