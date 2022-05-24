@@ -12,7 +12,8 @@ const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   width: '250px',
-  borderRight: '1px solid #F3F3F5'
+  borderRight: '1px solid #F3F3F5',
+  background: '#FFF'
 });
 
 const content: Record<UIAction, ComponentType> = {

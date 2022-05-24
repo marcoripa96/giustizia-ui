@@ -2,11 +2,15 @@ import { Annotation, useNER } from '@/hooks/use-ner';
 import styled from '@emotion/styled';
 import { TooltipProps } from '@nextui-org/react';
 import { NERTag } from '../NERTag';
-import { MouseEvent, FocusEvent } from 'react';
+import { MouseEvent, FocusEvent, useCallback } from 'react';
+import { FlattenedTaxonomy } from '@/modules/document/DocumentProvider/types';
+import { NERAnnotation } from '@/server/routers/document';
+import { getAllNodeData } from '@/modules/document/SidebarAddAnnotation/Tree';
 
-type NERViewerProps<P> = {
+type NERViewerProps = {
+  taxonomy: FlattenedTaxonomy;
   content: string;
-  annotations: Annotation<P>[];
+  annotations: NERAnnotation[];
   disableLink?: boolean;
   disablePreview?: boolean;
   tooltipPlacement?: TooltipProps['placement'],
@@ -23,6 +27,7 @@ const Container = styled.div({
 const getDefaultProp = () => ({});
 
 function NERViewer<P>({
+  taxonomy,
   content,
   annotations,
   tooltipPlacement = 'top',
@@ -30,8 +35,13 @@ function NERViewer<P>({
   disablePreview = false,
   onTagClick = getDefaultProp,
   onTagFocus = getDefaultProp
-}: NERViewerProps<P>) {
+}: NERViewerProps) {
   const nodes = useNER({ content, annotations });
+
+  const getTaxonomyNode = useCallback((key: string) => {
+    const node = getAllNodeData(taxonomy, key);
+    return node;
+  }, [taxonomy]);
 
   return (
     <Container>
@@ -40,13 +50,15 @@ function NERViewer<P>({
           node.text
         ) : (
           <NERTag
-            onClick={onTagClick}
-            onFocus={onTagFocus}
+            key={node.props.id}
+            annotation={node.props}
             disableLink={disableLink}
             tooltipPlacement={tooltipPlacement}
             disablePreview={disablePreview}
-            key={node.props.id}
-            annotation={node.props}>
+            onClick={onTagClick}
+            onFocus={onTagFocus}
+            getTaxonomyNode={getTaxonomyNode}
+          >
             {node.text}
           </NERTag>
         )

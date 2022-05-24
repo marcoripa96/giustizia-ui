@@ -19,3 +19,4 @@ export * from "./LoginAvatar";
 export * from "./IconButton";
 export * from "./Select";
 export * from "./ConfirmationDialog";
+export * from "./AnnotationTypeFilter";

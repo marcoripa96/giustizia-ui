@@ -1,4 +1,4 @@
-import { AnnotationTypeList, Button, NERViewer } from "@/components";
+import { AnnotationTypeFilter, AnnotationTypeList, Button, NERViewer } from "@/components";
 import { annotationTypes } from "@/components/NERDocumentViewer";
 import { useQueryParam } from "@/hooks";
 import styled from "@emotion/styled";
@@ -9,6 +9,8 @@ import { useQuery } from "@/utils/trpc";
 import { fixedEncodeURIComponent } from "@/utils/shared";
 import { NERAnnotation } from "@/server/routers/document";
 import { Textarea, Text, Loading } from "@nextui-org/react";
+import { flattenTree } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { baseTaxonomy } from "@/modules/document/DocumentProvider/state";
 
 const TextAreaWrapper = styled.div`
   display: flex;
@@ -72,6 +74,8 @@ const QueryText = () => {
     ['infer.getPipelineResults', { value: query }],
     { enabled: false, initialData: query ? [] : annotationsExample, retry: false })
 
+  const [entityFilter, setEntityFilter] = useState('all');
+
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -103,23 +107,25 @@ const QueryText = () => {
     }
   }
 
-  const annotationTypesArray = useMemo(() => {
-    if (annotation) {
-      return getAnnotationTypes(annotation);
+  // for now use base taxonomy
+  const taxonomy = useMemo(() => flattenTree(baseTaxonomy), []);
+
+  const annotations = useMemo(() => {
+    if (!annotation) {
+      return [];
     }
-    return [];
-  }, [annotation])
+    return annotation.filter((ann) => {
+      if (entityFilter === 'all') {
+        return true;
+      }
+      return entityFilter === ann.ner_type;
+    })
+  }, [annotation, entityFilter])
 
-  // const clipboardValue = useMemo(() => {
-  //   if (query) {
-  //     return router.asPath;
-  //   }
-  //   if (!content) {
-  //     return ''
-  //   }
 
-  //   return `/infer?query=${fixedEncodeURIComponent(content)}`
-  // }, [query, content]);
+  const handleAnnotationTypeFilterChange = (key: string) => {
+    setEntityFilter(key);
+  }
 
   return (
     <>
@@ -140,8 +146,12 @@ const QueryText = () => {
       {error && <Text color="error">Something went wrong :(</Text>}
       {annotation ? (
         <Column>
-          {annotationTypesArray.length > 0 && <AnnotationTypeList items={annotationTypesArray} />}
-          <NERViewer content={content} annotations={annotation} />
+          <AnnotationTypeFilter
+            value={entityFilter}
+            onChange={handleAnnotationTypeFilterChange}
+            taxonomy={taxonomy}
+            annotations={annotation} />
+          <NERViewer taxonomy={taxonomy} content={content} annotations={annotations} />
         </Column>
       ) : null}
     </>

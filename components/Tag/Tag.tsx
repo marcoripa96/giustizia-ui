@@ -1,36 +1,37 @@
 import { annotationTypes } from "@/hooks/use-ner";
+import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
 import styled from "@emotion/styled";
 import { CSS } from "@nextui-org/react";
 import { darken } from "polished";
 
 type TagProps = {
-  type: string;
+  node: ChildNodeWithColor;
   css?: CSS
 }
 
-const getAnnotationColor = (type: string) => {
-  return annotationTypes[type] ? annotationTypes[type].color : '#F4F4F4';
+const getAnnotationColor = (node: ChildNodeWithColor) => {
+  return node.color;
 }
 
-const Container = styled.span<{ type: string }>(({ type }) => ({
+const Container = styled.span<{ node: ChildNodeWithColor; }>(({ node }) => ({
   padding: '2px 5px',
   borderRadius: '6px',
-  background: getAnnotationColor(type),
+  background: getAnnotationColor(node),
   transition: 'background 250ms ease-out',
   cursor: 'pointer',
   '&:hover': {
-    background: darken(0.15, getAnnotationColor(type)),
+    background: darken(0.15, getAnnotationColor(node)),
   },
   fontSize: '10px',
   fontWeight: 700,
   textTransform: 'uppercase'
 }));
 
-const Tag = ({ type, ...props }: TagProps) => {
-  const label = annotationTypes[type] ? annotationTypes[type].label : 'Unknown';
+const Tag = ({ node, ...props }: TagProps) => {
+  const label = node.label
 
   return (
-    <Container type={type} {...props}>
+    <Container node={node} {...props}>
       {label}
     </Container>
   )

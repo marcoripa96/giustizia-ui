@@ -6,9 +6,11 @@ import { PropsWithChildren, MouseEvent, FocusEvent } from 'react';
 import { FaLink } from '@react-icons/all-files/fa/FaLink';
 import { Tooltip, TooltipProps } from '@nextui-org/react';
 import { EntityCard } from '../EntityCard';
+import { ChildNodeWithColor } from '@/modules/document/SidebarAddAnnotation/Tree';
 
 type NERTagProps = PropsWithChildren<{
   annotation: NERAnnotation;
+  getTaxonomyNode: (key: string) => ChildNodeWithColor;
   tooltipPlacement?: TooltipProps['placement'],
   disableLink?: boolean,
   disablePreview?: boolean,
@@ -16,26 +18,28 @@ type NERTagProps = PropsWithChildren<{
   onFocus?: (event: FocusEvent, tag: Annotation) => void;
 }>;
 
-const Tag = styled.span<{ type: string }>(({ type }) => ({
+const Tag = styled.span<{ node: ChildNodeWithColor }>(({ node }) => ({
   padding: '2px 5px',
   borderRadius: '6px',
-  background: annotationTypes[type].color,
+  background: node.color,
+  color: darken(0.70, node.color),
   transition: 'background 250ms ease-out',
   cursor: 'pointer',
-  '&:hover': {
-    background: darken(0.15, annotationTypes[type].color),
-  },
+  // '&:hover': {
+  //   background: darken(0.15, node.color),
+  // },
 }));
 
-const TagLabel = styled.span(({ children }) => ({
-  fontSize: '12px',
-  fontWeight: 700,
+const TagLabel = styled.span<{ node: ChildNodeWithColor }>(({ node }) => ({
+  fontSize: '11px',
+  fontWeight: 600,
   textTransform: 'uppercase',
   marginLeft: '6px',
   padding: '0 3px',
-  // background: darken(0.1, annotationTypes[children as string].color),
   borderRadius: '4px',
   pointerEvents: 'none',
+  background: darken(0.35, node.color),
+  color: node.color
 }));
 
 const Icon = styled(FaLink)({
@@ -50,6 +54,7 @@ const getDefaultProp = () => ({});
  */
 function NERTag({
   annotation,
+  getTaxonomyNode,
   children,
   tooltipPlacement = 'top',
   disableLink = false,
@@ -75,6 +80,8 @@ function NERTag({
     ...props,
   };
 
+  const node = getTaxonomyNode(ner_type);
+
   const TagComponent = (
     <Tag
       as={component}
@@ -82,11 +89,11 @@ function NERTag({
       onMouseDown={handleOnMouseDown}
       onClick={handleClick}
       onFocus={handleOnFocus}
-      type={ner_type}
+      node={node}
       {...componentTagProps}
     >
       {children}
-      <TagLabel>{ner_type}</TagLabel>
+      <TagLabel node={node}>{node.key}</TagLabel>
       {top_url && <Icon />}
     </Tag>
   )
@@ -94,7 +101,7 @@ function NERTag({
   if (!disablePreview && top_wikipedia_id !== -1) {
     return (
       <Tooltip css={{ display: 'inline-block' }}
-        placement={tooltipPlacement} content={top_wikipedia_id ? <EntityCard annotation={annotation} /> : 'Empty'}>
+        placement={tooltipPlacement} content={top_wikipedia_id ? <EntityCard annotation={annotation} node={node} /> : 'Empty'}>
         {TagComponent}
       </Tooltip>
     )

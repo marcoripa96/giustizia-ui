@@ -46,6 +46,7 @@ export function useMemoSelector<T>(cb: (state: State) => T, cbDeps: (state: Stat
   return value;
 }
 
+export const useDocumentData = () => useSelector((state) => state.data);
 export const useDocumentAction = () => useSelector((state) => state.ui.action);
 export const useDocumentTaxonomy = () => useSelector((state) => state.taxonomy);
 export const useDocumentTaxonomyTree = () => useMemoSelector(

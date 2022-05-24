@@ -76,7 +76,7 @@ export const annotationTypes: AnnotationTypeMap = {
   },
 };
 
-function _buildNodes<P>(content: string, annotations: Annotation<P>[]) {
+function _buildNodes<P>(content: string, annotations: Annotation<P>[]): NERNode<P>[] {
   const nodes: NERNode<P>[] = [];
   let lastPosition = 0;
 
@@ -94,6 +94,9 @@ function _buildNodes<P>(content: string, annotations: Annotation<P>[]) {
     });
     lastPosition = end_pos;
   });
+  // finally add the last piece of text
+  const textNode = content.slice(lastPosition, content.length);
+  nodes.push({ text: textNode, type: 'text' });
 
   return nodes;
 }

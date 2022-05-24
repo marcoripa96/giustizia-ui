@@ -27,11 +27,11 @@ export const annotationTypes: AnnotationTypeMap = {
   },
 };
 
-const baseTaxonomy: Taxonomy = [
+export const baseTaxonomy: Taxonomy = [
   {
     key: 'PER',
     label: 'Person',
-    color: 'rgb(254, 202, 116)',
+    color: '#FCE7F3',
     children: [
       {
         key: 'JDG',
@@ -52,22 +52,22 @@ const baseTaxonomy: Taxonomy = [
   {
     key: 'MISC',
     label: 'Miscellaneous',
-    color: 'rgb(97, 232, 225)'
+    color: '#EDE9FE'
   },
   {
     key: 'DATE',
     label: 'Date',
-    color: 'rgb(170, 156, 252)'
+    color: '#ffdebf'
   },
   {
     key: 'LOC',
     label: 'Location',
-    color: 'rgb(191, 225, 217)'
+    color: '#FAE8FF'
   },
   {
     key: 'ORG',
     label: 'Organization',
-    color: 'rgb(234, 193, 204)'
+    color: '#baf2e6'
   }
 ];
 

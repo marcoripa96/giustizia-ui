@@ -3,8 +3,10 @@ import { TreeItem, ChildTreeItem } from "./Tree";
 
 export type ParentNode = Omit<TreeItem, "children"> & { parent: string | null };
 export type ChildNode = Omit<ChildTreeItem, "children"> & { parent: string };
+export type ChildNodeWithColor = Omit<ChildNode, 'parent'> & { color: string };
 
 export type FlatTreeNode = ParentNode | ChildNode;
+
 
 export type FlatTreeObj = Record<string, FlatTreeNode>;
 
@@ -88,13 +90,14 @@ export const ascend = (obj: FlatTreeObj, key: string): FlatTreeNode => {
   return ascend(obj, node.parent);
 };
 
-export const getAllNodeData = (obj: FlatTreeObj, key: string) => {
+export const getAllNodeData = (obj: FlatTreeObj, key: string): ChildNodeWithColor => {
   const node = getNode(obj, key);
   const parentNode = ascend(obj, key) as ParentNode;
   const { parent, ...nodeProps } = node;
+
   return {
-    ...nodeProps,
-    color: parentNode.color
+    color: parentNode.color,
+    ...nodeProps
   };
 };
 

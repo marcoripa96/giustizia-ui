@@ -1,4 +1,4 @@
-import { Card, DocumentViewerSkeleton, Toolbar, ToolbarSidebarLayout } from "@/components";
+import { AnnotationTypeFilter, Card, DocumentViewerSkeleton, Toolbar, ToolbarSidebarLayout } from "@/components";
 import { Annotation, AnnotationClickEvent, NERDocumentViewer, SelectionEvent } from "@/components/NERDocumentViewer";
 import { useClickOutside, useParam } from "@/hooks";
 import { withAuthSsr } from "@/lib/withAuthSsr";
@@ -14,33 +14,62 @@ import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
 import ActionSidebar from "@/modules/document/ContentLayout/ActionSidebar";
+import { useDocumentData, useDocumentTaxonomy } from "@/modules/document/DocumentProvider/selectors";
+import { annotations } from "@/server/routers/annotation";
+import { annotationsExample } from "@/modules/infer/utils/example";
+import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
 
-const Container = styled.div`
-  min-height: 100vh;
-  padding: 100px 0 40px 0;
-`
+// const Container = styled.div`
+//   display: 'flex',
+//   flexDiretion: 
+//   min-height: 100vh;
+//   padding: 100px 0 40px 0;
+// `
+
+const Container = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+})
+
+const DocumentContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  margin: '20px'
+})
+
+
+const AnnotationTypeFilterContainer = styled.div({
+  position: 'sticky',
+  top: '48px',
+  display: 'flex',
+  flexDirection: 'column',
+  padding: '5px',
+  zIndex: 10,
+  background: '#FFF',
+  borderBottom: '1px solid #F3F3F5'
+})
 
 export type DocumentAction = {
   key: string;
   payload?: any;
 }
 
-const DocumentContainer = styled(Card) <{ moveToSide: boolean }>`
-  position: relative;
-  min-height: 100vh;
-  background: #FFF;
-  max-width: 900px;
-  padding: 24px 36px;
-  border-radius: 6px;
-  margin: 0 auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.7;
-  ${({ moveToSide }) => moveToSide && {
-    transform: 'translateX(15%)'
-  }};
-  transition: transform 250ms ease-out;
-`
+// const DocumentContainer = styled(Card) <{ moveToSide: boolean }>`
+//   position: relative;
+//   min-height: 100vh;
+//   background: #FFF;
+//   max-width: 900px;
+//   padding: 24px 36px;
+//   border-radius: 6px;
+//   margin: 0 auto;
+//   white-space: pre-wrap;
+//   word-wrap: break-word;
+//   line-height: 1.7;
+//   ${({ moveToSide }) => moveToSide && {
+//     transform: 'translateX(15%)'
+//   }};
+//   transition: transform 250ms ease-out;
+// `
 
 export type DocumentState = {
   id: string;
@@ -52,7 +81,45 @@ export type DocumentState = {
 
 
 const Document: NextPageWithLayout = () => {
-  return <DocumentViewer />;
+  const taxonomy = useDocumentTaxonomy();
+  const document = useDocumentData();
+  const [entityFilter, setEntityFilter] = useState('all');
+
+  const handleAnnotationTypeFilterChange = (key: string) => {
+    setEntityFilter(key);
+  }
+
+  if (!document) {
+    return (
+      <Container>
+        <AnnotationTypeFilterContainer>
+          <AnnotationTypeFilterSkeleton />
+        </AnnotationTypeFilterContainer>
+        <DocumentContainer>
+          <DocumentViewerSkeleton />
+        </DocumentContainer>
+      </Container>
+    )
+  }
+
+  return (
+    <Container>
+      <AnnotationTypeFilterContainer>
+        <AnnotationTypeFilter
+          value={entityFilter}
+          onChange={handleAnnotationTypeFilterChange}
+          taxonomy={taxonomy}
+          annotations={document.annotation} />
+      </AnnotationTypeFilterContainer>
+      <DocumentContainer>
+        <DocumentViewer
+          taxonomy={taxonomy}
+          document={document}
+          filter={entityFilter} />
+      </DocumentContainer>
+    </Container>
+  )
+
   // // document data
   // const { document, setDocument } = useDocument();
   // // state of the document (keeps track of the action selected by the user)

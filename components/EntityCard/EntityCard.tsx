@@ -1,3 +1,4 @@
+import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
 import { NERAnnotation } from "@/server/routers/document";
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
@@ -8,6 +9,7 @@ import EntityCardSkeleton from "./EntityCardSkeleton";
 
 export type EntityCardProps = {
   annotation: NERAnnotation;
+  node: ChildNodeWithColor;
 }
 
 const Container = styled.div({
@@ -25,7 +27,7 @@ const ContainerImgTitle = styled.div({
   width: '70%'
 })
 
-const EntityCard = ({ annotation }: EntityCardProps) => {
+const EntityCard = ({ annotation, node }: EntityCardProps) => {
   const { top_wikipedia_id, top_url, ner_type } = annotation;
 
   const { data, isFetching } = useQuery(['annotation.getAnnotationDetails', { id: top_wikipedia_id || '' }], { staleTime: Infinity });
@@ -76,7 +78,7 @@ const EntityCard = ({ annotation }: EntityCardProps) => {
           Details
         </Button>
       </Grid.Container>
-      <Tag type={ner_type} css={{ alignSelf: 'flex-start' }} />
+      <Tag node={node} css={{ alignSelf: 'flex-start' }} />
       <Text
         css={{
           fontSize: '14px'
