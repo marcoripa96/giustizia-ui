@@ -5,7 +5,8 @@ import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 export type Action =
   | { type: 'setData', payload: { data: DocumentState } }
   | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
-  | { type: 'addAnnotation' }
+  | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
+  | { type: 'deleteAnnotation', payload: { id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } };
 export type Dispatch = (action: Action) => void

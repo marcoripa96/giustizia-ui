@@ -26,6 +26,7 @@ export type Annotation<P = {}> = {
  * Return type of the hook. props will be required when type === 'entity'
  */
 type _Node<P> = {
+  key: number;
   text: string;
   type: "text" | "entity";
   props?: Annotation<P>;
@@ -79,24 +80,28 @@ export const annotationTypes: AnnotationTypeMap = {
 function _buildNodes<P>(content: string, annotations: Annotation<P>[]): NERNode<P>[] {
   const nodes: NERNode<P>[] = [];
   let lastPosition = 0;
+  let index = 0;
 
   annotations.forEach((annotation) => {
-    const { id, start_pos, end_pos, ner_type } = annotation;
+    const { start_pos, end_pos } = annotation;
     // node of type text
     const textNode = content.slice(lastPosition, start_pos);
     // node of type entity
     const entityNode = content.slice(start_pos, end_pos);
-    nodes.push({ text: textNode, type: "text" });
+    nodes.push({ key: index, text: textNode, type: "text" });
+    index += 1;
     nodes.push({
+      key: index,
       text: entityNode,
       type: "entity",
       props: { ...annotation }
     });
+    index += 1;
     lastPosition = end_pos;
   });
   // finally add the last piece of text
   const textNode = content.slice(lastPosition, content.length);
-  nodes.push({ text: textNode, type: 'text' });
+  nodes.push({ key: index, text: textNode, type: 'text' });
 
   return nodes;
 }

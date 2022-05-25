@@ -19,8 +19,6 @@ const getState = (data: Document): DocumentState => {
     lastIndexId: data.annotation.length - 1
   };
 
-  console.log(state);
-
   return state;
 }
 

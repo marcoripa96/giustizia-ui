@@ -1,10 +1,12 @@
-import { DocumentViewerSkeleton, NERViewer } from "@/components";
+import { DocumentViewerSkeleton, NERViewer, SelectionNode } from "@/components";
+import { Annotation } from "@/hooks/use-ner";
 import styled from "@emotion/styled";
 import { Card } from "@nextui-org/react";
-import { useMemo } from "react";
-import { useDocumentData } from "../DocumentProvider/selectors";
+import { MouseEvent, useMemo } from "react";
+import { useDocumentAction, useDocumentData, useDocumentDispatch } from "../DocumentProvider/selectors";
 import { FlattenedTaxonomy } from "../DocumentProvider/types";
 import { DocumentState } from "../DocumentProvider/useInitState";
+import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
 
 type DocumentViewerProps = {
   taxonomy: FlattenedTaxonomy;
@@ -28,6 +30,8 @@ const DocumentContainer = styled.div`
 
 
 const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => {
+  const action = useDocumentAction();
+  const dispatch = useDocumentDispatch();
   const { text, annotation } = document;
 
   const annotations = useMemo(() => {
@@ -39,17 +43,49 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
     })
   }, [annotation, filter])
 
-  console.log(annotations);
+  const handleTagClick = (event: MouseEvent, annotation: Annotation) => {
+    switch (action.value) {
+      case 'delete': {
+        dispatch({
+          type: 'deleteAnnotation',
+          payload: { id: annotation.id }
+        })
+      }
+        break;
+      default: {
+        return;
+      }
+    }
+  }
+
+  const onTextSelection = (event: MouseEvent, selectionNode: SelectionNode) => {
+    dispatch({
+      type: 'addAnnotation',
+      payload: {
+        type: action.data || '',
+        ...selectionNode
+      }
+    })
+    console.log(selectionNode)
+  }
+
+  const isAddMode = action.value === 'add';
+  const addSelectionColor = action.data ? getAllNodeData(taxonomy, action.data).color : '';
+
 
   return (
     <Container>
       <DocumentContainer>
         <NERViewer
+          disableLink
+          disablePreview
+          addMode={isAddMode}
+          addSelectionColor={addSelectionColor}
           taxonomy={taxonomy}
           content={text}
           annotations={annotations}
-          disableLink
-          disablePreview
+          onTagClick={handleTagClick}
+          onTextSelection={onTextSelection}
         />
       </DocumentContainer>
     </Container>

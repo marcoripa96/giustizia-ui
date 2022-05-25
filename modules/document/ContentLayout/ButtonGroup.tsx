@@ -1,7 +1,7 @@
 import { IconButton } from "@/components";
 import styled from "@emotion/styled";
 import { Tooltip } from "@nextui-org/react";
-import { MouseEvent, ReactNode, useMemo, useState } from "react";
+import { MouseEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { FiNavigation } from '@react-icons/all-files/fi/FiNavigation';
 import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
 import { FiTrash2 } from '@react-icons/all-files/fi/FiTrash2';
@@ -41,6 +41,17 @@ const ButtonGroup = () => {
       (item.action === action.value ? { ...item, active: true } : item)
     );
   }, [action])
+
+  // useEffect(() => {
+  //   const onScroll = () => {
+  //     // if (!tooltipOpen) return;
+  //     setTooltipOpen(null);
+  //   }
+  //   window.addEventListener('scroll', onScroll);
+  //   return () => {
+  //     window.removeEventListener('scroll', onScroll);
+  //   }
+  // }, []);
 
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     dispatch({

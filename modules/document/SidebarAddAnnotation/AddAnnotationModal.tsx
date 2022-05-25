@@ -221,9 +221,9 @@ const Form = ({ onClose }: FormProps) => {
             {...register('label')}
           />
           <Input
-            aria-label="Name of the type"
+            aria-label="Tag of the type"
             bordered
-            placeholder="Type key"
+            placeholder="Tag"
             shadow={false}
             {...register('key')}
           />

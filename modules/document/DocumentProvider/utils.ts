@@ -1,4 +1,6 @@
 import { AnnotationType, AnnotationTypeMap } from "@/hooks/use-ner";
+import { NERAnnotation } from "@/server/routers/document";
+import { DocumentState } from "./useInitState";
 
 const getSubTypeFromPath = (types: Record<string, Omit<AnnotationType, 'color'>>, splittedPath: string[]): Omit<AnnotationType, 'color'> => {
   const key = splittedPath.shift();
@@ -108,4 +110,14 @@ export const addType = (
     }
   }
   return newState;
+}
+
+export const addAnnotation = (annotation: NERAnnotation[], newAnnotation: NERAnnotation) => {
+  const insIndex = annotation.findIndex((annotation) => newAnnotation.start_pos < annotation.start_pos);
+
+  return [
+    ...annotation.slice(0, insIndex),
+    newAnnotation,
+    ...annotation.slice(insIndex, annotation.length)
+  ]
 }
