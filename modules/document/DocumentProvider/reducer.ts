@@ -65,9 +65,22 @@ export function documentReducer(state: State, action: Action): State {
     case 'deleteTaxonomyType': {
       const { taxonomy } = state;
       const { key } = action.payload;
-      // const path = getPathToNode(flattenedTaxonomy, key);
+
+      if (!state.data) {
+        return {
+          ...state,
+          taxonomy: removeProp(taxonomy, key)
+        };
+      }
+
+      const { annotation } = state.data;
+
       return {
         ...state,
+        data: {
+          ...state.data,
+          annotation: annotation.filter((ann) => ann.ner_type !== key)
+        },
         taxonomy: removeProp(taxonomy, key)
       };
     }
