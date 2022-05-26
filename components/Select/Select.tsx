@@ -74,7 +74,7 @@ const BackdropContent = styled.div({
 
 const SelectContent = ({ onClose, children }: PropsWithChildren<{ onClose: () => void }>) => {
   return (
-    <Portal>
+    <Portal elementSelector="select-popup">
       <Backdrop onClick={onClose}>
         <BackdropContent>
           {children}

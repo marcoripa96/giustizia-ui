@@ -1,6 +1,6 @@
 import { NERAnnotation } from "@/server/routers/document";
-import { removeProp } from "@/utils/shared";
-import { FlatTreeNode, getAllNodeData } from "../SidebarAddAnnotation/Tree";
+import { removeProp, removeProps } from "@/utils/shared";
+import { FlatTreeNode, getAllNodeData, getNodeAndChildren, getNodesPath } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
 import { addAnnotation } from "./utils";
 
@@ -77,22 +77,18 @@ export function documentReducer(state: State, action: Action): State {
       const { taxonomy } = state;
       const { key } = action.payload;
 
-      if (!state.data) {
-        return {
-          ...state,
-          taxonomy: removeProp(taxonomy, key)
-        };
-      }
-
-      const { annotation } = state.data;
-
+      const types = getNodeAndChildren(taxonomy, key, (node) => node.key);
+      // delete types and subtypes from the taxonomy
+      // delete annotation for the type and its subtypes
       return {
         ...state,
-        data: {
-          ...state.data,
-          annotation: annotation.filter((ann) => ann.ner_type !== key)
-        },
-        taxonomy: removeProp(taxonomy, key)
+        ...(state.data && {
+          data: {
+            ...state.data,
+            annotation: state.data.annotation.filter((ann) => types.indexOf(ann.ner_type) === -1)
+          }
+        }),
+        taxonomy: removeProps(taxonomy, types)
       };
     }
     case 'addTaxonomyType': {
@@ -106,11 +102,6 @@ export function documentReducer(state: State, action: Action): State {
         ...(!parent && { ...rest }),
         parent: parent || null
       } as FlatTreeNode
-
-      const newTaxonomy = {
-        ...taxonomy,
-        [key]: newType
-      }
 
       return {
         ...state,

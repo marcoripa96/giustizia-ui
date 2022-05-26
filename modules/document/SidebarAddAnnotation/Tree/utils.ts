@@ -119,9 +119,39 @@ export const getNodesPath = (
   return getNodesPath(obj, node.parent, nodes);
 };
 
-export const deleteNode = (items: TreeItem[], flatItems: FlatTreeObj, path: string) => {
-
+export const getChildrenFromFlatTaxonomy = <T = FlatTreeNode>(
+  obj: FlatTreeObj,
+  key: string,
+  nodes: T[] = [],
+  transformFn?: (node: FlatTreeNode) => T
+): T[] => {
+  if (!(key in obj)) {
+    return [];
+  }
+  return [
+    ...nodes,
+    ...Object.values(obj).reduce((acc, node) => {
+      if (node.parent === key) {
+        const value = (transformFn ? transformFn(node) : node) as T;
+        acc.push(
+          value,
+          ...getChildrenFromFlatTaxonomy(obj, node.key, nodes, transformFn)
+        );
+      }
+      return acc;
+    }, [] as T[])
+  ]
 }
+
+export const getNodeAndChildren = <T = FlatTreeNode>(
+  obj: FlatTreeObj,
+  key: string,
+  transformFn?: (node: FlatTreeNode) => T
+): T[] => {
+  const node = getNode(obj, key);
+  const value = (transformFn ? transformFn(node) : node) as T;
+  return [value, ...getChildrenFromFlatTaxonomy<T>(obj, node.key, [], transformFn)]
+};
 
 export const countChildren = (item: TreeItem | ChildTreeItem, accumulator: number = 0) => {
   if (!item.children || item.children.length === 0) {

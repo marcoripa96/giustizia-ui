@@ -1,4 +1,5 @@
 import { ConfirmationDialog, useConfirmationDialog } from "@/components";
+import { isEmptyObject } from "@/utils/shared";
 import styled from "@emotion/styled";
 import { Divider, Text } from "@nextui-org/react";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
@@ -75,7 +76,7 @@ const SidebarAddAnnotation = () => {
 
   useEffect(() => {
     // set initial type
-    const initialValue = taxonomyTree[0].key;
+    const initialValue = isEmptyObject(taxonomyTree) ? '' : taxonomyTree[0].key;
     dispatch({
       type: 'changeAction',
       payload: {

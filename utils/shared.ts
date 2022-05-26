@@ -26,3 +26,12 @@ export const removeProp = <T>(obj: T, prop: keyof T) => {
   const { [prop]: remove, ...rest } = obj;
   return rest;
 }
+
+export const removeProps = <T>(obj: T, props: (keyof T)[]): Omit<T, keyof T> => {
+  const prop = props.pop();
+  if (!prop) {
+    return obj;
+  }
+  const newObj = removeProp(obj, prop) as T;
+  return removeProps(newObj, props);
+}

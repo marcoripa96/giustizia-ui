@@ -76,7 +76,17 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
   }
 
   const isAddMode = action.value === 'add';
-  const addSelectionColor = action.data ? getAllNodeData(taxonomy, action.data).color : '';
+  const addSelectionColor = useMemo(() => {
+    if (!action.data) {
+      return ''
+    }
+    try {
+      return getAllNodeData(taxonomy, action.data).color
+    } catch (err) {
+      // trying to access a node that doesn't exist
+      return ''
+    }
+  }, [taxonomy, action.data]);
 
   return (
     <Container>

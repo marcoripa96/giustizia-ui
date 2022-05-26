@@ -1,7 +1,11 @@
 import { useState, useEffect, PropsWithChildren } from "react"
 import { createPortal } from "react-dom"
 
-const Portal = ({ children }: PropsWithChildren<{}>) => {
+type PortalProps = {
+  elementSelector: string;
+}
+
+const Portal = ({ elementSelector, children }: PropsWithChildren<PortalProps>) => {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -12,7 +16,7 @@ const Portal = ({ children }: PropsWithChildren<{}>) => {
 
   return mounted
     ? createPortal(children,
-      document.querySelector("#select-popup") as Element)
+      document.querySelector(`#${elementSelector}`) as Element)
     : null
 }
 
