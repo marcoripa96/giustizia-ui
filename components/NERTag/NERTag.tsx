@@ -23,7 +23,6 @@ const Tag = styled.span<{ id: string; node: ChildNodeWithColor }>(({ node }) => 
   borderRadius: '6px',
   background: node.color,
   color: darken(0.70, node.color),
-  transition: 'background 250ms ease-out',
   cursor: 'pointer',
 }));
 

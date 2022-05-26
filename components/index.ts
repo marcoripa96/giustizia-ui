@@ -12,3 +12,4 @@ export * from "./Select";
 export * from "./ConfirmationDialog";
 export * from "./AnnotationTypeFilter";
 export * from "./Flex";
+export * from "./TranslationProvider";

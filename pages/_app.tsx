@@ -8,6 +8,7 @@ import { AppRouter } from '@/server/routers/_app';
 import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import { ReactElement, ReactNode } from 'react';
+import { TranslationProvider } from '@/components';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -42,10 +43,12 @@ function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
     <>
       <Global styles={GlobalStyles} />
       <NextUIProvider>
+        {/* <TranslationProvider> */}
         <Layout>
           <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
           {getLayout(<Component {...pageProps} />)}
         </Layout>
+        {/* </TranslationProvider> */}
       </NextUIProvider>
     </>
   );

@@ -5,7 +5,7 @@ import { QueryText } from '@/modules/infer/QueryText'
 import { Text } from '@nextui-org/react'
 import { NextPageWithLayout } from './_app'
 import { ReactElement } from 'react'
-import { Toolbar } from '@/components'
+import { Toolbar, useText } from '@/components'
 
 const Container = styled.div`
   display: flex;

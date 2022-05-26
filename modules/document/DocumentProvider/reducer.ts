@@ -86,7 +86,16 @@ export function documentReducer(state: State, action: Action): State {
           data: {
             ...state.data,
             annotation: state.data.annotation.filter((ann) => types.indexOf(ann.ner_type) === -1)
-          }
+          },
+          ...(state.ui.selectedEntity && {
+            ui: {
+              ...state.ui,
+              // if an entity is selected, deselect if is of the type deleted
+              ...(types.indexOf(state.ui.selectedEntity.ner_type) !== -1 && {
+                selectedEntity: null
+              })
+            }
+          })
         }),
         taxonomy: removeProps(taxonomy, types)
       };

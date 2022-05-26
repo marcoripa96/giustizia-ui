@@ -77,7 +77,7 @@ const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
 
   return (
     <>
-      <Text size={15} b>Context</Text>
+      <Text size={15} b>Enity context</Text>
       <TextAnnotationDetailsContainer onClick={() => scrollEntityIntoView(annotation.id)}>
         <Text size={14} css={{ fontStyle: 'italic', color: 'rgba(0,0,0,0.7)' }}>
           <span>{'"'}...{context.contextLeft}</span>

@@ -33,7 +33,8 @@ const DetailsContainer = styled.div({
 const ButtonContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  padding: '10px'
+  padding: '10px',
+  marginTop: 'auto'
 })
 
 const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
