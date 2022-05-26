@@ -5,7 +5,7 @@ import { QueryText } from '@/modules/infer/QueryText'
 import { Text } from '@nextui-org/react'
 import { NextPageWithLayout } from './_app'
 import { ReactElement } from 'react'
-import { MainToolbar } from '@/components'
+import { Toolbar } from '@/components'
 
 const Container = styled.div`
   display: flex;
@@ -52,7 +52,7 @@ const Home: NextPageWithLayout<{}> = () => {
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
     <>
-      <MainToolbar />
+      <Toolbar />
       {page}
     </>
   )

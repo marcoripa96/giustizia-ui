@@ -121,3 +121,11 @@ export const addAnnotation = (annotation: NERAnnotation[], newAnnotation: NERAnn
     ...annotation.slice(insIndex, annotation.length)
   ]
 }
+
+export const scrollEntityIntoView = (id: number) => {
+  const element = document.getElementById(`entity-tag-${id}`);
+  if (!element) return;
+
+  const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+  window.scrollTo({ top: y, behavior: 'smooth' });
+}

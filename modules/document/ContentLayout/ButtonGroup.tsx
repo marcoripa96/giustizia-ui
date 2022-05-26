@@ -42,17 +42,6 @@ const ButtonGroup = () => {
     );
   }, [action])
 
-  // useEffect(() => {
-  //   const onScroll = () => {
-  //     // if (!tooltipOpen) return;
-  //     setTooltipOpen(null);
-  //   }
-  //   window.addEventListener('scroll', onScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', onScroll);
-  //   }
-  // }, []);
-
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     dispatch({
       type: 'changeAction',

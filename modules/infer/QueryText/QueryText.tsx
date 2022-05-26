@@ -1,5 +1,4 @@
-import { AnnotationTypeFilter, AnnotationTypeList, Button, NERViewer } from "@/components";
-import { annotationTypes } from "@/components/NERDocumentViewer";
+import { AnnotationTypeFilter, Button, NERViewer } from "@/components";
 import { useQueryParam } from "@/hooks";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
@@ -44,21 +43,6 @@ const Column = styled.div`
   gap: 10px;
   margin-top: 15px;
 `
-
-const getAnnotationTypes = (annotations: NERAnnotation[]) => {
-  const items = annotations.reduce((acc, ann) => {
-    if (!acc[ann.ner_type]) {
-      acc[ann.ner_type] = 1;
-    } else {
-      acc[ann.ner_type] = acc[ann.ner_type] + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
-  return Object.keys(items).map((item) => ({
-    label: annotationTypes[item as keyof typeof annotationTypes].label,
-    n: items[item as keyof typeof items]
-  }))
-}
 
 const QueryText = () => {
   const router = useRouter();

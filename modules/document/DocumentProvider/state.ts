@@ -1,5 +1,6 @@
 import { flattenTree } from "../SidebarAddAnnotation/Tree";
 import { AnnotationTypeMap, State, Taxonomy } from "./types";
+import { scrollEntityIntoView } from "./utils";
 
 /**
  * Initial types
@@ -82,8 +83,12 @@ export const documentState: State = {
    */
   taxonomy: flattenTree(baseTaxonomy),
   ui: {
+    selectedEntity: null,
     action: {
       value: 'select'
     }
+  },
+  callbacks: {
+    scrollEntityIntoView: scrollEntityIntoView
   }
 }

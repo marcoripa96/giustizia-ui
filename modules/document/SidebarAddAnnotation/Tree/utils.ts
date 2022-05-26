@@ -4,11 +4,14 @@ import { TreeItem, ChildTreeItem } from "./Tree";
 export type ParentNode = Omit<TreeItem, "children"> & { parent: string | null };
 export type ChildNode = Omit<ChildTreeItem, "children"> & { parent: string };
 export type ChildNodeWithColor = Omit<ChildNode, 'parent'> & { color: string };
-
 export type FlatTreeNode = ParentNode | ChildNode;
-
-
 export type FlatTreeObj = Record<string, FlatTreeNode>;
+
+export function isParentNode(
+  value: TreeItem | ChildTreeItem,
+): value is TreeItem {
+  return Object.hasOwn(value, 'color')
+}
 
 export const getParents = (obj: FlatTreeObj) => {
   return Object.values(obj).reduce((acc, item) => {
@@ -101,19 +104,19 @@ export const getAllNodeData = (obj: FlatTreeObj, key: string): ChildNodeWithColo
   };
 };
 
-export const getPathToNode = (
+export const getNodesPath = (
   obj: FlatTreeObj,
   key: string,
-  path = ""
-): string => {
+  nodes: FlatTreeNode[] = []
+): FlatTreeNode[] => {
   const node = getNode(obj, key);
 
-  path = path === "" ? key : `${key}.${path}`;
+  nodes = [node, ...nodes];
 
   if (!node.parent) {
-    return path;
+    return nodes;
   }
-  return getPathToNode(obj, node.parent, path);
+  return getNodesPath(obj, node.parent, nodes);
 };
 
 export const deleteNode = (items: TreeItem[], flatItems: FlatTreeObj, path: string) => {

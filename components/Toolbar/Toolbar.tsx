@@ -1,281 +1,97 @@
-import { ComponentType, FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useQuery } from '@/utils/trpc';
 import styled from '@emotion/styled';
-import { darken } from "polished";
-import { ActionKey, mainActions } from "./actions";
-import { useEventListener } from "@/hooks";
-import { Menu, MenuItem } from "./Menu";
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck';
-import { annotationTypes } from "@/components/NERDocumentViewer";
+import { Avatar, Card, Grid, Popover } from '@nextui-org/react';
+import Link from 'next/link';
+import { Button } from '../Button';
+import { FaSignOutAlt } from '@react-icons/all-files/fa/FaSignOutAlt';
+import { useRouter } from 'next/router';
 
-const Container = styled.div`
-  position: fixed;
-  top: 80px;
-  left: 2px;
-  right: 2px;
-  z-index: 1;
-`
+const Container = styled.div({
+  position: 'sticky',
+  display: 'flex',
+  top: 0,
+  background: '#FFF',
+  // boxShadow: '0 2px 4px rgb(0 0 0 / 2%), inset 0 -1px 0 rgb(0 0 0 / 6%)',
+  padding: '5px 24px',
+  borderBottom: '1px solid #EAECED',
+  zIndex: '10'
+})
 
-const TopMenu = styled.div`
-  display: grid;
-  grid-template-columns: auto max-content auto;
-  grid-gap: 4px;
-  align-items: flex-start;
-`
+const Nav = styled.nav({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  width: '100%',
+  maxWidth: '1260px',
+  margin: '0 auto'
+})
 
-const MainActionsWrapper = styled.div``
+const Logo = styled.a({
+  fontSize: '22px',
+  fontWeight: 700
+})
 
-const MainActionsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 2px;
-  border-radius: 4px;
-  padding: 2px;
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 1%), 1px 1px 5px rgb(0 0 0 / 15%);
-  background: hsla(0,0%,100%,0.96);
-`
+const LinkButton = styled.a({
+  border: 'none',
+  outline: 'none',
+  padding: '8px 10px',
+  borderRadius: '6px',
+  color: 'rgb(75 85 99)',
+  transition: 'background 250ms ease-out',
 
-const IconButton = styled.button<{ selected: boolean }>`
-  position: relative;
-  border: none;
-  outline: none;
-  padding: 12px;
-  border-radius: 4px;
-  color: #000;
-  > svg {
-    width: 16px;
-    height: 16px;
+  '&:hover': {
+    backgroundColor: 'rgb(0 0 0/0.03)'
+  }
+})
+
+const Toolbar = () => {
+  const { data, isFetching } = useQuery(['auth.user']);
+  const { refetch } = useQuery(['auth.logout'], { enabled: false });
+  const router = useRouter();
+
+  const handleLogout = () => {
+    refetch().then(() => {
+      router.push('/login');
+    })
   }
 
-  &:hover {
-    background: #e2e2e2;
-  }
-
-  ${({ selected }: any) => selected && `
-    background: #1778F2;
-    color: #FFF;
-    > svg {
-      fill: #FFF;
-    }
-
-    &:hover {
-      background: ${darken(0.05, '#1778F2')};
-    }
-  `}
-`
-const ShortcutLabel = styled.span`
-  position: absolute;
-  top: 60%;
-  left: 65%;
-  z-index: 1;
-  color: inherit;
-  font-size: 10px;
-`
-
-const MenuPortal = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  display: flex;
-  width: 100%;
-  justify-content: center;
-`
-
-const AddActionContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-`
-const AddActionItemContainer = styled.button<{ selected: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-radius: 6px;
-  padding: 10px;
-  outline: none;
-  border: none;
-  background: #FFF;
-  text-align: start;
-  cursor: pointer;
-  ${({ selected }: any) => selected && { background: 'rgb(244, 242, 244)' }}
-  &:hover {
-    background: rgb(244, 242, 244);
-  }
-`
-const MentionTagColorBox = styled.div<{ color: string }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  background: ${({ color }) => color};
-  border-radius: 6px;
-  > svg {
-    fill: rgb(244, 242, 244);
-  }
-`
-const MentionDescriptionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-const MentionTitle = styled.div`
-  font-size: 12px;
-  font-weight: 600;
-`
-const MentionSubtitle = styled.p`
-  font-size: 12px;
-  font-weight: 400;
-  color: rgb(111, 110, 119);
-  margin: 0;
-`
-
-const AddActionItem = (
-  { selected, color, type, label, onClick }:
-    {
-      selected: boolean, color: string,
-      type: string, label: string,
-      onClick: () => void;
-    }
-) => {
-  return (
-    <AddActionItemContainer onClick={onClick} selected={selected}>
-      <MentionTagColorBox color={color}>
-        {selected ? <FaCheck /> : null}
-      </MentionTagColorBox>
-      <MentionDescriptionContainer>
-        <MentionTitle>{type}</MentionTitle>
-        <MentionSubtitle>{label}</MentionSubtitle>
-      </MentionDescriptionContainer>
-    </AddActionItemContainer>
-  )
-}
-
-const setInitialState = () => {
-  const types = Object.keys(annotationTypes);
-  return [true, ...new Array(types.length - 1).fill(false)];
-}
-
-const AddActionMenu = ({ onAnnotationTypeChange }: { onAnnotationTypeChange: (type: string) => void }) => {
-  const [state, setState] = useState<boolean[]>(setInitialState);
-
-  const types = Object.keys(annotationTypes);
-
-  const onSelect = (i: number) => {
-    setState((s) => s.map((_, index) => index === i ? true : false));
-    onAnnotationTypeChange(types[i]);
-  }
-
-  return (
-    <AddActionContainer>
-      {types.map((type, index) => (
-        <AddActionItem
-          key={type}
-          type={type}
-          selected={state[index]}
-          onClick={() => onSelect(index)}
-          {...annotationTypes[type as keyof typeof annotationTypes]} />
-      ))}
-    </AddActionContainer>
-  )
-}
-
-const ACTIONS_DISTANCE = 42;
-
-type MainActionsProps = {
-  onActionChange: ({ key, payload }: { key: ActionKey, payload: any }) => void;
-}
-
-const MainActions: FC<MainActionsProps> = ({ onActionChange: onActionChangeProp }) => {
-  // keep state of the current selected action index
-  const [actionIndex, setActionIndex] = useState<number>(0);
-  // hovered actionIndex
-  const [hoveredActionIndex, setHoveredActionIndex] = useState<number | null>(null);
-
-  const actionContainerRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  const setAction = (i: number) => {
-    setActionIndex(i);
-    const payload = mainActions[i].id === 'add' ? { type: Object.keys(annotationTypes)[0] } : {};
-
-    onActionChangeProp({ key: mainActions[i].id, payload });
-  }
-
-  const onAnnotationTypeChange = (type: string) => {
-    onActionChangeProp({ key: 'add', payload: { type } });
-  }
-
-  // change action
-  const onActionClick = (i: number) => {
-    setAction(i);
-  }
-
-  // select an action with keydown
-  const cb = useCallback((event: KeyboardEvent) => {
-    /* eslint-disable no-eval */
-    const i = mainActions.findIndex((action) => action.shortcut === event.key);
-    if (i === -1) {
-      return;
-    }
-    setAction(i);
-  }, []);
-  // listen for keydown event
-  useEventListener('keydown', cb);
-
-  const onMouseEnterAction = (i: number) => {
-    setHoveredActionIndex(i);
-  }
-
-
-  const onMouseLeaveMenu = () => {
-    setHoveredActionIndex(null);
-  }
-
-  const offset = (hoveredActionIndex === null ? 0 : hoveredActionIndex) * ACTIONS_DISTANCE;
-
-  return (
-    <MainActionsWrapper>
-      <MainActionsContainer ref={actionContainerRef} onMouseLeave={onMouseLeaveMenu}>
-        {mainActions.map(({ id, shortcut, Icon }, i) => (
-          <IconButton
-            key={id}
-            selected={i === actionIndex}
-            onMouseEnter={() => onMouseEnterAction(i)}
-            onClick={() => onActionClick(i)}>
-            {<Icon />}
-            <ShortcutLabel>{shortcut}</ShortcutLabel>
-          </IconButton>
-        ))}
-        <MenuPortal>
-          <Menu ref={menuRef} activeIndex={hoveredActionIndex} offset={offset} onClose={onMouseLeaveMenu}>
-            <MenuItem title="Select" description="Text selection" />
-            <MenuItem title="Add annotation" description="Add a new annotaiton by selecting a span of text">
-              <AddActionMenu onAnnotationTypeChange={onAnnotationTypeChange} />
-            </MenuItem>
-            <MenuItem title="Delete annotation" description="Click on an annotation to delete it" />
-          </Menu>
-        </MenuPortal>
-      </MainActionsContainer>
-    </MainActionsWrapper>
-  )
-}
-
-type ToolbarProps = {
-  onActionChange: ({ key, payload }: { key: ActionKey, payload: any }) => void;
-}
-
-const Toolbar: FC<ToolbarProps> = ({ onActionChange }) => {
   return (
     <Container>
-      <TopMenu>
-        {/* Menu top left */}
-        <div />
-        {/* Menu center */}
-        <MainActions onActionChange={onActionChange} />
-        {/* Menu top left */}
-        <div />
-      </TopMenu>
+      <Nav>
+        <Link href="/infer" passHref>
+          <Logo>
+            🔨 GiustiziaUI
+          </Logo>
+        </Link>
+        <Grid.Container direction="row" css={{ width: 'auto', gap: '10px' }}>
+          <Link href="/documents" passHref>
+            <LinkButton>Browse documents</LinkButton>
+          </Link>
+          {data?.isLoggedIn ? (
+            <Popover>
+              <Popover.Trigger>
+                <Avatar
+                  size="md"
+                  text={data.username.slice(0, 1).toUpperCase()}
+                  pointer
+                />
+              </Popover.Trigger>
+              <Popover.Content>
+                <Button onClick={handleLogout} iconRight={<FaSignOutAlt />}>Logout</Button>
+              </Popover.Content>
+            </Popover>
+
+          ) : (
+            <Link href="/login" passHref>
+              <LinkButton>Login</LinkButton>
+            </Link>
+          )}
+        </Grid.Container>
+      </Nav>
     </Container>
   )
-};
+}
 
 export default Toolbar;
+

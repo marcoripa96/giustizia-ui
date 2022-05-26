@@ -18,16 +18,13 @@ type NERTagProps = PropsWithChildren<{
   onFocus?: (event: FocusEvent, tag: Annotation) => void;
 }>;
 
-const Tag = styled.span<{ node: ChildNodeWithColor }>(({ node }) => ({
+const Tag = styled.span<{ id: string; node: ChildNodeWithColor }>(({ node }) => ({
   padding: '2px 5px',
   borderRadius: '6px',
   background: node.color,
   color: darken(0.70, node.color),
   transition: 'background 250ms ease-out',
   cursor: 'pointer',
-  // '&:hover': {
-  //   background: darken(0.15, node.color),
-  // },
 }));
 
 const TagLabel = styled.span<{ node: ChildNodeWithColor }>(({ node }) => ({
@@ -70,7 +67,7 @@ function NERTag({
   // this prevents click and focus to trigger at the same time
   const handleOnMouseDown = (event: MouseEvent) => event.preventDefault();
 
-  const component = top_url ? 'a' : 'span';
+  const component = !disableLink && top_url ? 'a' : 'span';
 
   const componentTagProps = {
     ...(!disableLink && top_url && {
@@ -84,6 +81,7 @@ function NERTag({
 
   const TagComponent = (
     <Tag
+      id={`entity-tag-${annotation.id}`}
       as={component}
       tabIndex={0}
       onMouseDown={handleOnMouseDown}

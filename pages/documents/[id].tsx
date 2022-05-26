@@ -1,4 +1,4 @@
-import { AnnotationTypeFilter, Card, DocumentViewerSkeleton, Toolbar, ToolbarSidebarLayout } from "@/components";
+import { AnnotationTypeFilter, DocumentViewerSkeleton, ToolbarSidebarLayout } from "@/components";
 import { withAuthSsr } from "@/lib/withAuthSsr";
 import { GetServerSideProps } from "next";
 import { ReactElement, useState } from "react";

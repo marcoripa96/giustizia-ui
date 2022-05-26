@@ -1,9 +1,11 @@
 import { DocumentState } from "@/lib/useQueryDocument";
+import { NERAnnotation } from "@/server/routers/document";
 import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
 import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
 export type Action =
   | { type: 'setData', payload: { data: DocumentState } }
+  | { type: 'setCurrentEntity', payload: { annotation: NERAnnotation | null } }
   | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
   | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
   | { type: 'deleteAnnotation', payload: { id: number } }
@@ -34,10 +36,14 @@ export type State = {
   taxonomy: FlattenedTaxonomy,
 
   ui: {
+    selectedEntity: NERAnnotation | null;
     action: {
       value: UIAction;
       data?: string;
     };
+  },
+  callbacks: {
+    scrollEntityIntoView: (id: number) => void;
   }
 }
 

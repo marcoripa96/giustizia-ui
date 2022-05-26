@@ -16,9 +16,20 @@ export function documentReducer(state: State, action: Action): State {
       return {
         ...state,
         ui: {
+          ...state.ui,
           action: action.payload.action
         }
       };
+    }
+    case 'setCurrentEntity': {
+      const { annotation } = action.payload;
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          selectedEntity: annotation
+        }
+      }
     }
     case 'addAnnotation': {
       if (!state.data) {

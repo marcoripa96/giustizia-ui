@@ -18,10 +18,7 @@ const Container = styled.span<{ node: ChildNodeWithColor; }>(({ node }) => ({
   borderRadius: '6px',
   background: getAnnotationColor(node),
   transition: 'background 250ms ease-out',
-  cursor: 'pointer',
-  '&:hover': {
-    background: darken(0.15, getAnnotationColor(node)),
-  },
+  color: darken(0.70, node.color),
   fontSize: '10px',
   fontWeight: 700,
   textTransform: 'uppercase'

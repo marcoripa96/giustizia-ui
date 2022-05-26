@@ -1,4 +1,6 @@
 import styled from "@emotion/styled"
+import { AnnotationDetails } from "../AnnotationDetails";
+import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
   position: 'fixed',
@@ -13,9 +15,11 @@ const Container = styled.div({
 });
 
 const SidebarContent = () => {
+  const annotation = useDocumentCurrentEntity();
+
   return (
     <Container>
-
+      {annotation && <AnnotationDetails annotation={annotation} />}
     </Container>
   )
 }

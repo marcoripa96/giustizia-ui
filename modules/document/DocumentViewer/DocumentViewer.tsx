@@ -1,5 +1,5 @@
 import { DocumentViewerSkeleton, NERViewer, SelectionNode } from "@/components";
-import { Annotation } from "@/hooks/use-ner";
+import { NERAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Card } from "@nextui-org/react";
 import { MouseEvent, useMemo } from "react";
@@ -43,8 +43,15 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
     })
   }, [annotation, filter])
 
-  const handleTagClick = (event: MouseEvent, annotation: Annotation) => {
+  const handleTagClick = (event: MouseEvent, annotation: NERAnnotation) => {
     switch (action.value) {
+      case 'select': {
+        dispatch({
+          type: 'setCurrentEntity',
+          payload: { annotation }
+        })
+      }
+        break;
       case 'delete': {
         dispatch({
           type: 'deleteAnnotation',
@@ -66,12 +73,10 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
         ...selectionNode
       }
     })
-    console.log(selectionNode)
   }
 
   const isAddMode = action.value === 'add';
   const addSelectionColor = action.data ? getAllNodeData(taxonomy, action.data).color : '';
-
 
   return (
     <Container>

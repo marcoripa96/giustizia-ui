@@ -1,4 +1,3 @@
-import { MainToolbar } from '@/components';
 import { Global } from '@emotion/react';
 import styled from '@emotion/styled';
 import type { AppProps } from 'next/app';
@@ -46,7 +45,6 @@ function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
         <Layout>
           <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
           {getLayout(<Component {...pageProps} />)}
-          {/* {!(['/login'].includes(router.pathname)) && <MainToolbar />} */}
         </Layout>
       </NextUIProvider>
     </>
