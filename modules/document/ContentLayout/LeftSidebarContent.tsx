@@ -20,7 +20,8 @@ const content: Record<UIAction, ComponentType> = {
   add: dynamic(() => import('../SidebarAddAnnotation/SidebarAddAnnotation')),
   select: () => null,
   delete: () => null,
-  filter: () => null
+  filter: () => null,
+  settings: () => null
 }
 
 const SidebarContent = () => {

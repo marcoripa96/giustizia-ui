@@ -10,7 +10,7 @@ import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
 import ActionSidebar from "@/modules/document/ContentLayout/ActionSidebar";
-import { useDocumentAction, useDocumentData, useDocumentTaxonomy } from "@/modules/document/DocumentProvider/selectors";
+import { useDocumentData, useDocumentTaxonomy } from "@/modules/document/DocumentProvider/selectors";
 import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
 
 

@@ -20,7 +20,7 @@ export type AnnotationType = {
 };
 export type AnnotationTypeMap = Record<string, AnnotationType>;
 
-export type UIAction = 'select' | 'add' | 'delete' | 'filter';
+export type UIAction = 'select' | 'add' | 'delete' | 'filter' | 'settings';
 
 export type Taxonomy = TreeItem[];
 export type FlattenedTaxonomy = FlatTreeObj

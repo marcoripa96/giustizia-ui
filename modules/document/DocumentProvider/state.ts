@@ -37,14 +37,17 @@ export const baseTaxonomy: Taxonomy = [
       {
         key: 'JDG',
         label: 'Judge',
+        recognizable: false,
         children: [
           {
             key: 'JDGCIVIL',
-            label: 'Civil Judge'
+            label: 'Civil Judge',
+            recognizable: false
           },
           {
             key: 'JDGCRIM',
             label: 'Criminal Judge',
+            recognizable: false,
           }
         ]
       }

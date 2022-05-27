@@ -16,37 +16,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: 24px;
   padding: 24px;
-  /* min-height: 100vh; */
-  /* max-width: 1200px; */
-  /* margin: 0px auto; */
-  /* padding: 40px 20px; */
-
-  /* @media (max-width: 1300px) {
-    max-width: 900px;
-  } */
 `
-
-// const DocumentsContainer = styled.div`
-//   display: grid;
-//   grid-template-columns: repeat(auto-fill,minmax(256px,1fr));
-//   grid-gap: 32px 32px;
-//   /* display: grid;
-//   grid-template-columns: 1fr 1fr 1fr 1fr;
-//   grid-gap: 20px;
-//   margin: 0px auto;
-
-//   @media (max-width: 1300px) {
-//     grid-template-columns: 1fr 1fr 1fr;
-//   }
-
-//   @media (max-width: 990px) {
-//     grid-template-columns: 1fr 1fr;
-//   }
-
-//   @media (max-width: 660px) {
-//     grid-template-columns: 1fr;
-//   } */
-// `
 
 const PageTitle = styled.h1`
   font-size: 32px;
@@ -68,10 +38,6 @@ const Documents: NextPageWithLayout = () => {
     <Container>
       <ActionBar />
       <DocumentsList documents={documents} />
-      {/* <PageTitle>Documents ({documents.length})</PageTitle>
-      <DocumentsContainer>
-        {documents.map(({ id, ...props }, index) => <DocumentCard key={index} id={id} {...props} />)}
-      </DocumentsContainer> */}
     </Container>
   )
 }

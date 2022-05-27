@@ -15,6 +15,8 @@ export type TreeItem = {
   key: string;
   label: string;
   color: string;
+  // if it can be recognized by the algorithm
+  recognizable?: boolean;
   children?: ChildTreeItem[];
 };
 

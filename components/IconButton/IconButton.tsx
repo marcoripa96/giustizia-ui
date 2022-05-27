@@ -31,7 +31,7 @@ const IconButton = styled.button<IconButtonProps>(({ active }) => ({
     color: '#0070F3',
     background: '#bfd8fc',
     svg: {
-      fill: '#0070F3'
+      color: '#0070F3'
     },
     '&:hover': {
       background: '#a4caff',

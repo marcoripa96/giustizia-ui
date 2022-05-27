@@ -6,6 +6,7 @@ import { ChildTreeItem, TreeItem } from "./Tree";
 import { useTreeContext } from "./TreeContext";
 import { countChildren } from "./utils";
 import { FiX } from '@react-icons/all-files/fi/FiX'
+import { FiAlertCircle } from '@react-icons/all-files/fi/FiAlertCircle'
 import { CONTAINER_ITEM_SIZE, PARENT_SQUARE_SIZE, PADDING, INDENTATION_OFFSET, CHILD_SQUARE_SIZE } from "./Branch";
 
 type NodeProps = {
@@ -134,6 +135,10 @@ const SoloNumberSquare = styled.div({
 
 const NodeTextContainer = styled.div({
   flexGrow: 1,
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: '10px',
   position: 'relative',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -144,6 +149,11 @@ const NodeTextContainer = styled.div({
     '> button': {
       visibility: 'visible'
     }
+  },
+  '& > svg': {
+    width: '15px',
+    height: '15px',
+    color: '#ff00007d'
   }
 })
 
@@ -183,6 +193,7 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: To
       </ColoredSquared>
       <NodeTextContainer>
         {hasChildren ? <b>{item.label}</b> : item.label}
+        {item.recognizable === false && <FiAlertCircle />}
         <DeleteButton onClick={onNodeDelete}>
           <FiX />
         </DeleteButton>
@@ -192,6 +203,7 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: To
 }
 
 function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: ChildNodeProps) {
+  console.log(item);
   return (
     <>
       {hasChildren && (
@@ -201,6 +213,7 @@ function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: Child
       )}
       <NodeTextContainer>
         {hasChildren ? <b>{item.label}</b> : item.label}
+        {item.recognizable === false && <FiAlertCircle />}
         <DeleteButton onClick={onNodeDelete}>
           <FiX />
         </DeleteButton>

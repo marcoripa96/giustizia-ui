@@ -109,6 +109,7 @@ export function documentReducer(state: State, action: Action): State {
         key,
         label,
         ...(!parent && { ...rest }),
+        recognizable: false,
         parent: parent || null
       } as FlatTreeNode
 
