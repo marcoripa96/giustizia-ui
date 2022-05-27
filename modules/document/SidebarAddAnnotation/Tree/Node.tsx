@@ -106,7 +106,8 @@ const ColoredSquared = styled.div<{ color: string }>(({ color }) => ({
   height: `${PARENT_SQUARE_SIZE}px`,
   borderRadius: "5px",
   background: color,
-  boxShadow: `inset 0 0 0 1px ${darken(0.15, color)}`
+  boxShadow: `inset 0 0 0 1px ${darken(0.15, color)}`,
+  flexShrink: 0
 }));
 
 const NumberSquare = styled.div<{ color: string }>(({ color }) => ({
@@ -119,7 +120,8 @@ const NumberSquare = styled.div<{ color: string }>(({ color }) => ({
   right: '-3px',
   width: `${CHILD_SQUARE_SIZE}px`,
   height: `${CHILD_SQUARE_SIZE}px`,
-  background: darken(0.1, color)
+  background: darken(0.1, color),
+  flexShrink: 0
 }));
 
 const SoloNumberSquare = styled.div({
@@ -135,10 +137,7 @@ const SoloNumberSquare = styled.div({
 
 const NodeTextContainer = styled.div({
   flexGrow: 1,
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: '10px',
+  display: 'inline-block',
   position: 'relative',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
@@ -153,7 +152,9 @@ const NodeTextContainer = styled.div({
   '& > svg': {
     width: '15px',
     height: '15px',
-    color: '#ff00007d'
+    color: '#ff00007d',
+    verticalAlign: 'middle',
+    marginLeft: '10px'
   }
 })
 
@@ -203,7 +204,6 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: To
 }
 
 function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: ChildNodeProps) {
-  console.log(item);
   return (
     <>
       {hasChildren && (

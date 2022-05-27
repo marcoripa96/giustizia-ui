@@ -55,3 +55,4 @@ export const useDocumentTaxonomyTree = () => useMemoSelector(
   (state) => buildTreeFromFlattenedObject(state.taxonomy),
   ({ taxonomy }) => [taxonomy]);
 export const useDocumentActiveType = () => useSelector((state) => state.ui.action.data);
+export const useLeftActionBarOpen = () => useSelector((state) => state.ui.leftActionBarOpen);

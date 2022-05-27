@@ -1,20 +1,20 @@
 import styled from "@emotion/styled"
 import { PropsWithChildren } from "react";
-import LeftSidebarContent from "./LeftSidebarContent";
+import { LeftSidebar } from "./LeftSidebar";
 import RightSidebarContent from "./RightSidebarContent";
 
 const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  paddingLeft: '250px',
+  paddingLeft: '320px',
   paddingRight: '320px',
-  background: '#FAFAFA'
+  background: '#FAFAFA',
 });
 
 const ContentLayout = ({ children }: PropsWithChildren<{}>) => {
   return (
     <>
-      <LeftSidebarContent />
+      <LeftSidebar />
       <Container>
         {children}
       </Container>

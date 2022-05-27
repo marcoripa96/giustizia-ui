@@ -5,7 +5,7 @@ export * from "./NERViewer";
 export * from "./NERTag";
 export * from "./EntityCard";
 export * from "./Tag";
-export * from "./ToolbarSidebarLayout";
+export * from "./ToolbarLayout";
 export * from "./LoginAvatar";
 export * from "./IconButton";
 export * from "./Select";

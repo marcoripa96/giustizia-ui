@@ -10,7 +10,8 @@ export type Action =
   | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
   | { type: 'deleteAnnotation', payload: { id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
-  | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } };
+  | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
+  | { type: 'setUI', payload: Partial<State['ui']> };
 export type Dispatch = (action: Action) => void
 
 export type AnnotationType = {
@@ -41,6 +42,7 @@ export type State = {
       value: UIAction;
       data?: string;
     };
+    leftActionBarOpen: boolean;
   },
   callbacks: {
     scrollEntityIntoView: (id: number) => void;

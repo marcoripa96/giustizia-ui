@@ -89,7 +89,8 @@ export const documentState: State = {
     selectedEntity: null,
     action: {
       value: 'select'
-    }
+    },
+    leftActionBarOpen: true,
   },
   callbacks: {
     scrollEntityIntoView: scrollEntityIntoView

@@ -7,8 +7,9 @@ import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
 import { FiTrash2 } from '@react-icons/all-files/fi/FiTrash2';
 import { FiFilter } from '@react-icons/all-files/fi/FiFilter';
 import { FiSettings } from '@react-icons/all-files/fi/FiSettings';
-import { useDocumentAction, useDocumentDispatch } from "../DocumentProvider/selectors";
-import { UIAction } from "../DocumentProvider/types";
+import { useDocumentAction, useDocumentDispatch } from "../../DocumentProvider/selectors";
+import { UIAction } from "../../DocumentProvider/types";
+import useMediaQuery from "@/hooks/use-media-query";
 
 
 const Container = styled.div({
@@ -41,6 +42,7 @@ const ButtonGroup = () => {
   const action = useDocumentAction();
   const dispatch = useDocumentDispatch();
   const [tooltipOpen, setTooltipOpen] = useState<number | null>(null);
+  const matches = useMediaQuery('(max-width: 1250px)');
 
   const items = useMemo(() => {
     return actionItems.map((item) =>
@@ -57,6 +59,14 @@ const ButtonGroup = () => {
         }
       }
     })
+    if (matches) {
+      dispatch({
+        type: 'setUI',
+        payload: {
+          leftActionBarOpen: true
+        }
+      })
+    }
     // close tooltip on click so that we can show a menu if there is
     setTooltipOpen(null);
   }

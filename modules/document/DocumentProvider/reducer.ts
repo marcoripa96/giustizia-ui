@@ -121,6 +121,15 @@ export function documentReducer(state: State, action: Action): State {
         }
       }
     }
+    case 'setUI': {
+      return {
+        ...state,
+        ui: {
+          ...state.ui,
+          ...action.payload
+        }
+      }
+    }
     default: {
       throw new Error(`Unhandled action type`)
     }

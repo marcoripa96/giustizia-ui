@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next'
-import { ToolbarSidebarLayout } from '@/components'
+import { ToolbarLayout } from '@/components'
 import { withAuthSsr } from '@/lib/withAuthSsr'
 import styled from '@emotion/styled'
 import { useQuery } from '@/utils/trpc'
@@ -44,10 +44,10 @@ const Documents: NextPageWithLayout = () => {
 
 Documents.getLayout = function getLayout(page: ReactElement) {
   return (
-    <ToolbarSidebarLayout
+    <ToolbarLayout
       toolbarContent={<ToolbarContent />}>
       {page}
-    </ToolbarSidebarLayout>
+    </ToolbarLayout>
   )
 }
 

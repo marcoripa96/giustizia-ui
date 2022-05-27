@@ -1,4 +1,4 @@
-import { AnnotationTypeFilter, DocumentViewerSkeleton, ToolbarSidebarLayout } from "@/components";
+import { AnnotationTypeFilter, DocumentViewerSkeleton, ToolbarLayout } from "@/components";
 import { withAuthSsr } from "@/lib/withAuthSsr";
 import { GetServerSideProps } from "next";
 import { ReactElement, useState } from "react";
@@ -9,7 +9,6 @@ import DocumentProvider from "@/modules/document/DocumentProvider/DocumentProvid
 import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
-import ActionSidebar from "@/modules/document/ContentLayout/ActionSidebar";
 import { useDocumentData, useDocumentTaxonomy } from "@/modules/document/DocumentProvider/selectors";
 import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
 
@@ -93,13 +92,13 @@ const Document: NextPageWithLayout = () => {
 Document.getLayout = function getLayout(page: ReactElement) {
   return (
     <DocumentProvider>
-      <ToolbarSidebarLayout
-        siderbarContent={<ActionSidebar />}
+      <ToolbarLayout
+        // siderbarContent={<ActionSidebar />}
         toolbarContent={<ToolbarContent />}>
         <ContentLayout>
           {page}
         </ContentLayout>
-      </ToolbarSidebarLayout>
+      </ToolbarLayout>
     </DocumentProvider>
   )
 }

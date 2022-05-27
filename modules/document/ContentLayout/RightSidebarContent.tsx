@@ -11,7 +11,10 @@ const Container = styled.div({
   flexDirection: 'column',
   width: '320px',
   borderLeft: '1px solid #F3F3F5',
-  background: '#FFF'
+  background: '#FFF',
+  '@media screen and (max-width: 1250px)': {
+    display: 'none'
+  }
 });
 
 const SidebarContent = () => {
