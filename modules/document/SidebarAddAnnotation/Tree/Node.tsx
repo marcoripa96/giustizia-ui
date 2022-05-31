@@ -1,13 +1,14 @@
 import styled from "@emotion/styled";
-import { Text } from "@nextui-org/react";
+import { Text, Tooltip } from "@nextui-org/react";
 import { darken } from "polished";
 import { MouseEvent, useMemo } from "react";
 import { ChildTreeItem, TreeItem } from "./Tree";
 import { useTreeContext } from "./TreeContext";
 import { countChildren } from "./utils";
 import { FiX } from '@react-icons/all-files/fi/FiX'
-import { FiAlertCircle } from '@react-icons/all-files/fi/FiAlertCircle'
+import { FiInfo } from '@react-icons/all-files/fi/FiInfo'
 import { CONTAINER_ITEM_SIZE, PARENT_SQUARE_SIZE, PADDING, INDENTATION_OFFSET, CHILD_SQUARE_SIZE } from "./Branch";
+import { Flex } from "@/components";
 
 type NodeProps = {
   item: TreeItem | ChildTreeItem;
@@ -142,11 +143,14 @@ const NodeTextContainer = styled.div({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-  paddingRight: '20px',
+  paddingRight: '32px',
   '&:hover': {
-    paddingRight: '35px',
+    paddingRight: '57px',
     '> button': {
       visibility: 'visible'
+    },
+    '> div': {
+      transform: 'translateY(-50%) translateX(-25px)'
     }
   },
   '& > svg': {
@@ -182,6 +186,26 @@ const DeleteButton = styled.button({
   }
 })
 
+const InfoIcon = styled.div({
+  position: 'absolute',
+  height: '20px',
+  width: '20px',
+  top: '50%',
+  right: '10px',
+  padding: 0,
+  border: 'none',
+  outline: 'none',
+  borderRadius: '6px',
+  background: 'transparent',
+  transform: 'translateY(-50%)',
+  transition: 'transform 100ms ease-out',
+  'svg': {
+    width: '100%',
+    height: '100%',
+    color: 'rgba(0,0,0,0.4)'
+  }
+})
+
 function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: TopLevelNodeProps) {
   return (
     <>
@@ -194,7 +218,22 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: To
       </ColoredSquared>
       <NodeTextContainer>
         {hasChildren ? <b>{item.label}</b> : item.label}
-        {item.recognizable === false && <FiAlertCircle />}
+        {item.recognizable === false && (
+          <InfoIcon>
+            <Tooltip color="invert" content={(
+              <Flex direction="column">
+                <Text size={12} color="#FFF">
+                  This type is not automatically
+                </Text>
+                <Text size={12} color="#FFF">
+                  recognized by the algorithm.
+                </Text>
+              </Flex>
+            )}>
+              <FiInfo />
+            </Tooltip>
+          </InfoIcon>
+        )}
         <DeleteButton onClick={onNodeDelete}>
           <FiX />
         </DeleteButton>
@@ -213,7 +252,22 @@ function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: Child
       )}
       <NodeTextContainer>
         {hasChildren ? <b>{item.label}</b> : item.label}
-        {item.recognizable === false && <FiAlertCircle />}
+        {item.recognizable === false && (
+          <InfoIcon>
+            <Tooltip color="invert" content={(
+              <Flex direction="column">
+                <Text size={12} color="#FFF">
+                  This type is not automatically
+                </Text>
+                <Text size={12} color="#FFF">
+                  recognized by the algorithm.
+                </Text>
+              </Flex>
+            )}>
+              <FiInfo />
+            </Tooltip>
+          </InfoIcon>
+        )}
         <DeleteButton onClick={onNodeDelete}>
           <FiX />
         </DeleteButton>

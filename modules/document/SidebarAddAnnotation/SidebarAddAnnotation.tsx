@@ -72,9 +72,15 @@ const SidebarAddAnnotation = () => {
   // get currently active type
   const activeType = useDocumentActiveType();
 
-  const { bindings: bindingsAddType, setVisible: setAddTypeVisible } = useModal();
-  // const [addModalVisible, setAddModalVisible] = useState(false);
-  const { bindings: bindingsDeleteNode, props: propsDeleteNode, setVisible: setDeleteNodeVisible } = useConfirmationDialog<DeleteModalProps>();
+  const {
+    bindings: bindingsAddType,
+    setVisible: setAddTypeVisible
+  } = useModal();
+  const {
+    bindings: bindingsDeleteNode,
+    props: propsDeleteNode,
+    setVisible: setDeleteNodeVisible
+  } = useConfirmationDialog<DeleteModalProps>();
 
   useEffect(() => {
     // set initial type
@@ -111,14 +117,6 @@ const SidebarAddAnnotation = () => {
       setDeleteNodeVisible({ open: false })
     }
     setDeleteNodeVisible({ open: true, props: { onConfirm } })
-  }
-
-  const handleCloseAddModal = () => {
-    setAddTypeVisible(false);
-  }
-
-  const handleCloseDeleteModal = () => {
-    setDeleteNodeVisible({ open: false });
   }
 
   return (

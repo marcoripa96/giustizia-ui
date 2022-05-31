@@ -8,7 +8,8 @@ const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
-  flexGrow: 1
+  flexGrow: 1,
+  minWidth: 0
 });
 
 const content: Record<UIAction, ComponentType> = {
