@@ -1,4 +1,4 @@
-import { Annotation, annotationTypes } from '@/hooks/use-ner';
+import { Annotation } from '@/hooks/use-ner';
 import { NERAnnotation } from '@/server/routers/document';
 import styled from '@emotion/styled';
 import { darken } from 'polished';

@@ -1,8 +1,8 @@
-import { useClickOutside } from "@/hooks";
+import { useClickOutside, useDocumentEventListener, useWindowEventListener } from "@/hooks";
 import styled from "@emotion/styled";
-import { Card, FormElement, Input, InputProps, Popover, Text } from "@nextui-org/react";
+import { Card, FormElement, Input, InputProps } from "@nextui-org/react";
 import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown";
-import { ChangeEvent, MouseEvent, PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Portal } from "../Portal";
 
 export type Item = {
@@ -38,6 +38,7 @@ const ItemContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
   overflowY: 'auto',
   paddingTop: '5px',
   paddingBottom: '5px',
+  zIndex: 999999,
   ...anchor,
   '> div': {
     padding: 0
@@ -59,40 +60,26 @@ const ListItem = styled.button({
   },
 })
 
-const Backdrop = styled.div({
-  position: 'fixed',
-  inset: 0,
-  zIndex: 999999
-});
-
-const BackdropContent = styled.div({
-  position: 'relative',
-  width: '100%',
-  height: '100%'
-})
-
-
-const SelectContent = ({ onClose, children }: PropsWithChildren<{ onClose: () => void }>) => {
-  return (
-    <Portal elementSelector="select-popup">
-      <Backdrop onClick={onClose}>
-        <BackdropContent>
-          {children}
-        </BackdropContent>
-      </Backdrop>
-    </Portal>
-  )
-}
-
-
-
 const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
   const [inputValue, setInputValue] = useState(value);
   const [anchor, setAnchor] = useState<Anchor>();
   const inputRef = useRef<HTMLDivElement>(null);
+  const containerRef = useClickOutside(() => {
+    setAnchor(undefined);
+  })
 
-  const handleChange = (event: ChangeEvent<FormElement>) => {
-    setInputValue(event.target.value);
+  useWindowEventListener('resize', () => {
+    setAnchor(getAnchorCoords());
+  });
+
+  const getAnchorCoords = () => {
+    if (!inputRef.current) return;
+    const bbox = inputRef.current.getBoundingClientRect();
+    return {
+      top: bbox.top + bbox.height,
+      left: bbox.left,
+      width: bbox.width
+    }
   }
 
   useEffect(() => {
@@ -105,18 +92,11 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
   }, [items, value])
 
   const handleClick = () => {
-    if (!inputRef.current) return;
-    const bbox = inputRef.current.getBoundingClientRect();
-    const anchorCoords = {
-      top: bbox.top + bbox.height,
-      left: bbox.left,
-      width: bbox.width
-    }
-    setAnchor(anchorCoords);
+    setAnchor(getAnchorCoords());
   }
 
-  const handleBackdropClick = () => {
-    setAnchor(undefined);
+  const handleChange = (event: ChangeEvent<FormElement>) => {
+    setInputValue(event.target.value);
   }
 
   const handleItemClick = (event: MouseEvent, item: Item) => {
@@ -139,15 +119,15 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
         contentRight={<FiChevronDown />}
         value={inputValue} />
       {anchor && (
-        <SelectContent onClose={handleBackdropClick}>
-          <ItemContainer anchor={anchor}>
+        <Portal elementSelector="select-popup">
+          <ItemContainer anchor={anchor} ref={containerRef}>
             {filteredItems.map((item) => (
               <ListItem key={item.value} onClick={(e) => handleItemClick(e, item)}>
                 {item.label}
               </ListItem>
             ))}
           </ItemContainer>
-        </SelectContent>
+        </Portal>
       )}
     </Container>
   )

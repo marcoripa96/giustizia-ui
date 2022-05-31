@@ -1,5 +1,5 @@
 import styled from "@emotion/styled"
-import { AnnotationDetails } from "../AnnotationDetails";
+import { AnnotationDetails } from "../SidebarAnnotationDetails";
 import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
 
 const Container = styled.div({

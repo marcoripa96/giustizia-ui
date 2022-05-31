@@ -1,6 +1,6 @@
 import { NERAnnotation } from "@/server/routers/document";
-import { removeProp, removeProps } from "@/utils/shared";
-import { FlatTreeNode, getAllNodeData, getNodeAndChildren, getNodesPath } from "../SidebarAddAnnotation/Tree";
+import { removeProps } from "@/utils/shared";
+import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
 import { addAnnotation } from "./utils";
 

@@ -1,7 +1,7 @@
-import { DocumentState } from "@/lib/useQueryDocument";
 import { NERAnnotation } from "@/server/routers/document";
 import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
 import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
+import { DocumentState } from "./useInitState";
 
 export type Action =
   | { type: 'setData', payload: { data: DocumentState } }

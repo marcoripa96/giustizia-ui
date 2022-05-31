@@ -1,4 +1,3 @@
-import { annotationTypes } from "@/hooks/use-ner";
 import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
 import styled from "@emotion/styled";
 import { CSS } from "@nextui-org/react";

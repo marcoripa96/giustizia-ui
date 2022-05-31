@@ -1,7 +1,6 @@
 export { default as useParam } from './use-param';
 export * from './use-param';
 
-export { default as useEventListener } from './use-event-listener';
 export * from './use-event-listener';
 
 export { default as useInput } from './use-input';

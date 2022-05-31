@@ -1,12 +1,9 @@
-import { Item, Select } from "@/components";
+import { Select } from "@/components";
 import { useForm } from "@/hooks";
-import { AnnotationType } from "@/hooks/use-ner";
-import { isEmptyObject } from "@/utils/shared";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useDocumentDispatch, useDocumentTaxonomy } from "../DocumentProvider/selectors";
-import { getTypeFromPath } from "../DocumentProvider/utils";
 import { ascend, ParentNode } from "./Tree";
 
 type SelectColorProps = {
@@ -75,21 +72,6 @@ const ContainerSelectType = styled.div({
   gap: '10px',
   alignItems: 'center'
 })
-
-const getChildrenTypes = (path: string, children: Record<string, Omit<AnnotationType, "color">> | undefined): Item[] => {
-  if (!children || isEmptyObject(children)) {
-    return [];
-  }
-  return Object.keys(children).flatMap((subType) => {
-    const subTypes = children[subType];
-    const subPath = `${path}.${subType}`
-    const item = {
-      label: subTypes.label,
-      value: subPath
-    };
-    return [item, ...getChildrenTypes(subPath, subTypes.children)];
-  })
-}
 
 /**
  * Select type form
