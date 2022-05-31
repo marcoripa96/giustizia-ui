@@ -47,8 +47,8 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
     switch (action.value) {
       case 'select': {
         dispatch({
-          type: 'setCurrentEntity',
-          payload: { annotation }
+          type: 'setCurrentEntityId',
+          payload: { annotationId: annotation.id }
         })
       }
         break;

@@ -12,16 +12,13 @@ const Container = styled.div({
   width: '320px',
   borderLeft: '1px solid #F3F3F5',
   background: '#FFF',
-  '@media screen and (max-width: 1250px)': {
-    display: 'none'
-  }
 });
 
 const SidebarContent = () => {
   const annotation = useDocumentCurrentEntity();
 
   return (
-    <Container>
+    <Container id="right-sidebar">
       {annotation && <AnnotationDetails annotation={annotation} />}
     </Container>
   )

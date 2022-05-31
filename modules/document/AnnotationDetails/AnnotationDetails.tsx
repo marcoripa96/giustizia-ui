@@ -4,6 +4,8 @@ import { Button, Col, Divider, Text } from "@nextui-org/react";
 import { useDocumentData } from "../DocumentProvider/selectors";
 import TextAnnotationDetails from "./AnnotationTextDetails";
 import AnnotationLinkDetails from "./AnnotationLinkDetails";
+import { EditAnnotationModal } from "./EditAnnotationModal";
+import useModal from "@/hooks/use-modal";
 
 type AnnotationDetailsProps = {
   annotation: NERAnnotation;
@@ -39,6 +41,7 @@ const ButtonContainer = styled.div({
 
 const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
   const data = useDocumentData();
+  const { setVisible, bindings } = useModal();
   const { top_wikipedia_id: id } = annotation;
 
   if (!data) {
@@ -46,22 +49,25 @@ const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
   }
 
   return (
-    <Container>
-      <DetailsContainer>
-        <Col>
-          <Text b size={18}>Annotation details</Text>
-          <Text css={{ fontSize: '16px', lineHeight: '1', color: 'rgba(0,0,0,0.5)' }}>
-            Inspect the details for a selected annotation.
-          </Text>
-        </Col>
-        <Divider />
-        <TextAnnotationDetails text={data.text} annotation={annotation} />
-        <AnnotationLinkDetails selectedId={id} candidates={annotation.candidates} />
-      </DetailsContainer>
-      <ButtonContainer>
-        <Button>Edit</Button>
-      </ButtonContainer>
-    </Container>
+    <>
+      <Container>
+        <DetailsContainer>
+          <Col>
+            <Text b size={18}>Annotation details</Text>
+            <Text css={{ fontSize: '16px', lineHeight: '1', color: 'rgba(0,0,0,0.5)' }}>
+              Inspect the details for a selected annotation.
+            </Text>
+          </Col>
+          <Divider />
+          <TextAnnotationDetails text={data.text} annotation={annotation} />
+          <AnnotationLinkDetails selectedId={id} candidates={annotation.candidates} />
+        </DetailsContainer>
+        <ButtonContainer>
+          <Button onClick={() => setVisible(true)}>Edit</Button>
+        </ButtonContainer>
+      </Container>
+      <EditAnnotationModal setVisible={setVisible} {...bindings} />
+    </>
   )
 }
 

@@ -3,7 +3,7 @@ import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Collapse, Checkbox, Col, Text, Link } from "@nextui-org/react";
 import { FiArrowUpRight } from "@react-icons/all-files/fi/FiArrowUpRight";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -90,12 +90,29 @@ const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetails
     setOpen(selectedId);
   }, [selectedId]);
 
+  // sort candidates so that the matching candidate is on top
+  // then order by score
+  const orderedCandidates = useMemo(() => {
+    if (!candidates) {
+      return undefined;
+    }
+    return candidates.sort((a, b) => {
+      if (a.wikipedia_id === selectedId) {
+        return -1;
+      }
+      if (b.wikipedia_id === selectedId) {
+        return 1;
+      }
+      return b.score - a.score;
+    })
+  }, [candidates, selectedId]);
+
   return (
     <>
       <Text size={15} b>Links</Text>
-      {candidates && candidates.length > 0 ? (
+      {orderedCandidates && orderedCandidates.length > 0 ? (
         <Collapse.Group css={{ padding: 0 }}>
-          {candidates.map((candidate) => (
+          {orderedCandidates.map((candidate) => (
             <Collapse
               key={candidate.wikipedia_id}
               onClick={() => handleCollapseClick(candidate.wikipedia_id)}

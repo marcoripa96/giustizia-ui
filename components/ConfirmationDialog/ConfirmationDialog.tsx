@@ -1,24 +1,49 @@
+import useModal from "@/hooks/use-modal";
 import { Button, Grid, Modal, ModalProps, Text } from "@nextui-org/react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 
 type ConfirmationDialogProps = ModalProps & {
   content: ReactNode,
   onConfirm?: () => void;
 };
 
-type UseConfirmationDialogState<T> = {
-  open: boolean;
+type UseConfirmationDialogProps<T> = {
+  // open: boolean;
+  props?: T
+}
+
+type SetVisibleParams<T> = {
+  open: boolean,
   props?: T
 }
 
 export function useConfirmationDialog<T>() {
-  const [state, setState] = useState<UseConfirmationDialogState<T>>({ open: false });
+  const {
+    bindings: {
+      open,
+      ...binds
+    },
+    setVisible: setVisibleProp,
+    ...rest
+  } = useModal();
 
-  const setOpen = (state: UseConfirmationDialogState<T>) => {
-    setState(state);
+  const [props, setProps] = useState<UseConfirmationDialogProps<T>>();
+
+  const setVisible = useCallback((params: SetVisibleParams<T>) => {
+    const { open, props } = params;
+    setVisibleProp(open);
+    setProps(props);
+  }, []);
+
+  return {
+    bindings: {
+      open,
+      ...binds
+    },
+    setVisible,
+    props,
+    ...rest
   }
-
-  return [state, setOpen] as const
 }
 
 const ConfirmationDialog = ({ content, onConfirm, ...props }: ConfirmationDialogProps) => {

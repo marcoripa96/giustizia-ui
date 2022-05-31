@@ -53,7 +53,7 @@ export function useForm<T>(defaultValues: T) {
     };
 
     return {
-      value: state.value[key],
+      value: state.value[key] as any,
       onChange
     };
   };

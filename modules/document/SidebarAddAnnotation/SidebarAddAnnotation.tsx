@@ -1,4 +1,5 @@
 import { ConfirmationDialog, useConfirmationDialog } from "@/components";
+import useModal from "@/hooks/use-modal";
 import { isEmptyObject } from "@/utils/shared";
 import styled from "@emotion/styled";
 import { Divider, Text } from "@nextui-org/react";
@@ -71,8 +72,9 @@ const SidebarAddAnnotation = () => {
   // get currently active type
   const activeType = useDocumentActiveType();
 
-  const [addModalVisible, setAddModalVisible] = useState(false);
-  const [deleteModalState, setDeleteModalState] = useConfirmationDialog<DeleteModalProps>();
+  const { bindings: bindingsAddType, setVisible: setAddTypeVisible } = useModal();
+  // const [addModalVisible, setAddModalVisible] = useState(false);
+  const { bindings: bindingsDeleteNode, props: propsDeleteNode, setVisible: setDeleteNodeVisible } = useConfirmationDialog<DeleteModalProps>();
 
   useEffect(() => {
     // set initial type
@@ -106,17 +108,17 @@ const SidebarAddAnnotation = () => {
         type: 'deleteTaxonomyType',
         payload: { key }
       })
-      setDeleteModalState({ open: false })
+      setDeleteNodeVisible({ open: false })
     }
-    setDeleteModalState({ open: true, props: { onConfirm } })
+    setDeleteNodeVisible({ open: true, props: { onConfirm } })
   }
 
   const handleCloseAddModal = () => {
-    setAddModalVisible(false);
+    setAddTypeVisible(false);
   }
 
   const handleCloseDeleteModal = () => {
-    setDeleteModalState({ open: false });
+    setDeleteNodeVisible({ open: false });
   }
 
   return (
@@ -133,7 +135,7 @@ const SidebarAddAnnotation = () => {
           <Tree items={taxonomyTree} onNodeSelect={handleNodeSelect} onNodeDelete={handleNodeDelete} selected={activeType} />
         </TreeContainer>
         <Divider css={{ background: '#F3F3F5' }} />
-        <ItemContainer onClick={() => setAddModalVisible(true)}>
+        <ItemContainer onClick={() => setAddTypeVisible(true)}>
           <FiPlus />
           <Text css={{ fontSize: '18px' }}>Add new type</Text>
         </ItemContainer>
@@ -144,11 +146,10 @@ const SidebarAddAnnotation = () => {
         </ItemContainer>
         <Divider css={{ background: '#F3F3F5' }} />
       </Container>
-      <AddAnnotationModal open={addModalVisible} onClose={handleCloseAddModal} />
+      <AddAnnotationModal {...bindingsAddType} />
       <ConfirmationDialog
-        open={deleteModalState.open}
-        onClose={handleCloseDeleteModal}
-        {...deleteModalState.props}
+        {...bindingsDeleteNode}
+        {...propsDeleteNode}
         content="By deleting this type from the taxonomy you will also delete all annotations with this entity type. Are you sure?" />
     </>
   );

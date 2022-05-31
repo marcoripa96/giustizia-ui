@@ -5,9 +5,10 @@ import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
 export type Action =
   | { type: 'setData', payload: { data: DocumentState } }
-  | { type: 'setCurrentEntity', payload: { annotation: NERAnnotation | null } }
+  | { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
   | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
   | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
+  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topId: number } }
   | { type: 'deleteAnnotation', payload: { id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
@@ -37,7 +38,7 @@ export type State = {
   taxonomy: FlattenedTaxonomy,
 
   ui: {
-    selectedEntity: NERAnnotation | null;
+    selectedEntityId: number | null;
     action: {
       value: UIAction;
       data?: string;

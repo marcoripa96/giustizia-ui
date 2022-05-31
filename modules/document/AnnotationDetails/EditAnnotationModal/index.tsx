@@ -1,0 +1,1 @@
+export { default as EditAnnotationModal } from './EditAnnotationModal';

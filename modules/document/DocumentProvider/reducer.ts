@@ -21,13 +21,13 @@ export function documentReducer(state: State, action: Action): State {
         }
       };
     }
-    case 'setCurrentEntity': {
-      const { annotation } = action.payload;
+    case 'setCurrentEntityId': {
+      const { annotationId } = action.payload;
       return {
         ...state,
         ui: {
           ...state.ui,
-          selectedEntity: annotation
+          selectedEntityId: annotationId
         }
       }
     }
@@ -55,6 +55,31 @@ export function documentReducer(state: State, action: Action): State {
           ...state.data,
           annotation: addAnnotation(annotation, newAnnotation),
           lastIndexId: newLastIndexId
+        }
+      };
+    }
+    case 'editAnnotation': {
+      if (!state.data) {
+        return state;
+      }
+      const { annotationId, type, topId } = action.payload;
+      const { annotation } = state.data;
+
+      const newAnnotation = annotation.map((ann) => {
+        if (ann.id === annotationId) {
+          return {
+            ...ann,
+            ner_type: type,
+            top_wikipedia_id: topId
+          }
+        }
+        return ann;
+      });
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          annotation: newAnnotation
         }
       };
     }
@@ -87,13 +112,11 @@ export function documentReducer(state: State, action: Action): State {
             ...state.data,
             annotation: state.data.annotation.filter((ann) => types.indexOf(ann.ner_type) === -1)
           },
-          ...(state.ui.selectedEntity && {
+          ...(state.ui.selectedEntityId != null && {
             ui: {
               ...state.ui,
-              // if an entity is selected, deselect if is of the type deleted
-              ...(types.indexOf(state.ui.selectedEntity.ner_type) !== -1 && {
-                selectedEntity: null
-              })
+              // TODO: if an entity is selected, deselect if it is of the type deleted
+              selectedEntityId: null
             }
           })
         }),

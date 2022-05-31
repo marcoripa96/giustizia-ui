@@ -40,7 +40,7 @@ const Logo = styled.a({
 
 const Toolbar = ({ children }: PropsWithChildren<{}>) => {
   return (
-    <Container>
+    <Container id="toolbar">
       <Link href="/infer" passHref>
         <Logo>
           🔨

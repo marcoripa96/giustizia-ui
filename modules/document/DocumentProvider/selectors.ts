@@ -47,12 +47,29 @@ export function useMemoSelector<T>(cb: (state: State) => T, cbDeps: (state: Stat
 }
 
 export const useDocumentData = () => useSelector((state) => state.data);
-export const useDocumentCurrentEntity = () => useSelector((state) => state.ui.selectedEntity);
+
+export const useDocumentText = () => useSelector((state) => state.data?.text);
+
+export const useDocumentCurrentEntity = () => useMemoSelector(
+  (state) => {
+    const { data, ui: { selectedEntityId } } = state;
+    if (!data || selectedEntityId == null) {
+      return undefined;
+    }
+    return data.annotation.find((ann) => ann.id === selectedEntityId);
+  },
+  ({ ui: { selectedEntityId }, data }) => [selectedEntityId, data]
+)
 export const useDocumentAction = () => useSelector((state) => state.ui.action);
+
 export const useDocumentTaxonomy = () => useSelector((state) => state.taxonomy);
+
 export const useDocumentCallbacks = () => useSelector((state) => state.callbacks);
+
 export const useDocumentTaxonomyTree = () => useMemoSelector(
   (state) => buildTreeFromFlattenedObject(state.taxonomy),
   ({ taxonomy }) => [taxonomy]);
+
 export const useDocumentActiveType = () => useSelector((state) => state.ui.action.data);
+
 export const useLeftActionBarOpen = () => useSelector((state) => state.ui.leftActionBarOpen);

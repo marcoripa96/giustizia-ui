@@ -86,7 +86,7 @@ export const documentState: State = {
    */
   taxonomy: flattenTree(baseTaxonomy),
   ui: {
-    selectedEntity: null,
+    selectedEntityId: null,
     action: {
       value: 'select'
     },
