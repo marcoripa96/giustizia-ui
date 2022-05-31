@@ -102,7 +102,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
             background: 'rgba(0,0,0,0.15)'
           }
         }}>
-          Close
+          Cancel
         </Button>
         <Button type="submit" auto>
           Confirm
