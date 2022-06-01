@@ -9,7 +9,7 @@ import DocumentProvider from "@/modules/document/DocumentProvider/DocumentProvid
 import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
-import { useDocumentData, useDocumentTaxonomy } from "@/modules/document/DocumentProvider/selectors";
+import { selectDocumentData, selectDocumentTaxonomy, useSelector } from "@/modules/document/DocumentProvider/selectors";
 import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
 
 
@@ -58,8 +58,8 @@ const DocumentSkeleton = () => {
 
 
 const Document: NextPageWithLayout = () => {
-  const taxonomy = useDocumentTaxonomy();
-  const document = useDocumentData();
+  const taxonomy = useSelector(selectDocumentTaxonomy);
+  const document = useSelector(selectDocumentData);
   const [entityFilter, setEntityFilter] = useState('all');
 
   const handleAnnotationTypeFilterChange = (key: string) => {

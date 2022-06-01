@@ -2,7 +2,7 @@ import styled from "@emotion/styled"
 import dynamic from "next/dynamic";
 import { ComponentType } from "react";
 import { UIAction } from "../../DocumentProvider/types";
-import { useDocumentAction } from "../../DocumentProvider/selectors";
+import { selectDocumentAction, useSelector } from "../../DocumentProvider/selectors";
 
 const Container = styled.div({
   display: 'flex',
@@ -21,7 +21,7 @@ const content: Record<UIAction, ComponentType> = {
 }
 
 const ActionSidebarContent = () => {
-  const action = useDocumentAction();
+  const action = useSelector(selectDocumentAction);
   const Content = content[action.value];
 
   return (

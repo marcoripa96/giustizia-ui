@@ -7,7 +7,7 @@ import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
 import { FiTrash2 } from '@react-icons/all-files/fi/FiTrash2';
 import { FiFilter } from '@react-icons/all-files/fi/FiFilter';
 import { FiSettings } from '@react-icons/all-files/fi/FiSettings';
-import { useDocumentAction, useDocumentDispatch } from "../../DocumentProvider/selectors";
+import { selectDocumentAction, useDocumentDispatch, useSelector } from "../../DocumentProvider/selectors";
 import { UIAction } from "../../DocumentProvider/types";
 import useMediaQuery from "@/hooks/use-media-query";
 
@@ -39,7 +39,7 @@ const actionItems: ActionItem[] = [
 ]
 
 const ButtonGroup = () => {
-  const action = useDocumentAction();
+  const action = useSelector(selectDocumentAction);
   const dispatch = useDocumentDispatch();
   const [tooltipOpen, setTooltipOpen] = useState<number | null>(null);
   const matches = useMediaQuery('(max-width: 1250px)');

@@ -2,7 +2,7 @@ import { Tag } from "@/components";
 import styled from "@emotion/styled";
 import { FiArrowRight } from "@react-icons/all-files/fi/FiArrowRight";
 import { useMemo } from "react";
-import { useDocumentTaxonomy } from "../DocumentProvider/selectors";
+import { selectDocumentTaxonomy, useSelector } from "../DocumentProvider/selectors";
 import { getNodesPath, isParentNode } from "../SidebarAddAnnotation/Tree";
 
 const ContainerTypesHierarchy = styled.div({
@@ -15,7 +15,7 @@ const ContainerTypesHierarchy = styled.div({
 
 
 const TypesHierarchy = ({ type }: { type: string }) => {
-  const taxonomy = useDocumentTaxonomy();
+  const taxonomy = useSelector(selectDocumentTaxonomy);
   const nodes = useMemo(() => getNodesPath(taxonomy, type), [type]);
   return (
     <ContainerTypesHierarchy>

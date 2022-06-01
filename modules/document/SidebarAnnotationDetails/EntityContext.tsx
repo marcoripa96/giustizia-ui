@@ -2,7 +2,7 @@ import { NERTag } from "@/components"
 import { NERAnnotation } from "@/server/routers/document";
 import { Text } from "@nextui-org/react"
 import { useMemo, useCallback } from "react";
-import { useDocumentTaxonomy } from "../DocumentProvider/selectors";
+import { selectDocumentTaxonomy, useSelector } from "../DocumentProvider/selectors";
 import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
 
 type EntityContextProps = {
@@ -11,7 +11,7 @@ type EntityContextProps = {
 }
 
 const EntityContext = ({ text, annotation }: EntityContextProps) => {
-  const taxonomy = useDocumentTaxonomy();
+  const taxonomy = useSelector(selectDocumentTaxonomy);
 
   const context = useMemo(() => {
     const { start_pos, end_pos } = annotation;

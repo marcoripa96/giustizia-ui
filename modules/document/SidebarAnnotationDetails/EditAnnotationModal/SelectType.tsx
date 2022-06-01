@@ -1,6 +1,6 @@
 import { Select } from "@/components";
 import { useState, useMemo } from "react";
-import { useDocumentTaxonomy } from "../../DocumentProvider/selectors";
+import { selectDocumentTaxonomy, useSelector } from "../../DocumentProvider/selectors";
 
 type SelectTypeProps = {
   value: string;
@@ -9,7 +9,7 @@ type SelectTypeProps = {
 
 const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const [value, setValue] = useState(valueProp);
-  const taxonomy = useDocumentTaxonomy();
+  const taxonomy = useSelector(selectDocumentTaxonomy);
 
   const items = useMemo(() => {
     return Object.values(taxonomy).map((type) => {

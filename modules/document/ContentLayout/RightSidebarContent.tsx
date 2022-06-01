@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
+import { selectCurrentEntity, useSelector } from "../DocumentProvider/selectors";
 import { AnnotationDetails } from "../SidebarAnnotationDetails";
-import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
+// import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
   position: 'fixed',
@@ -15,7 +16,7 @@ const Container = styled.div({
 });
 
 const SidebarContent = () => {
-  const annotation = useDocumentCurrentEntity();
+  const annotation = useSelector(selectCurrentEntity);
 
   return (
     <Container id="right-sidebar">

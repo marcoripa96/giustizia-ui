@@ -1,4 +1,5 @@
 import { useContext, useMemo } from "react";
+import { createSelector } from "reselect";
 import { buildTreeFromFlattenedObject } from "../SidebarAddAnnotation/Tree";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
@@ -37,32 +38,25 @@ export function useSelector<T>(cb: (state: State) => T) {
   return cb(_state);
 }
 
-export function useMemoSelector<T>(cb: (state: State) => T, cbDeps: (state: State) => Array<any>) {
-  const _state = useDocumentState();
-  const deps = cbDeps(_state);
-  const value = useMemo(() => {
-    return cb(_state);
-  }, deps);
-  return value;
-}
+// input selectors just select part of the state
+export const selectDocumentData = (state: State) => state.data;
+export const selectDocumentText = (state: State) => state.data?.text;
+export const selectDocumentAnnotation = (state: State) => state.data?.annotation;
+export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
+export const selectDocumentAction = (state: State) => state.ui.action;
+export const selectDocumentActiveType = (state: State) => state.ui.action.data;
+export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
+export const selectDocumentCallbacks = (state: State) => state.callbacks;
 
-export const useDocumentData = () => useSelector((state) => state.data);
-export const useDocumentText = () => useSelector((state) => state.data?.text);
-export const useDocumentCurrentEntity = () => useMemoSelector(
-  (state) => {
-    const { data, ui: { selectedEntityId } } = state;
-    if (!data || selectedEntityId == null) {
+// For expensive selectors memoize them with createSelector (e.g. array operations)
+export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));
+export const selectCurrentEntity = createSelector(
+  selectDocumentAnnotation,
+  selectDocumentCurrentEntityId,
+  (annotation, entityId) => {
+    if (!annotation || entityId == null) {
       return undefined;
     }
-    return data.annotation.find((ann) => ann.id === selectedEntityId);
-  },
-  ({ ui: { selectedEntityId }, data }) => [selectedEntityId, data]
-)
-export const useDocumentAction = () => useSelector((state) => state.ui.action);
-export const useDocumentTaxonomy = () => useSelector((state) => state.taxonomy);
-export const useDocumentCallbacks = () => useSelector((state) => state.callbacks);
-export const useDocumentTaxonomyTree = () => useMemoSelector(
-  (state) => buildTreeFromFlattenedObject(state.taxonomy),
-  ({ taxonomy }) => [taxonomy]);
-export const useDocumentActiveType = () => useSelector((state) => state.ui.action.data);
-export const useLeftActionBarOpen = () => useSelector((state) => state.ui.leftActionBarOpen);
+    return annotation.find((ann) => ann.id === entityId);
+  }
+);

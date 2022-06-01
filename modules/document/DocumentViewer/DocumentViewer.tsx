@@ -3,7 +3,7 @@ import { NERAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Card } from "@nextui-org/react";
 import { MouseEvent, useMemo } from "react";
-import { useDocumentAction, useDocumentData, useDocumentDispatch } from "../DocumentProvider/selectors";
+import { selectDocumentAction, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { FlattenedTaxonomy } from "../DocumentProvider/types";
 import { DocumentState } from "../DocumentProvider/useInitState";
 import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
@@ -30,7 +30,7 @@ const DocumentContainer = styled.div`
 
 
 const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => {
-  const action = useDocumentAction();
+  const action = useSelector(selectDocumentAction);
   const dispatch = useDocumentDispatch();
   const { text, annotation } = document;
 

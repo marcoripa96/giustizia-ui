@@ -6,7 +6,7 @@ import { Divider, Text } from "@nextui-org/react";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import { FiUpload } from "@react-icons/all-files/fi/FiUpload";
 import { useEffect, useState } from "react";
-import { useDocumentActiveType, useDocumentDispatch, useDocumentTaxonomy, useDocumentTaxonomyTree } from "../DocumentProvider/selectors";
+import { selectDocumentActiveType, selectTaxonomyTree, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import AddAnnotationModal from "./AddAnnotationModal";
 import { Tree } from "./Tree";
 
@@ -68,9 +68,10 @@ const ContentTitle = styled.div({
 const SidebarAddAnnotation = () => {
   const dispatch = useDocumentDispatch();
   // get all types
-  const taxonomyTree = useDocumentTaxonomyTree();
+  const taxonomyTree = useSelector(selectTaxonomyTree);
+  // const taxonomyTree = useDocumentTaxonomyTree();
   // get currently active type
-  const activeType = useDocumentActiveType();
+  const activeType = useSelector(selectDocumentActiveType);
 
   const {
     bindings: bindingsAddType,

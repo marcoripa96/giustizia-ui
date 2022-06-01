@@ -1,7 +1,7 @@
 import { NERAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
-import { useDocumentCallbacks } from "../DocumentProvider/selectors";
+import { selectDocumentCallbacks, useSelector } from "../DocumentProvider/selectors";
 import EntityContext from "./EntityContext";
 import TypesHierarchy from "./TypesHierarchy";
 
@@ -26,7 +26,7 @@ const TextAnnotationDetailsContainer = styled.button({
 
 
 const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
-  const { scrollEntityIntoView } = useDocumentCallbacks();
+  const { scrollEntityIntoView } = useSelector(selectDocumentCallbacks);
 
   return (
     <>

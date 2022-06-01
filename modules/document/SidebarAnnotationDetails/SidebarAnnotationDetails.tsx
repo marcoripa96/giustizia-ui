@@ -1,11 +1,11 @@
 import { NERAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Button, Col, Divider, Text } from "@nextui-org/react";
-import { useDocumentData } from "../DocumentProvider/selectors";
 import TextAnnotationDetails from "./AnnotationTextDetails";
 import AnnotationLinkDetails from "./AnnotationLinkDetails";
 import { EditAnnotationModal } from "./EditAnnotationModal";
 import useModal from "@/hooks/use-modal";
+import { selectDocumentData, useSelector } from "../DocumentProvider/selectors";
 
 type AnnotationDetailsProps = {
   annotation: NERAnnotation;
@@ -40,7 +40,7 @@ const ButtonContainer = styled.div({
 })
 
 const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
-  const data = useDocumentData();
+  const data = useSelector(selectDocumentData);
   const { setVisible, bindings } = useModal();
   const { top_wikipedia_id: id } = annotation;
 

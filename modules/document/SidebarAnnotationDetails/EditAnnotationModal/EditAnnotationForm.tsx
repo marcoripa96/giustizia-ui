@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { Button, Input, Modal, Text } from "@nextui-org/react";
 import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
 import { Dispatch, SetStateAction, useMemo } from "react";
-import { useDocumentDispatch, useDocumentText } from "../../DocumentProvider/selectors";
+import { selectDocumentText, useDocumentDispatch, useSelector } from "../../DocumentProvider/selectors";
 import EntityContext from "../EntityContext";
 import TypesHierarchy from "../TypesHierarchy";
 import AddLinkItem from "./AddLinkItem";
@@ -40,7 +40,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
     link: top_wikipedia_id
   });
   const [searchValue, onSearchChange] = useInput('');
-  const text = useDocumentText();
+  const text = useSelector(selectDocumentText)
   const dispatch = useDocumentDispatch();
 
   const handleSubmit = (data: FormState) => {
