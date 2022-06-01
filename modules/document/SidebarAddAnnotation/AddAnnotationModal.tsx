@@ -3,7 +3,7 @@ import { useForm } from "@/hooks";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { useDocumentDispatch, useDocumentTaxonomy } from "../DocumentProvider/selectors";
+import { selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { ascend, ParentNode } from "./Tree";
 
 type SelectColorProps = {
@@ -79,7 +79,7 @@ const ContainerSelectType = styled.div({
 const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const [value, setValue] = useState(valueProp);
   const [checked, setChecked] = useState(false);
-  const taxonomy = useDocumentTaxonomy();
+  const taxonomy = useSelector(selectDocumentTaxonomy);
 
   const items = useMemo(() => {
     return Object.values(taxonomy).map((type) => {
@@ -153,7 +153,7 @@ const Form = ({ onClose }: FormProps) => {
     parent: '',
     color: '#AA9CFC'
   });
-  const taxonomy = useDocumentTaxonomy();
+  const taxonomy = useSelector(selectDocumentTaxonomy);
   const dispatch = useDocumentDispatch();
 
   const { label, key, parent } = value;

@@ -1,8 +1,6 @@
 import { useDraftState } from "@/hooks";
 import { ModalProps, Modal, Text } from "@nextui-org/react";
-import { Dispatch, SetStateAction } from "react";
 import { selectCurrentEntity } from "../../DocumentProvider/selectors";
-// import { useDocumentCurrentEntity } from "../../DocumentProvider/selectors";
 import EditAnnotationForm from "./EditAnnotationForm";
 
 type EditModalProps = ModalProps & {
