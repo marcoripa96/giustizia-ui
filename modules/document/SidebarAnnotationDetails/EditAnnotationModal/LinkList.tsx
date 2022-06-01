@@ -34,13 +34,13 @@ const LinkItemDetailsContainer = styled.div({
 type LinkItemProps = {
   candidate: Candidate;
   selected: boolean;
-  onClick: (event: MouseEvent) => void;
+  onClick: () => void;
 }
 
 const LinkItem = ({ candidate, selected, onClick }: LinkItemProps) => {
   return (
     <ItemContainer role="button" onClick={onClick}>
-      <Checkbox aria-label="candiate-check" isSelected={selected} />
+      <Checkbox onChange={onClick} aria-label="candiate-check" isSelected={selected} />
       <LinkItemDetailsContainer>
         <Flex direction="row" gap="10px" alignItems="center">
           <Text>{candidate.title}</Text>
