@@ -55,8 +55,7 @@ export const baseTaxonomy: Taxonomy = [
 export const documentState: State = {
   data: undefined,
   /**
-   * The idea is to let the user provide the taxonomy as a tree structure, then it is converted to an internal representation.
-   * The component utilizes the tree structure so it is converted to it when needed.
+   * The idea is to let the user provide the taxonomy as a tree structure, then it is converted to an internal representation (a "flattened tree").
    */
   taxonomy: flattenTree(baseTaxonomy),
   ui: {

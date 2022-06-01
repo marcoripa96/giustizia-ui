@@ -1,8 +1,9 @@
 import styled from "@emotion/styled"
-import dynamic from "next/dynamic";
+import dynamic, { Loader } from "next/dynamic";
 import { ComponentType } from "react";
 import { UIAction } from "../../DocumentProvider/types";
 import { selectDocumentAction, useSelector } from "../../DocumentProvider/selectors";
+import ActionSidebarContentSkeleton from "./ActionSidebarContentSkeleton";
 
 const Container = styled.div({
   display: 'flex',
@@ -12,8 +13,12 @@ const Container = styled.div({
   minWidth: 0
 });
 
+const dynamicWithLoading = (loader: Loader) => {
+  return dynamic(loader, { loading: () => <ActionSidebarContentSkeleton /> })
+}
+
 const content: Record<UIAction, ComponentType> = {
-  add: dynamic(() => import('../../SidebarAddAnnotation/SidebarAddAnnotation')),
+  add: dynamicWithLoading(() => import('../../SidebarAddAnnotation/SidebarAddAnnotation')),
   select: () => null,
   delete: () => null,
   filter: () => null,
