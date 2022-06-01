@@ -1,6 +1,8 @@
 import { useRouter } from "next/router"
-import { useMemo } from "react";
 
+/**
+ * Get a query parameter
+ */
 const useQueryParam = <T = any>(key: string) => {
   const router = useRouter();
   const param = router.query[key] as unknown as T;

@@ -26,10 +26,14 @@ const removeStopScroll = () => {
   });
 }
 
+/**
+ * Higher order hook which uses the useModal hook from NextUI so that I can apply additional props to the body.
+ */
 const useModal = () => {
   const modalProps = useNextModal();
 
   useEffect(() => {
+    // I do this in the useEffect otherswise properties are overwritten
     if (modalProps.bindings.open) {
       stopScroll();
     } else {

@@ -41,13 +41,6 @@ export type NERNode<P> = _Node<P>["type"] extends infer T
   : _Node<P> & { type: T }
   : never;
 
-// export type AnnotationType = {
-//   label: string;
-//   color: string;
-//   children?: Record<string, Omit<AnnotationType, 'color'>>
-// };
-
-// export type AnnotationTypeMap = Record<string, AnnotationType>;
 
 function _buildNodes<P>(content: string, annotations: Annotation<P>[]): NERNode<P>[] {
   const nodes: NERNode<P>[] = [];
@@ -78,6 +71,9 @@ function _buildNodes<P>(content: string, annotations: Annotation<P>[]): NERNode<
   return nodes;
 }
 
+/**
+ * Hook which builds a document with text and entity nodes
+ */
 export function useNER<P = {}>({ content, annotations }: UseNERProps<P>) {
   const nodes = useMemo(() => _buildNodes(content, annotations), [
     content,

@@ -16,7 +16,9 @@ export const useDocumentEventListener = <K extends keyof DocumentEventMap>(event
   }, [event, callback]);
 };
 
-
+/**
+ * Listen for an event listener on the window element
+ */
 export const useWindowEventListener = <K extends keyof WindowEventMap>(event: K, callback: WindowEventListenerCallback<K>) => {
   useEffect(() => {
     window.addEventListener(event, callback);

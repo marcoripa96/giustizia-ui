@@ -24,6 +24,9 @@ const getInputValue = (event: any) => {
   return event;
 }
 
+/**
+ * Hook which holds the state of a form
+ */
 export function useForm<T>(defaultValues: T) {
   const [state, setState] = useState<State<T>>({
     value: defaultValues
