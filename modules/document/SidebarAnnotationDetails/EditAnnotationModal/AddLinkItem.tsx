@@ -1,14 +1,14 @@
 import { Flex } from "@/components";
-import { NERAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Button } from "@nextui-org/react";
 import { Dispatch, SetStateAction } from "react";
 import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
 import AddCandidateForm from "./AddCandidateForm";
 import { useToggle } from "@/hooks";
+import { EntityAnnotation } from "@/server/routers/document";
 
 type AddLinkItemProps = {
-  setAnnotation: Dispatch<SetStateAction<NERAnnotation | undefined>>;
+  setAnnotation: Dispatch<SetStateAction<EntityAnnotation | undefined>>;
 }
 
 const Container = styled.div({
