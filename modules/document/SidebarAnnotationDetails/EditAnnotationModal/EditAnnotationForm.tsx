@@ -1,6 +1,6 @@
 import { Flex } from "@/components";
 import { useForm, useInput } from "@/hooks";
-import { NERAnnotation, Candidate } from "@/server/routers/document";
+import { Candidate, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Button, Input, Modal, Text } from "@nextui-org/react";
 import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
@@ -13,14 +13,14 @@ import LinkList from "./LinkList";
 import SelectType from "./SelectType";
 
 type FormProps = {
-  annotation: NERAnnotation;
-  setAnnotation: Dispatch<SetStateAction<NERAnnotation | undefined>>;
+  annotation: EntityAnnotation;
+  setAnnotation: Dispatch<SetStateAction<EntityAnnotation | undefined>>;
   setVisible: (value: boolean) => void;
 }
 
 type FormState = {
   type: string;
-  link: number | undefined;
+  linkCandidate: Candidate;
 }
 
 const Form = styled.form({
@@ -34,10 +34,18 @@ function matchTitleContains(items: Candidate[], value: string) {
 }
 
 const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps) => {
-  const { top_wikipedia_id, ner_type, candidates } = annotation;
+  const {
+    type,
+    features: {
+      linking: {
+        candidates,
+        top_candidate
+      }
+    }
+  } = annotation;
   const { value, register, onSubmit } = useForm<FormState>({
-    type: ner_type,
-    link: top_wikipedia_id
+    type: type,
+    linkCandidate: top_candidate
   });
   const [searchValue, onSearchChange] = useInput('');
   const text = useSelector(selectDocumentText)
@@ -48,7 +56,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
       type: 'editAnnotation',
       payload: {
         annotationId: annotation.id,
-        topId: data.link as number,
+        topCandidate: data.linkCandidate,
         type: data.type
       }
     })
@@ -66,7 +74,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
         <Flex direction="column" gap="10px">
           <Flex direction="column">
             <Text size={20}>Context</Text>
-            {text && <EntityContext text={text} annotation={{ ...annotation, ner_type: value.type }} />}
+            {text && <EntityContext text={text} annotation={{ ...annotation, type: value.type }} />}
           </Flex>
           <Flex direction="column">
             <Text size={20}>Type</Text>
@@ -91,7 +99,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
             onChange={onSearchChange}
             contentLeft={<FiSearch />} />
           <AddLinkItem setAnnotation={setAnnotation} />
-          <LinkList candidates={filteredCandidates} {...register('link')} />
+          <LinkList candidates={filteredCandidates} {...register('linkCandidate')} />
         </Flex>
       </Modal.Body>
       <Modal.Footer>

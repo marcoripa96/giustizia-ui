@@ -1,4 +1,3 @@
-import { NERAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Button, Col, Divider, Text } from "@nextui-org/react";
 import TextAnnotationDetails from "./AnnotationTextDetails";
@@ -6,9 +5,11 @@ import AnnotationLinkDetails from "./AnnotationLinkDetails";
 import { EditAnnotationModal } from "./EditAnnotationModal";
 import useModal from "@/hooks/use-modal";
 import { selectDocumentData, useSelector } from "../DocumentProvider/selectors";
+import { EntityAnnotation } from "@/server/routers/document";
+import { getCandidateId } from "../DocumentProvider/utils";
 
 type AnnotationDetailsProps = {
-  annotation: NERAnnotation;
+  annotation: EntityAnnotation;
 }
 
 const Container = styled.div({
@@ -42,7 +43,7 @@ const ButtonContainer = styled.div({
 const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
   const data = useSelector(selectDocumentData);
   const { setVisible, bindings } = useModal();
-  const { top_wikipedia_id: id } = annotation;
+  const { top_candidate, candidates } = annotation.features.linking;
 
   if (!data) {
     return null;
@@ -60,7 +61,7 @@ const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
           </Col>
           <Divider />
           <TextAnnotationDetails text={data.text} annotation={annotation} />
-          <AnnotationLinkDetails selectedId={id} candidates={annotation.candidates} />
+          <AnnotationLinkDetails selectedId={getCandidateId(top_candidate)} candidates={candidates} />
         </DetailsContainer>
         <ButtonContainer>
           <Button onClick={() => setVisible(true)}>Edit</Button>

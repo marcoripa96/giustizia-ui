@@ -6,7 +6,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { annotationsExample, contentExample } from "../utils/example";
 import { useQuery } from "@/utils/trpc";
 import { fixedEncodeURIComponent } from "@/utils/shared";
-import { NERAnnotation } from "@/server/routers/document";
 import { Textarea, Text, Loading } from "@nextui-org/react";
 import { flattenTree } from "@/modules/document/SidebarAddAnnotation/Tree";
 import { baseTaxonomy } from "@/modules/document/DocumentProvider/state";
@@ -54,9 +53,9 @@ const QueryText = () => {
   // the content is only set when an annotation result is computed
   const [content, setContent] = useState<string>(query ? '' : contentExample);
 
-  const { data: annotation, isFetching, error, refetch } = useQuery(
+  const { data: document, isFetching, error, refetch } = useQuery(
     ['infer.getPipelineResults', { value: query }],
-    { enabled: false, initialData: query ? [] : annotationsExample, retry: false })
+    { enabled: false, initialData: query ? undefined : annotationsExample, retry: false })
 
   const [entityFilter, setEntityFilter] = useState('all');
 
@@ -94,17 +93,19 @@ const QueryText = () => {
   // for now use base taxonomy
   const taxonomy = useMemo(() => flattenTree(baseTaxonomy), []);
 
-  const annotations = useMemo(() => {
-    if (!annotation) {
+  const filteredAnnotations = useMemo(() => {
+    if (!document) {
       return [];
     }
-    return annotation.filter((ann) => {
+    const { annotations } = document.annotation_sets.entities;
+
+    return annotations.filter((ann) => {
       if (entityFilter === 'all') {
         return true;
       }
-      return entityFilter === ann.ner_type;
+      return entityFilter === ann.type;
     })
-  }, [annotation, entityFilter])
+  }, [document, entityFilter])
 
 
   const handleAnnotationTypeFilterChange = (key: string) => {
@@ -128,14 +129,14 @@ const QueryText = () => {
         Compute
       </Button>
       {error && <Text color="error">Something went wrong :(</Text>}
-      {annotation ? (
+      {document ? (
         <Column>
           <AnnotationTypeFilter
             value={entityFilter}
             onChange={handleAnnotationTypeFilterChange}
             taxonomy={taxonomy}
-            annotations={annotation} />
-          <NERViewer taxonomy={taxonomy} content={content} annotations={annotations} />
+            annotations={document.annotation_sets.entities.annotations} />
+          <NERViewer taxonomy={taxonomy} content={content} annotations={filteredAnnotations} />
         </Column>
       ) : null}
     </>

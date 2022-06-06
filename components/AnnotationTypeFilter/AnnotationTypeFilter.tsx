@@ -1,5 +1,5 @@
 import { FlattenedTaxonomy, Taxonomy } from "@/modules/document/DocumentProvider/types";
-import { NERAnnotation } from "@/server/routers/document";
+import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { useMemo, useState } from "react";
 
@@ -42,17 +42,17 @@ const FilterButton = styled.button<{ selected: boolean }>(({ selected }) => ({
 
 type AnnotationTypeListProps = {
   taxonomy: FlattenedTaxonomy,
-  annotations: NERAnnotation[],
+  annotations: EntityAnnotation[],
   value: string;
   onChange: (key: string) => void;
 }
 
-const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: NERAnnotation[]) => {
+const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: EntityAnnotation[]) => {
   const items = annotations.reduce((acc, ann) => {
-    if (!acc[ann.ner_type]) {
-      acc[ann.ner_type] = 1;
+    if (!acc[ann.type]) {
+      acc[ann.type] = 1;
     } else {
-      acc[ann.ner_type] = acc[ann.ner_type] + 1;
+      acc[ann.type] = acc[ann.type] + 1;
     }
     return acc;
   }, {} as Record<string, number>);

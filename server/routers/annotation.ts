@@ -1,35 +1,42 @@
+import fetchJson from "@/lib/fetchJson";
 import { z } from "zod";
 import { createProtectedRouter } from "../context";
+import { getAuthHeader } from "../get-auth-header";
 
 export type GetAnnotationDetails = {
-  pageid: string;
-  title: string;
-  extract: string;
-  thumbnail: {
-    source: string;
+  props: {
+    pageid: string;
+    title: string;
+    extract: string;
+    thumbnail: {
+      source: string;
+    }
   }
 }
 
-const getAnnotationById = async (id: string | number): Promise<GetAnnotationDetails> => {
-  const endpoint = `action=query&pageids=${id}&prop=extracts|pageimages&exchars=200&explaintext=true&pithumbsize=480&format=json`;
-  const response = await fetch(`https://it.wikipedia.org/w/api.php?${endpoint}`);
-
-  const data = await response.json();
-
-  const processedData = {
-    ...data.query?.pages[(id as any)]
-  }
-  return processedData;
+const getAnnotationById = async (id: number, indexer: number) => {
+  const response = await fetchJson<any, GetAnnotationDetails>(`${process.env.API_BASE_URI}/indexer/info`, {
+    method: 'POST',
+    headers: {
+      Authorization: getAuthHeader(),
+    },
+    body: {
+      id,
+      indexer
+    }
+  });
+  return response.props;
 }
 
 export const annotations = createProtectedRouter()
   .query('getAnnotationDetails', {
     input: z
       .object({
-        id: z.union([z.string(), z.number()]),
+        id: z.number(),
+        indexer: z.number()
       }),
     resolve: ({ input }) => {
-      const { id } = input;
-      return getAnnotationById(id);
+      const { id, indexer } = input;
+      return getAnnotationById(id, indexer);
     },
   })

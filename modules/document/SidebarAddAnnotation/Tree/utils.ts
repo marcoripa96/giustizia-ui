@@ -80,7 +80,7 @@ export const flattenTree = (items: TreeItem[]): FlatTreeObj => {
 export const getNode = (obj: FlatTreeObj, key: string) => {
   const node = obj[key];
   if (!node) {
-    throw Error("The key doesn't exist in the tree");
+    throw Error(`The key '${key}' doesn't exist in the tree`);
   }
   return node;
 };

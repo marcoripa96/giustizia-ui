@@ -66,7 +66,7 @@ const DocumentsTable = ({ documents }: DocumentsListProps) => {
       <Table.Body items={documents}>
         {(item) => (
           <Table.Row key={item.id}>
-            <Table.Cell>{item.title}</Table.Cell>
+            <Table.Cell>{item.name}</Table.Cell>
             <Table.Cell>
               <CellOverflowHidden>
                 {item.preview}

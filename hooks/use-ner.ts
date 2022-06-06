@@ -16,11 +16,12 @@ type UseNERProps<P> = {
  */
 export type Annotation<P = {}> = {
   id: number;
-  ner_type: string;
-  start_pos: number;
-  end_pos: number;
-  mention: string;
-} & P;
+  start: number;
+  end: number;
+  type: string;
+  features: P
+  // mention: string;
+}
 
 /**
  * Return type of the hook. props will be required when type === 'entity'
@@ -48,11 +49,11 @@ function _buildNodes<P>(content: string, annotations: Annotation<P>[]): NERNode<
   let index = 0;
 
   annotations.forEach((annotation) => {
-    const { start_pos, end_pos } = annotation;
+    const { start, end } = annotation;
     // node of type text
-    const textNode = content.slice(lastPosition, start_pos);
+    const textNode = content.slice(lastPosition, start);
     // node of type entity
-    const entityNode = content.slice(start_pos, end_pos);
+    const entityNode = content.slice(start, end);
     nodes.push({ key: index, text: textNode, type: "text" });
     index += 1;
     nodes.push({
@@ -62,7 +63,7 @@ function _buildNodes<P>(content: string, annotations: Annotation<P>[]): NERNode<
       props: { ...annotation }
     });
     index += 1;
-    lastPosition = end_pos;
+    lastPosition = end;
   });
   // finally add the last piece of text
   const textNode = content.slice(lastPosition, content.length);

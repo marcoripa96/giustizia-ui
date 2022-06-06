@@ -27,7 +27,7 @@ const ToolbarContent = () => {
       <Link href="/documents" passHref>
         <IconButton as="a"><HiArrowLeft /></IconButton>
       </Link>
-      <Text h4>{data.title}</Text>
+      <Text h4>{data.name}</Text>
       <Button auto size="sm" disabled css={{ marginLeft: 'auto' }}>Save</Button>
     </Container>
   )

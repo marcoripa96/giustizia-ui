@@ -1,5 +1,4 @@
 import { Annotation } from '@/hooks/use-ner';
-import { NERAnnotation } from '@/server/routers/document';
 import styled from '@emotion/styled';
 import { darken } from 'polished';
 import { PropsWithChildren, MouseEvent, FocusEvent } from 'react';
@@ -7,15 +6,16 @@ import { FaLink } from '@react-icons/all-files/fa/FaLink';
 import { Tooltip, TooltipProps } from '@nextui-org/react';
 import { EntityCard } from '../EntityCard';
 import { ChildNodeWithColor } from '@/modules/document/SidebarAddAnnotation/Tree';
+import { EntityAnnotation } from '@/server/routers/document';
 
 type NERTagProps = PropsWithChildren<{
-  annotation: NERAnnotation;
+  annotation: EntityAnnotation;
   getTaxonomyNode: (key: string) => ChildNodeWithColor;
   tooltipPlacement?: TooltipProps['placement'],
   disableLink?: boolean,
   disablePreview?: boolean,
-  onClick?: (event: MouseEvent, tag: Annotation) => void;
-  onFocus?: (event: FocusEvent, tag: Annotation) => void;
+  onClick?: (event: MouseEvent, tag: EntityAnnotation) => void;
+  onFocus?: (event: FocusEvent, tag: EntityAnnotation) => void;
 }>;
 
 const Tag = styled.span<{ id: string; node: ChildNodeWithColor }>(({ node }) => ({
@@ -59,24 +59,31 @@ function NERTag({
   onFocus = getDefaultProp,
   ...props
 }: NERTagProps) {
-  const { ner_type, top_url, top_wikipedia_id } = annotation;
+  const {
+    type,
+    features: {
+      linking: {
+        top_candidate
+      }
+    }
+  } = annotation;
 
   const handleClick = (event: MouseEvent) => onClick(event, annotation);
   const handleOnFocus = (event: FocusEvent) => onFocus(event, annotation);
   // this prevents click and focus to trigger at the same time
   const handleOnMouseDown = (event: MouseEvent) => event.preventDefault();
 
-  const component = !disableLink && top_url ? 'a' : 'span';
+  const component = !disableLink && top_candidate ? 'a' : 'span';
 
   const componentTagProps = {
-    ...(!disableLink && top_url && {
-      href: top_url,
+    ...(!disableLink && top_candidate && {
+      href: top_candidate.url,
       target: '_blank',
     }),
     ...props,
   };
 
-  const node = getTaxonomyNode(ner_type);
+  const node = getTaxonomyNode(type);
 
   const TagComponent = (
     <Tag
@@ -91,14 +98,14 @@ function NERTag({
     >
       {children}
       <TagLabel node={node}>{node.key}</TagLabel>
-      {top_url && <Icon />}
+      {top_candidate && <Icon />}
     </Tag>
   )
 
-  if (!disablePreview && top_wikipedia_id !== -1) {
+  if (!disablePreview && top_candidate) {
     return (
       <Tooltip css={{ display: 'inline-block' }}
-        placement={tooltipPlacement} content={top_wikipedia_id ? <EntityCard annotation={annotation} node={node} /> : 'Empty'}>
+        placement={tooltipPlacement} content={<EntityCard annotation={annotation} node={node} />}>
         {TagComponent}
       </Tooltip>
     )

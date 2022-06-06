@@ -3,6 +3,7 @@ import { Candidate } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Checkbox, Text, Link } from "@nextui-org/react";
 import { MouseEvent } from "react";
+import { getCandidateId } from "../../DocumentProvider/utils";
 
 
 const LinkListContainer = styled.div({
@@ -54,8 +55,8 @@ const LinkItem = ({ candidate, selected, onClick }: LinkItemProps) => {
 
 type LinkListProps = {
   candidates: Candidate[] | undefined;
-  value: number | undefined;
-  onChange: (id: number) => void;
+  value: Candidate | undefined;
+  onChange: (candidate: Candidate) => void;
 }
 
 const LinkList = ({ candidates, value, onChange }: LinkListProps) => {
@@ -67,10 +68,10 @@ const LinkList = ({ candidates, value, onChange }: LinkListProps) => {
     <LinkListContainer>
       {candidates.map((candidate) => (
         <LinkItem
-          key={candidate.wikipedia_id}
+          key={getCandidateId(candidate)}
           candidate={candidate}
-          selected={value === candidate.wikipedia_id}
-          onClick={() => onChange(candidate.wikipedia_id)} />
+          selected={getCandidateId(value) === getCandidateId(candidate)}
+          onClick={() => onChange(candidate)} />
       ))}
     </LinkListContainer>
   )

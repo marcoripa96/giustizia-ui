@@ -4,21 +4,21 @@ import { TooltipProps } from '@nextui-org/react';
 import { NERTag } from '../NERTag';
 import { MouseEvent, FocusEvent, useCallback } from 'react';
 import { FlattenedTaxonomy } from '@/modules/document/DocumentProvider/types';
-import { NERAnnotation } from '@/server/routers/document';
 import { getAllNodeData } from '@/modules/document/SidebarAddAnnotation/Tree';
 import { getNodeSelectionOffset, getOriginalOffset, getTextSelection } from './utils';
+import { EntityAnnotation } from '@/server/routers/document';
 
 type NERViewerProps = {
   taxonomy: FlattenedTaxonomy;
   content: string;
-  annotations: NERAnnotation[];
+  annotations: EntityAnnotation[];
   addMode?: boolean;
   addSelectionColor?: string;
   disableLink?: boolean;
   disablePreview?: boolean;
   tooltipPlacement?: TooltipProps['placement'],
-  onTagClick?: (event: MouseEvent, tag: Annotation) => void;
-  onTagFocus?: (event: FocusEvent, tag: Annotation) => void;
+  onTagClick?: (event: MouseEvent, tag: EntityAnnotation) => void;
+  onTagFocus?: (event: FocusEvent, tag: EntityAnnotation) => void;
   onTextSelection?: (event: MouseEvent, node: SelectionNode) => void;
 };
 

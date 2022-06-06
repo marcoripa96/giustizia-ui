@@ -1,10 +1,10 @@
-import { NERAnnotation } from "@/server/routers/document";
+import { Candidate, EntityAnnotation } from "@/server/routers/document";
 
 /**
  * Add a new annotation
  */
-export const addAnnotation = (annotation: NERAnnotation[], newAnnotation: NERAnnotation) => {
-  const insIndex = annotation.findIndex((annotation) => newAnnotation.start_pos < annotation.start_pos);
+export const addAnnotation = (annotation: EntityAnnotation[], newAnnotation: EntityAnnotation) => {
+  const insIndex = annotation.findIndex((annotation) => newAnnotation.start < annotation.start);
 
   return [
     ...annotation.slice(0, insIndex),
@@ -23,3 +23,13 @@ export const scrollEntityIntoView = (id: number) => {
   const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
   window.scrollTo({ top: y, behavior: 'smooth' });
 }
+
+/**
+ * Compose unique id given a candidate id and indexer
+ */
+export const getCandidateId = (candidate: Candidate | undefined) => {
+  if (!candidate) {
+    return ''
+  }
+  return `${candidate.indexer}/${candidate.id}`;
+};

@@ -69,7 +69,7 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
   })
 
   useWindowEventListener('resize', () => {
-    setAnchor(getAnchorCoords());
+    setAnchor((s) => s ? getAnchorCoords() : undefined);
   });
 
   const getAnchorCoords = () => {

@@ -1,5 +1,5 @@
 import { NERTag } from "@/components"
-import { NERAnnotation } from "@/server/routers/document";
+import { EntityAnnotation } from "@/server/routers/document";
 import { Text } from "@nextui-org/react"
 import { useMemo, useCallback } from "react";
 import { selectDocumentTaxonomy, useSelector } from "../DocumentProvider/selectors";
@@ -7,19 +7,19 @@ import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
 
 type EntityContextProps = {
   text: string;
-  annotation: NERAnnotation;
+  annotation: EntityAnnotation;
 }
 
 const EntityContext = ({ text, annotation }: EntityContextProps) => {
   const taxonomy = useSelector(selectDocumentTaxonomy);
 
   const context = useMemo(() => {
-    const { start_pos, end_pos } = annotation;
-    const startOffset = start_pos - 50 < 0 ? 0 : start_pos - 50;
-    const endOffset = end_pos + 50 > text.length ? text.length - end_pos : end_pos + 50;
+    const { start, end } = annotation;
+    const startOffset = start - 50 < 0 ? 0 : start - 50;
+    const endOffset = end + 50 > text.length ? text.length - end : end + 50;
     return {
-      contextLeft: text.slice(startOffset, start_pos),
-      contextRight: text.slice(end_pos, endOffset)
+      contextLeft: text.slice(startOffset, start),
+      contextRight: text.slice(end, endOffset)
     }
   }, [text, annotation])
 
@@ -37,7 +37,7 @@ const EntityContext = ({ text, annotation }: EntityContextProps) => {
         disablePreview
         getTaxonomyNode={getTaxonomyNode}
       >
-        {annotation.mention}
+        {annotation.features.mention}
       </NERTag>
       <span>{context.contextRight === '' ? `${context.contextRight}` : `${context.contextRight}..."`}</span>
     </Text>

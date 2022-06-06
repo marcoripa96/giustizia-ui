@@ -1,4 +1,4 @@
-import { NERAnnotation } from "@/server/routers/document";
+import { EntityAnnotation } from "@/server/routers/document";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
@@ -36,25 +36,36 @@ export function documentReducer(state: State, action: Action): State {
         return state;
       }
       const { type, startOffset, endOffset, text } = action.payload;
-      const { annotation } = state.data;
+      const {
+        next_annid,
+        annotations
+      } = state.data.annotation_sets.entities;
 
-      const newLastIndexId = state.data.lastIndexId + 1
-
-      const newAnnotation: NERAnnotation = {
-        id: newLastIndexId,
-        start_pos: startOffset,
-        end_pos: endOffset,
-        ner_type: type,
-        mention: text,
-        top_url: ''
+      const newAnnotation: any = {
+        id: next_annid,
+        start: startOffset,
+        end: endOffset,
+        type: type,
+        features: {
+          ner: {},
+          linking: {}
+        }
       }
 
       return {
         ...state,
         data: {
           ...state.data,
-          annotation: addAnnotation(annotation, newAnnotation),
-          lastIndexId: newLastIndexId
+          annotation_sets: {
+            ...state.data.annotation_sets,
+            entities: {
+              ...state.data.annotation_sets.entities,
+              annotations: addAnnotation(annotations, newAnnotation),
+              next_annid: next_annid + 1
+            }
+          }
+          // annotation: addAnnotation(annotation, newAnnotation),
+          // lastIndexId: newLastIndexId
         }
       };
     }
@@ -62,15 +73,21 @@ export function documentReducer(state: State, action: Action): State {
       if (!state.data) {
         return state;
       }
-      const { annotationId, type, topId } = action.payload;
-      const { annotation } = state.data;
+      const { annotationId, type, topCandidate } = action.payload;
+      const { annotations } = state.data.annotation_sets.entities;
 
-      const newAnnotation = annotation.map((ann) => {
+      const newAnnotations = annotations.map((ann) => {
         if (ann.id === annotationId) {
           return {
             ...ann,
-            ner_type: type,
-            top_wikipedia_id: topId
+            type,
+            features: {
+              ...ann.features,
+              linking: {
+                ...ann.features.linking,
+                top_candidate: topCandidate
+              }
+            }
           }
         }
         return ann;
@@ -79,7 +96,13 @@ export function documentReducer(state: State, action: Action): State {
         ...state,
         data: {
           ...state.data,
-          annotation: newAnnotation
+          annotation_sets: {
+            ...state.data.annotation_sets,
+            entities: {
+              ...state.data.annotation_sets.entities,
+              annotations: newAnnotations
+            }
+          }
         }
       };
     }
@@ -88,13 +111,19 @@ export function documentReducer(state: State, action: Action): State {
         return state;
       }
       const { id } = action.payload;
-      const { annotation } = state.data;
-      const newAnnotation = annotation.filter((ann) => ann.id !== id);
+      const { annotations } = state.data.annotation_sets.entities;
+      const newAnnotation = annotations.filter((ann) => ann.id !== id);
       return {
         ...state,
         data: {
           ...state.data,
-          annotation: newAnnotation
+          annotation_sets: {
+            ...state.data.annotation_sets,
+            entities: {
+              ...state.data.annotation_sets.entities,
+              annotations: newAnnotation
+            }
+          }
         }
       };
     }
@@ -110,7 +139,13 @@ export function documentReducer(state: State, action: Action): State {
         ...(state.data && {
           data: {
             ...state.data,
-            annotation: state.data.annotation.filter((ann) => types.indexOf(ann.ner_type) === -1)
+            annotation_sets: {
+              ...state.data.annotation_sets,
+              entities: {
+                ...state.data.annotation_sets.entities,
+                annotations: state.data.annotation_sets.entities.annotations.filter((ann) => types.indexOf(ann.type) === -1)
+              }
+            }
           },
           ...(state.ui.selectedEntityId != null && {
             ui: {

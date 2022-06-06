@@ -7,29 +7,50 @@ import { getAuthHeader } from "../get-auth-header";
 
 export type Document = {
   id: number;
-  title: string;
+  name: string;
+  preview: string;
   text: string;
-  annotation: NERAnnotation[]
+  annotation_sets: {
+    entities: AnnotationSet<EntityAnnotation>;
+    sentences: AnnotationSet;
+  }
 };
 
+type AnnotationSet<P = []> = {
+  name: string;
+  next_annid: number;
+  annotations: P[];
+}
+
 export type Candidate = {
-  wikipedia_id: number;
+  id: number;
+  indexer: number;
+  score: number;
+  raw_score: number;
+  norm_score: number;
   title: string;
   url: string;
-  score: number;
-  norm_score: number;
 }
 
 export type AdditionalAnnotationProps = {
-  top_title?: string,
-  top_wikipedia_id?: number,
-  top_url?: string;
-  candidates?: Candidate[];
-  context_left?: string;
-  context_right?: string;
+  mention: string;
+  cluster: number;
+  ner: {
+    source: string;
+    spacy_model: string;
+    type: string;
+    score: number;
+  }
+  linking: {
+    source: string;
+    is_nil: boolean;
+    nil_score: number;
+    top_candidate: Candidate;
+    candidates: Candidate[];
+  }
 };
 
-export type NERAnnotation = Annotation<AdditionalAnnotationProps>;
+export type EntityAnnotation = Annotation<AdditionalAnnotationProps>
 
 
 const getDocumentById = async (id: number): Promise<Document> => {
@@ -50,7 +71,7 @@ const getDocumentById = async (id: number): Promise<Document> => {
 
 export type GetAllDocuments = {
   id: string;
-  title: string;
+  name: string;
   preview: string;
 }[]
 

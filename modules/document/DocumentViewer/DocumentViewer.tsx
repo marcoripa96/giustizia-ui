@@ -1,16 +1,15 @@
 import { DocumentViewerSkeleton, NERViewer, SelectionNode } from "@/components";
-import { NERAnnotation } from "@/server/routers/document";
+import { Document, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Card } from "@nextui-org/react";
 import { MouseEvent, useMemo } from "react";
 import { selectDocumentAction, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { FlattenedTaxonomy } from "../DocumentProvider/types";
-import { DocumentState } from "../DocumentProvider/useInitState";
 import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
 
 type DocumentViewerProps = {
   taxonomy: FlattenedTaxonomy;
-  document: DocumentState;
+  document: Document;
   filter: string;
 }
 
@@ -32,18 +31,25 @@ const DocumentContainer = styled.div`
 const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => {
   const action = useSelector(selectDocumentAction);
   const dispatch = useDocumentDispatch();
-  const { text, annotation } = document;
+  const {
+    text,
+    annotation_sets: {
+      entities: {
+        annotations
+      }
+    }
+  } = document;
 
-  const annotations = useMemo(() => {
-    return annotation.filter((ann) => {
+  const filteredAnnotations = useMemo(() => {
+    return annotations.filter((ann) => {
       if (filter === 'all') {
         return true;
       }
-      return filter === ann.ner_type;
+      return filter === ann.type;
     })
-  }, [annotation, filter])
+  }, [annotations, filter])
 
-  const handleTagClick = (event: MouseEvent, annotation: NERAnnotation) => {
+  const handleTagClick = (event: MouseEvent, annotation: EntityAnnotation) => {
     switch (action.value) {
       case 'select': {
         dispatch({
@@ -98,7 +104,7 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
           addSelectionColor={addSelectionColor}
           taxonomy={taxonomy}
           content={text}
-          annotations={annotations}
+          annotations={filteredAnnotations}
           onTagClick={handleTagClick}
           onTextSelection={onTextSelection}
         />

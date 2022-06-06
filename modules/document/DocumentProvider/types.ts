@@ -1,14 +1,13 @@
-import { NERAnnotation } from "@/server/routers/document";
+import { Candidate, Document } from "@/server/routers/document";
 import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
 import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
-import { DocumentState } from "./useInitState";
 
 export type Action =
-  | { type: 'setData', payload: { data: DocumentState } }
+  | { type: 'setData', payload: { data: Document } }
   | { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
   | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
   | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
-  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topId: number } }
+  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
   | { type: 'deleteAnnotation', payload: { id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
@@ -31,7 +30,7 @@ export type State = {
   /**
    * Document data
    */
-  data: DocumentState | undefined;
+  data: Document | undefined;
   /**
    * Taxonomy in tree structure
    */

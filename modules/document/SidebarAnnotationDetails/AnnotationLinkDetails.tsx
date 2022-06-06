@@ -7,6 +7,7 @@ import { useState, useEffect, useMemo } from "react";
 import Image from 'next/image';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { getCandidateId } from "../DocumentProvider/utils";
 
 type AnnotationLinkCollapseContentProps = {
   candidate: Candidate;
@@ -48,8 +49,8 @@ const AnnotationLinkCollapseContentSkeleton = () => {
 }
 
 const AnnotationLinkCollapseContent = ({ candidate, fetchData }: AnnotationLinkCollapseContentProps) => {
-  const { wikipedia_id: id } = candidate;
-  const { data, isLoading } = useQuery(['annotation.getAnnotationDetails', { id }], {
+  const { id, indexer } = candidate;
+  const { data, isLoading } = useQuery(['annotation.getAnnotationDetails', { id, indexer }], {
     staleTime: Infinity,
     enabled: fetchData
   });
@@ -76,13 +77,13 @@ const AnnotationLinkCollapseContent = ({ candidate, fetchData }: AnnotationLinkC
 
 type AnnotationLinkDetailsProps = {
   candidates: Candidate[] | undefined;
-  selectedId?: number;
+  selectedId?: string;
 }
 
 const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetailsProps) => {
-  const [open, setOpen] = useState<number | undefined>(undefined);
+  const [open, setOpen] = useState<string | undefined>(undefined);
 
-  const handleCollapseClick = (id: number) => {
+  const handleCollapseClick = (id: string) => {
     setOpen((s) => s === id ? undefined : id);
   }
 
@@ -97,10 +98,10 @@ const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetails
       return undefined;
     }
     return candidates.sort((a, b) => {
-      if (a.wikipedia_id === selectedId) {
+      if (getCandidateId(a) === selectedId) {
         return -1;
       }
-      if (b.wikipedia_id === selectedId) {
+      if (getCandidateId(b) === selectedId) {
         return 1;
       }
       return b.score - a.score;
@@ -114,9 +115,9 @@ const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetails
         <Collapse.Group css={{ padding: 0 }}>
           {orderedCandidates.map((candidate) => (
             <Collapse
-              key={candidate.wikipedia_id}
-              onClick={() => handleCollapseClick(candidate.wikipedia_id)}
-              expanded={open === candidate.wikipedia_id}
+              key={getCandidateId(candidate)}
+              onClick={() => handleCollapseClick(getCandidateId(candidate))}
+              expanded={open === getCandidateId(candidate)}
               css={{
                 padding: 0,
                 '& > div:first-of-type': {
@@ -125,7 +126,7 @@ const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetails
               }}
               title={(
                 <Row>
-                  {selectedId === candidate.wikipedia_id && <Checkbox isSelected aria-label="True candidate" />}
+                  {selectedId === getCandidateId(candidate) && <Checkbox isSelected aria-label="True candidate" />}
                   <Col>
                     <Link onClick={(event) => event.stopPropagation()} href={candidate.url} target="_blank"
                       css={{
@@ -142,7 +143,7 @@ const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetails
                   </Col>
                 </Row>
               )}>
-              <AnnotationLinkCollapseContent candidate={candidate} fetchData={open === candidate.wikipedia_id} />
+              <AnnotationLinkCollapseContent candidate={candidate} fetchData={open === getCandidateId(candidate)} />
             </Collapse>
           ))}
         </Collapse.Group>

@@ -1,5 +1,5 @@
 import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
-import { NERAnnotation } from "@/server/routers/document";
+import { EntityAnnotation } from "@/server/routers/document";
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Grid, Image, Text } from "@nextui-org/react";
@@ -8,7 +8,7 @@ import { Tag } from "../Tag";
 import EntityCardSkeleton from "./EntityCardSkeleton";
 
 export type EntityCardProps = {
-  annotation: NERAnnotation;
+  annotation: EntityAnnotation;
   node: ChildNodeWithColor;
 }
 
@@ -28,9 +28,11 @@ const ContainerImgTitle = styled.div({
 })
 
 const EntityCard = ({ annotation, node }: EntityCardProps) => {
-  const { top_wikipedia_id, top_url, ner_type } = annotation;
+  const { top_candidate } = annotation.features.linking;
 
-  const { data, isFetching } = useQuery(['annotation.getAnnotationDetails', { id: top_wikipedia_id || '' }], { staleTime: Infinity });
+  const { data, isFetching } = useQuery(
+    ['annotation.getAnnotationDetails', { id: top_candidate.id, indexer: top_candidate.indexer }],
+    { staleTime: Infinity, enabled: !!top_candidate });
 
   if (isFetching) {
     return <EntityCardSkeleton />;
@@ -63,7 +65,7 @@ const EntityCard = ({ annotation, node }: EntityCardProps) => {
         </ContainerImgTitle>
         <Button
           as="a"
-          href={top_url}
+          href={top_candidate.url}
           target="_blank"
           rounded
           bordered

@@ -4,11 +4,11 @@ import { FaFileAlt } from '@react-icons/all-files/fa/FaFileAlt'
 
 type DocumentCardProps = {
   id: string;
-  title: string;
+  name: string;
   preview: string;
 }
 
-const DocumentCard = ({ id, title, preview }: DocumentCardProps) => {
+const DocumentCard = ({ id, name, preview }: DocumentCardProps) => {
   return (
     <Link href={`/documents/${id}`} passHref>
       <Card
@@ -26,7 +26,7 @@ const DocumentCard = ({ id, title, preview }: DocumentCardProps) => {
           <Row align="center" css={{ gap: '10px' }}>
             <FaFileAlt color="#0D99FF" />
             <Col>
-              <Text h6>{title}</Text>
+              <Text h6>{name}</Text>
               <Text css={{ color: 'rgba(0, 0, 0, .5)', fontSize: '14px' }}>Edited 2 days ago</Text>
             </Col>
           </Row>

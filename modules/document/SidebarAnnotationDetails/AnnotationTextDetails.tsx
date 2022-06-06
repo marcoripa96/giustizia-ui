@@ -1,4 +1,4 @@
-import { NERAnnotation } from "@/server/routers/document";
+import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
 import { selectDocumentCallbacks, useSelector } from "../DocumentProvider/selectors";
@@ -7,7 +7,7 @@ import TypesHierarchy from "./TypesHierarchy";
 
 type TextAnnotationDetails = {
   text: string;
-  annotation: NERAnnotation;
+  annotation: EntityAnnotation;
 }
 
 const TextAnnotationDetailsContainer = styled.button({
@@ -35,7 +35,7 @@ const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
         <EntityContext text={text} annotation={annotation} />
       </TextAnnotationDetailsContainer>
       <Text size={15} b>Type hierarchy</Text>
-      <TypesHierarchy type={annotation.ner_type} />
+      <TypesHierarchy type={annotation.type} />
     </>
 
   )
