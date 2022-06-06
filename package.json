@@ -17,6 +17,7 @@
     "@trpc/next": "^9.22.0",
     "@trpc/react": "^9.22.0",
     "@trpc/server": "^9.22.0",
+    "immer": "^9.0.14",
     "iron-session": "^6.1.2",
     "next": "12.1.4",
     "nextjs-progressbar": "^0.0.14",

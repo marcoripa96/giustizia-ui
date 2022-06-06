@@ -12,6 +12,9 @@ export type Action =
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
   | { type: 'setUI', payload: Partial<State['ui']> };
+
+export type ActionType = Action['type'];
+
 export type Dispatch = (action: Action) => void
 
 export type AnnotationType = {
