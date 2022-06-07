@@ -91,29 +91,29 @@ const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetails
     setOpen(selectedId);
   }, [selectedId]);
 
-  // sort candidates so that the matching candidate is on top
-  // then order by score
-  const orderedCandidates = useMemo(() => {
-    if (!candidates) {
-      return undefined;
-    }
-    return candidates.sort((a, b) => {
-      if (getCandidateId(a) === selectedId) {
-        return -1;
-      }
-      if (getCandidateId(b) === selectedId) {
-        return 1;
-      }
-      return b.score - a.score;
-    })
-  }, [candidates, selectedId]);
+  // // sort candidates so that the matching candidate is on top
+  // // then order by score
+  // const orderedCandidates = useMemo(() => {
+  //   if (!candidates) {
+  //     return undefined;
+  //   }
+  //   return candidates.sort((a, b) => {
+  //     if (getCandidateId(a) === selectedId) {
+  //       return -1;
+  //     }
+  //     if (getCandidateId(b) === selectedId) {
+  //       return 1;
+  //     }
+  //     return b.score - a.score;
+  //   })
+  // }, [candidates, selectedId]);
 
   return (
     <>
       <Text size={15} b>Links</Text>
-      {orderedCandidates && orderedCandidates.length > 0 ? (
+      {candidates && candidates.length > 0 ? (
         <Collapse.Group css={{ padding: 0 }}>
-          {orderedCandidates.map((candidate) => (
+          {candidates.map((candidate) => (
             <Collapse
               key={getCandidateId(candidate)}
               onClick={() => handleCollapseClick(getCandidateId(candidate))}

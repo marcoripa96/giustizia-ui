@@ -34,11 +34,15 @@ const useModal = () => {
 
   useEffect(() => {
     // I do this in the useEffect otherswise properties are overwritten
-    if (modalProps.bindings.open) {
-      stopScroll();
-    } else {
-      removeStopScroll();
-    }
+    setTimeout(() => {
+      if (modalProps.bindings.open) {
+        stopScroll();
+      } else {
+        console.log(modalProps.bindings)
+        removeStopScroll();
+      }
+    }, 0)
+
   }, [modalProps.bindings.open])
 
 

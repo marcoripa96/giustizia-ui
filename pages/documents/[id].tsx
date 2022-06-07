@@ -3,13 +3,12 @@ import { withAuthSsr } from "@/lib/withAuthSsr";
 import { GetServerSideProps } from "next";
 import { ReactElement, useState } from "react";
 import styled from '@emotion/styled';
-// import { NERAnnotation } from "@/server/routers/document";
 import { NextPageWithLayout } from "../_app";
 import DocumentProvider from "@/modules/document/DocumentProvider/DocumentProvider";
 import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
-import { selectDocumentAnnotation, selectDocumentData, selectDocumentTaxonomy, useSelector } from "@/modules/document/DocumentProvider/selectors";
+import { selectDocumentData, selectDocumentTaxonomy, useSelector } from "@/modules/document/DocumentProvider/selectors";
 import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
 
 
@@ -34,14 +33,6 @@ const AnnotationTypeFilterContainer = styled.div({
   background: '#FFF',
   borderBottom: '1px solid #F3F3F5'
 })
-
-// export type DocumentState = {
-//   id: string;
-//   title: string;
-//   content: string;
-//   annotations: NERAnnotation[];
-//   lastIndexId: number;
-// };
 
 const DocumentSkeleton = () => {
   return (

@@ -1,7 +1,7 @@
 import { Flex } from "@/components";
 import { useForm, useInput } from "@/hooks";
 import styled from "@emotion/styled";
-import { Button, Divider, FormElement, Input } from "@nextui-org/react";
+import { Button, Divider, FormElement, Input, Text, Textarea } from "@nextui-org/react";
 import { ChangeEvent, useState } from "react";
 
 const Container = styled.div({
@@ -16,6 +16,10 @@ const Container = styled.div({
 const Form = styled.form({
   display: 'flex',
   flexDirection: 'column',
+  gap: '10px',
+  button: {
+    marginRight: 'auto'
+  }
 })
 
 const regexesKBs = [
@@ -62,27 +66,43 @@ const AddCandidateLink = () => {
         shadow={false}
         fullWidth
       />
-      <Button auto flat>Add</Button>
+      <Button auto>Add</Button>
     </Flex>
   )
 }
 
 const AddCandidateForm = () => {
   const { register } = useForm({
-    title: ''
+    title: '',
+    description: ''
   });
 
   return (
     <Container>
+      <Flex>
+        <Text size={18} css={{ lineHeight: 1.2 }}>Add a new candidate</Text>
+        <Text size={16} css={{ color: 'rgba(0,0,0,0.5)' }}>
+          Add a new candidate by either inserting a link to a resource or by manually filling in the form below.
+        </Text>
+      </Flex>
       <AddCandidateLink />
       <Divider />
       <Form>
         <Input
           {...register('title')}
+          aria-label="candidate-title"
           placeholder="Candidate title"
           shadow={false}
           fullWidth
         />
+        <Textarea
+          aria-label="candidate-description"
+          {...register('description')}
+          placeholder="Candidate description"
+          shadow={false}
+          fullWidth
+        />
+        <Button auto>Add</Button>
       </Form>
     </Container>
 

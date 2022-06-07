@@ -4,7 +4,7 @@ import TextAnnotationDetails from "./AnnotationTextDetails";
 import AnnotationLinkDetails from "./AnnotationLinkDetails";
 import { EditAnnotationModal } from "./EditAnnotationModal";
 import useModal from "@/hooks/use-modal";
-import { selectDocumentData, useSelector } from "../DocumentProvider/selectors";
+import { selectCurrentEntityLinkingFeatures, selectDocumentData, selectDocumentText, useSelector } from "../DocumentProvider/selectors";
 import { EntityAnnotation } from "@/server/routers/document";
 import { getCandidateId } from "../DocumentProvider/utils";
 
@@ -41,13 +41,15 @@ const ButtonContainer = styled.div({
 })
 
 const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
-  const data = useSelector(selectDocumentData);
+  const text = useSelector(selectDocumentText);
+  const linkingFeatures = useSelector(selectCurrentEntityLinkingFeatures);
   const { setVisible, bindings } = useModal();
-  const { top_candidate, candidates } = annotation.features.linking;
 
-  if (!data) {
+  if (!linkingFeatures || !text) {
     return null;
   }
+
+  const { candidates, top_candidate } = linkingFeatures
 
   return (
     <>
@@ -60,7 +62,7 @@ const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
             </Text>
           </Col>
           <Divider />
-          <TextAnnotationDetails text={data.text} annotation={annotation} />
+          <TextAnnotationDetails text={text} annotation={annotation} />
           <AnnotationLinkDetails selectedId={getCandidateId(top_candidate)} candidates={candidates} />
         </DetailsContainer>
         <ButtonContainer>

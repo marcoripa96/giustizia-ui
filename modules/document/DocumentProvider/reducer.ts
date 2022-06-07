@@ -28,6 +28,7 @@ export const documentReducer = createImmerReducer<State, Action>({
       end: endOffset,
       type: type,
       features: {
+        mention: text,
         ner: {},
         linking: {}
       }
