@@ -59,9 +59,10 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
       }
         break;
       case 'delete': {
+        console.log(annotation);
         dispatch({
           type: 'deleteAnnotation',
-          payload: { id: annotation.id }
+          payload: { annotationId: annotation.id }
         })
       }
         break;

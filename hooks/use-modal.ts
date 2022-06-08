@@ -38,7 +38,6 @@ const useModal = () => {
       if (modalProps.bindings.open) {
         stopScroll();
       } else {
-        console.log(modalProps.bindings)
         removeStopScroll();
       }
     }, 0)

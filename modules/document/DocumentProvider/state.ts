@@ -65,6 +65,10 @@ export const documentState: State = {
     },
     leftActionBarOpen: true,
   },
+  draft: {
+    patches: [],
+    inversePatches: []
+  },
   callbacks: {
     scrollEntityIntoView: scrollEntityIntoView
   }

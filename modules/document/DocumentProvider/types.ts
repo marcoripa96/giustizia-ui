@@ -1,17 +1,23 @@
 import { Candidate, Document } from "@/server/routers/document";
+import { Patch } from "@/utils/patches";
 import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
 import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
+type ActionRequiredFields = {
+  type: string;
+  generatePatches?: boolean;
+}
+
 export type Action =
-  | { type: 'setData', payload: { data: Document } }
-  | { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
-  | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
-  | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
-  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
-  | { type: 'deleteAnnotation', payload: { id: number } }
-  | { type: 'deleteTaxonomyType', payload: { key: string } }
-  | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
-  | { type: 'setUI', payload: Partial<State['ui']> };
+  | ActionRequiredFields & { type: 'setData', payload: { data: Document } }
+  | ActionRequiredFields & { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
+  | ActionRequiredFields & { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
+  | ActionRequiredFields & { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
+  | ActionRequiredFields & { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
+  | ActionRequiredFields & { type: 'deleteAnnotation', payload: { annotationId: number } }
+  | ActionRequiredFields & { type: 'deleteTaxonomyType', payload: { key: string } }
+  | ActionRequiredFields & { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
+  | ActionRequiredFields & { type: 'setUI', payload: Partial<State['ui']> };
 
 export type ActionType = Action['type'];
 
@@ -38,7 +44,10 @@ export type State = {
    * Taxonomy in tree structure
    */
   taxonomy: FlattenedTaxonomy,
-
+  draft: {
+    patches: Patch[],
+    inversePatches: Patch[]
+  }
   ui: {
     selectedEntityId: number | null;
     action: {
