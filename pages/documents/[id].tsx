@@ -10,6 +10,7 @@ import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
 import { selectDocumentCurrentEntityId, selectDocumentData, selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "@/modules/document/DocumentProvider/selectors";
 import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
+import { useClickOutside } from "@/hooks";
 
 
 const Container = styled.div({
@@ -61,6 +62,9 @@ const Document: NextPageWithLayout = () => {
   const selectedEntityId = useSelector(selectDocumentCurrentEntityId);
   const dispatch = useDocumentDispatch();
   const [entityFilter, setEntityFilter] = useState('all');
+  const overlayRef = useClickOutside(() => {
+    handleOverlayClick();
+  })
 
   const handleAnnotationTypeFilterChange = (key: string) => {
     setEntityFilter(key);
@@ -91,7 +95,7 @@ const Document: NextPageWithLayout = () => {
           annotations={annotations} />
       </AnnotationTypeFilterContainer>
       <DocumentContainer>
-        {selectedEntityId !== null && <Overlay onClick={handleOverlayClick} />}
+        {selectedEntityId !== null && <Overlay ref={overlayRef} onClick={handleOverlayClick} />}
         <DocumentViewer
           taxonomy={taxonomy}
           document={document}

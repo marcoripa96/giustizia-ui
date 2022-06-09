@@ -10,7 +10,8 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   changeAction: (state, payload) => {
     toggleLeftSidebar(state, payload);
-    state.ui.action.value = payload.action
+    state.ui.action.value = payload.action;
+    state.ui.action.data = undefined;
   },
   changeActionData: (state, payload) => {
     state.ui.action.data = payload.data
