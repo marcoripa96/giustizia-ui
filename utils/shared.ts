@@ -35,3 +35,25 @@ export const removeProps = <T>(obj: T, props: (keyof T)[]): Omit<T, keyof T> => 
   const newObj = removeProp(obj, prop) as T;
   return removeProps(newObj, props);
 }
+
+export const deepEqual = (a: any, b: any) => {
+  if (a === b) return true;
+
+  if (a == null || typeof a != "object" ||
+    b == null || typeof b != "object")
+    return false;
+
+  let propsInA = 0, propsInB = 0;
+
+  for (let prop in a) {
+    propsInA += 1;
+  }
+
+  for (let prop in b) {
+    propsInB += 1;
+    if (!(prop in a) || !deepEqual(a[prop], b[prop]))
+      return false;
+  }
+
+  return propsInA == propsInB;
+}

@@ -1,7 +1,7 @@
 import { Annotation } from '@/hooks/use-ner';
 import styled from '@emotion/styled';
 import { darken } from 'polished';
-import { PropsWithChildren, MouseEvent, FocusEvent } from 'react';
+import { PropsWithChildren, MouseEvent, FocusEvent, useRef } from 'react';
 import { FaLink } from '@react-icons/all-files/fa/FaLink';
 import { Tooltip, TooltipProps } from '@nextui-org/react';
 import { EntityCard } from '../EntityCard';
@@ -11,6 +11,7 @@ import { EntityAnnotation } from '@/server/routers/document';
 type NERTagProps = PropsWithChildren<{
   annotation: EntityAnnotation;
   getTaxonomyNode: (key: string) => ChildNodeWithColor;
+  selected?: boolean,
   tooltipPlacement?: TooltipProps['placement'],
   disableLink?: boolean,
   disablePreview?: boolean,
@@ -19,6 +20,7 @@ type NERTagProps = PropsWithChildren<{
 }>;
 
 const Tag = styled.span<{ id: string; node: ChildNodeWithColor }>(({ node }) => ({
+  position: 'relative',
   padding: '2px 5px',
   borderRadius: '6px',
   background: node.color,
@@ -43,6 +45,15 @@ const Icon = styled(FaLink)({
   height: '12px',
 });
 
+const Spotlight = styled.span({
+  position: 'absolute',
+  inset: '-3px',
+  borderRadius: '4px',
+  boxShadow: 'inset white 0 0 0 2px, black 0 0 0 4000px',
+  opacity: 0.1,
+  zIndex: 1
+})
+
 const getDefaultProp = () => ({});
 
 /**
@@ -52,6 +63,7 @@ function NERTag({
   annotation,
   getTaxonomyNode,
   children,
+  selected = false,
   tooltipPlacement = 'top',
   disableLink = false,
   disablePreview = false,
@@ -99,6 +111,7 @@ function NERTag({
       {children}
       <TagLabel node={node}>{node.key}</TagLabel>
       {top_candidate && <Icon />}
+      {selected && <Spotlight />}
     </Tag>
   )
 

@@ -5,7 +5,8 @@ import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 export type Action =
   | { type: 'setData', payload: { data: Document } }
   | { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
-  | { type: 'changeAction', payload: { action: State['ui']['action'], data?: string } }
+  | { type: 'changeAction', payload: { action: UIAction } }
+  | { type: 'changeActionData', payload: { data: string } }
   | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
   | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
   | { type: 'deleteAnnotation', payload: { id: number } }

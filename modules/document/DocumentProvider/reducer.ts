@@ -2,14 +2,18 @@ import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
-import { addAnnotation } from "./utils";
+import { addAnnotation, isSameAction, toggleLeftSidebar } from "./utils";
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
     state.data = payload.data;
   },
   changeAction: (state, payload) => {
-    state.ui.action = payload.action
+    toggleLeftSidebar(state, payload);
+    state.ui.action.value = payload.action
+  },
+  changeActionData: (state, payload) => {
+    state.ui.action.data = payload.data
   },
   setCurrentEntityId: (state, payload) => {
     state.ui.selectedEntityId = payload.annotationId;

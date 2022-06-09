@@ -87,24 +87,18 @@ const SidebarAddAnnotation = () => {
     // set initial type
     const initialValue = isEmptyObject(taxonomyTree) ? '' : taxonomyTree[0].key;
     dispatch({
-      type: 'changeAction',
+      type: 'changeActionData',
       payload: {
-        action: {
-          value: 'add',
-          data: initialValue
-        },
+        data: initialValue
       }
     })
   }, [taxonomyTree])
 
   const handleNodeSelect = (key: string) => {
     dispatch({
-      type: 'changeAction',
+      type: 'changeActionData',
       payload: {
-        action: {
-          value: 'add',
-          data: key
-        },
+        data: key
       }
     })
   }

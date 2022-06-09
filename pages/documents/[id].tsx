@@ -8,7 +8,7 @@ import DocumentProvider from "@/modules/document/DocumentProvider/DocumentProvid
 import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
-import { selectDocumentData, selectDocumentTaxonomy, useSelector } from "@/modules/document/DocumentProvider/selectors";
+import { selectDocumentCurrentEntityId, selectDocumentData, selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "@/modules/document/DocumentProvider/selectors";
 import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
 
 
@@ -18,6 +18,7 @@ const Container = styled.div({
 })
 
 const DocumentContainer = styled.div({
+  position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   margin: '20px'
@@ -32,6 +33,12 @@ const AnnotationTypeFilterContainer = styled.div({
   zIndex: 10,
   background: '#FFF',
   borderBottom: '1px solid #F3F3F5'
+})
+
+const Overlay = styled.div({
+  position: 'absolute',
+  inset: 0,
+  zIndex: 100
 })
 
 const DocumentSkeleton = () => {
@@ -51,10 +58,21 @@ const DocumentSkeleton = () => {
 const Document: NextPageWithLayout = () => {
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const document = useSelector(selectDocumentData);
+  const selectedEntityId = useSelector(selectDocumentCurrentEntityId);
+  const dispatch = useDocumentDispatch();
   const [entityFilter, setEntityFilter] = useState('all');
 
   const handleAnnotationTypeFilterChange = (key: string) => {
     setEntityFilter(key);
+  }
+
+  const handleOverlayClick = () => {
+    dispatch({
+      type: 'setCurrentEntityId',
+      payload: {
+        annotationId: null
+      }
+    })
   }
 
   if (!document) {
@@ -73,6 +91,7 @@ const Document: NextPageWithLayout = () => {
           annotations={annotations} />
       </AnnotationTypeFilterContainer>
       <DocumentContainer>
+        {selectedEntityId !== null && <Overlay onClick={handleOverlayClick} />}
         <DocumentViewer
           taxonomy={taxonomy}
           document={document}

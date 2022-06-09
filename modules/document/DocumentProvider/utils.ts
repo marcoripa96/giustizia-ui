@@ -1,4 +1,7 @@
 import { Candidate, EntityAnnotation } from "@/server/routers/document";
+import { deepEqual } from "@/utils/shared";
+import { Draft } from "immer";
+import { Action, State } from "./types";
 
 /**
  * Add a new annotation
@@ -33,3 +36,13 @@ export const getCandidateId = (candidate: Candidate | undefined) => {
   }
   return `${candidate.indexer}/${candidate.id}`;
 };
+
+export const toggleLeftSidebar = (state: Draft<State>, payload: (Action & { type: 'changeAction' })['payload']) => {
+  if (state.ui.action.value === payload.action) {
+    state.ui.leftActionBarOpen = !state.ui.leftActionBarOpen;
+  } else {
+    state.ui.leftActionBarOpen = true;
+  }
+}
+
+export const isSameAction = (oldAction: State['ui']['action'], newAction: State['ui']['action']) => deepEqual(oldAction, newAction);

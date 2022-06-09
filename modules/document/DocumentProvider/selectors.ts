@@ -49,6 +49,7 @@ export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
 export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
 export const selectDocumentCallbacks = (state: State) => state.callbacks;
+export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
 
 // For expensive selectors memoize them with createSelector (e.g. array operations)
 export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));

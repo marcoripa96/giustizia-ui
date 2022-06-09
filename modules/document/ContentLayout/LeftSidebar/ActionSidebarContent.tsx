@@ -9,8 +9,10 @@ const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
-  flexGrow: 1,
-  minWidth: 0
+  width: '250px',
+  borderRight: '1px solid #F3F3F5',
+  // flexGrow: 1,
+  // minWidth: 0
 });
 
 const dynamicWithLoading = (loader: Loader) => {

@@ -13,6 +13,7 @@ const Container = styled.div({
   width: '320px',
   borderLeft: '1px solid #F3F3F5',
   background: '#FFF',
+  zIndex: 100
 });
 
 const SidebarContent = () => {
