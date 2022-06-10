@@ -30,7 +30,6 @@ const DocumentContainer = styled.div`
 
 const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => {
   const action = useSelector(selectDocumentAction);
-  const selectedEntityId = useSelector(selectDocumentCurrentEntityId);
   const dispatch = useDocumentDispatch();
   const {
     text,
@@ -103,7 +102,6 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
           disablePreview
           addMode={isAddMode}
           addSelectionColor={addSelectionColor}
-          selectedEntityId={selectedEntityId}
           taxonomy={taxonomy}
           content={text}
           annotations={filteredAnnotations}

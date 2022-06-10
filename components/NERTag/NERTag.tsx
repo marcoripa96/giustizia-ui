@@ -1,4 +1,3 @@
-import { Annotation } from '@/hooks/use-ner';
 import styled from '@emotion/styled';
 import { darken } from 'polished';
 import { PropsWithChildren, MouseEvent, FocusEvent, useRef } from 'react';
@@ -11,7 +10,6 @@ import { EntityAnnotation } from '@/server/routers/document';
 type NERTagProps = PropsWithChildren<{
   annotation: EntityAnnotation;
   getTaxonomyNode: (key: string) => ChildNodeWithColor;
-  selected?: boolean,
   tooltipPlacement?: TooltipProps['placement'],
   disableLink?: boolean,
   disablePreview?: boolean,
@@ -45,15 +43,6 @@ const Icon = styled(FaLink)({
   height: '12px',
 });
 
-const Spotlight = styled.span({
-  position: 'absolute',
-  inset: '-3px',
-  borderRadius: '4px',
-  boxShadow: 'inset white 0 0 0 2px, black 0 0 0 4000px',
-  opacity: 0.1,
-  zIndex: 1
-})
-
 const getDefaultProp = () => ({});
 
 /**
@@ -63,7 +52,6 @@ function NERTag({
   annotation,
   getTaxonomyNode,
   children,
-  selected = false,
   tooltipPlacement = 'top',
   disableLink = false,
   disablePreview = false,
@@ -111,7 +99,6 @@ function NERTag({
       {children}
       <TagLabel node={node}>{node.key}</TagLabel>
       {top_candidate && <Icon />}
-      {selected && <Spotlight />}
     </Tag>
   )
 

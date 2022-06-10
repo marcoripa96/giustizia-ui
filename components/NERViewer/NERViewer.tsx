@@ -14,7 +14,6 @@ type NERViewerProps = {
   annotations: EntityAnnotation[];
   addMode?: boolean;
   addSelectionColor?: string;
-  selectedEntityId?: number | null;
   disableLink?: boolean;
   disablePreview?: boolean;
   tooltipPlacement?: TooltipProps['placement'],
@@ -52,7 +51,6 @@ function NERViewer({
   annotations,
   tooltipPlacement = 'top',
   addSelectionColor = '',
-  selectedEntityId = null,
   addMode = false,
   disableLink = false,
   disablePreview = false,
@@ -110,7 +108,6 @@ function NERViewer({
             disableLink={disableLink}
             tooltipPlacement={tooltipPlacement}
             disablePreview={disablePreview}
-            selected={selectedEntityId === node.props.id}
             onClick={onTagClick}
             onFocus={onTagFocus}
             getTaxonomyNode={getTaxonomyNode}

@@ -38,7 +38,8 @@ const AnnotationTypeFilterContainer = styled.div({
 
 const Overlay = styled.div({
   position: 'absolute',
-  inset: 0,
+  top: 0,
+  left: 0,
   zIndex: 100
 })
 
@@ -58,32 +59,19 @@ const DocumentSkeleton = () => {
 
 const Document: NextPageWithLayout = () => {
   const taxonomy = useSelector(selectDocumentTaxonomy);
-  const document = useSelector(selectDocumentData);
-  const selectedEntityId = useSelector(selectDocumentCurrentEntityId);
-  const dispatch = useDocumentDispatch();
+  const doc = useSelector(selectDocumentData);
   const [entityFilter, setEntityFilter] = useState('all');
-  const overlayRef = useClickOutside(() => {
-    handleOverlayClick();
-  })
+
 
   const handleAnnotationTypeFilterChange = (key: string) => {
     setEntityFilter(key);
   }
 
-  const handleOverlayClick = () => {
-    dispatch({
-      type: 'setCurrentEntityId',
-      payload: {
-        annotationId: null
-      }
-    })
-  }
-
-  if (!document) {
+  if (!doc) {
     return <DocumentSkeleton />
   }
 
-  const { annotations } = document.annotation_sets.entities
+  const { annotations } = doc.annotation_sets.entities
 
   return (
     <Container>
@@ -95,10 +83,9 @@ const Document: NextPageWithLayout = () => {
           annotations={annotations} />
       </AnnotationTypeFilterContainer>
       <DocumentContainer>
-        {selectedEntityId !== null && <Overlay ref={overlayRef} onClick={handleOverlayClick} />}
         <DocumentViewer
           taxonomy={taxonomy}
-          document={document}
+          document={doc}
           filter={entityFilter} />
       </DocumentContainer>
     </Container>
