@@ -1,13 +1,34 @@
-import { PropsWithChildren } from "react";
+import { useParam } from "@/hooks";
+import { useQuery } from "@/utils/trpc";
+import { PropsWithChildren, useReducer } from "react";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
-import { useInitState } from "./useInitState";
+import { Document } from "@/server/routers/document";
+import { documentReducer } from "./reducer";
+import { State } from "./types";
+import { initialUIState } from "./state";
+import { SkeletonLayout } from "../SkeletonLayout";
 
 /**
  * Fetches a document and provides it to the context consumer globally for the page.
- * This makes it easier to work with toolbar/sidebar and other components so that props drilling is avoided.
  */
 const DocumentProvider = ({ children }: PropsWithChildren<{}>) => {
-  const { state, dispatch } = useInitState();
+  const [id] = useParam<string>('id');
+  const { data, isFetching } = useQuery(['document.getDocument', { id: parseInt(id) }], { staleTime: Infinity });
+
+  if (isFetching || !data) {
+    return <SkeletonLayout />;
+  }
+
+  return <DocumentStateProvider data={data}>{children}</DocumentStateProvider>;
+}
+
+type DocumentStateProvider = {
+  data: Document;
+}
+
+
+const DocumentStateProvider = ({ data, children }: PropsWithChildren<DocumentStateProvider>) => {
+  const [state, dispatch] = useReducer(documentReducer, null, () => initializeState(data));
 
   return (
     <DocumentStateContext.Provider value={state}>
@@ -17,5 +38,15 @@ const DocumentProvider = ({ children }: PropsWithChildren<{}>) => {
     </DocumentStateContext.Provider>
   )
 };
+
+/**
+ * Lazy initializer for the reducer
+ */
+const initializeState = (data: Document): State => {
+  return {
+    data,
+    ...initialUIState
+  }
+}
 
 export default DocumentProvider;

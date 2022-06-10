@@ -8,9 +8,8 @@ import DocumentProvider from "@/modules/document/DocumentProvider/DocumentProvid
 import ToolbarContent from "@/modules/document/ToolbarContent/ToolbarContent";
 import DocumentViewer from "@/modules/document/DocumentViewer/DocumentViewer";
 import { ContentLayout } from "@/modules/document/ContentLayout";
-import { selectDocumentCurrentEntityId, selectDocumentData, selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "@/modules/document/DocumentProvider/selectors";
-import AnnotationTypeFilterSkeleton from "@/components/AnnotationTypeFilter/AnnotationTypeFilterSkeleton";
-import { useClickOutside } from "@/hooks";
+import { selectDocumentData, selectDocumentTagTypeFilter, selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "@/modules/document/DocumentProvider/selectors";
+
 
 
 const Container = styled.div({
@@ -36,39 +35,22 @@ const AnnotationTypeFilterContainer = styled.div({
   borderBottom: '1px solid #F3F3F5'
 })
 
-const Overlay = styled.div({
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  zIndex: 100
-})
-
-const DocumentSkeleton = () => {
-  return (
-    <Container>
-      <AnnotationTypeFilterContainer>
-        <AnnotationTypeFilterSkeleton />
-      </AnnotationTypeFilterContainer>
-      <DocumentContainer>
-        <DocumentViewerSkeleton />
-      </DocumentContainer>
-    </Container>
-  )
-}
 
 
 const Document: NextPageWithLayout = () => {
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const doc = useSelector(selectDocumentData);
-  const [entityFilter, setEntityFilter] = useState('all');
+  const typeFitler = useSelector(selectDocumentTagTypeFilter);
+  const dispatch = useDocumentDispatch();
 
 
   const handleAnnotationTypeFilterChange = (key: string) => {
-    setEntityFilter(key);
-  }
-
-  if (!doc) {
-    return <DocumentSkeleton />
+    dispatch({
+      type: 'setUI',
+      payload: {
+        typeFilter: key
+      }
+    })
   }
 
   const { annotations } = doc.annotation_sets.entities
@@ -77,16 +59,13 @@ const Document: NextPageWithLayout = () => {
     <Container>
       <AnnotationTypeFilterContainer>
         <AnnotationTypeFilter
-          value={entityFilter}
+          value={typeFitler}
           onChange={handleAnnotationTypeFilterChange}
           taxonomy={taxonomy}
           annotations={annotations} />
       </AnnotationTypeFilterContainer>
       <DocumentContainer>
-        <DocumentViewer
-          taxonomy={taxonomy}
-          document={doc}
-          filter={entityFilter} />
+        <DocumentViewer />
       </DocumentContainer>
     </Container>
   )

@@ -1,5 +1,5 @@
 import { flattenTree } from "../SidebarAddAnnotation/Tree";
-import { State, Taxonomy } from "./types";
+import { State, Taxonomy, UIState } from "./types";
 import { scrollEntityIntoView } from "./utils";
 
 export const baseTaxonomy: Taxonomy = [
@@ -52,8 +52,8 @@ export const baseTaxonomy: Taxonomy = [
 /**
  * Initial state
  */
-export const documentState: State = {
-  data: undefined,
+export const initialUIState: UIState = {
+  // data: undefined,
   /**
    * The idea is to let the user provide the taxonomy as a tree structure, then it is converted to an internal representation (a "flattened tree").
    */
@@ -63,6 +63,7 @@ export const documentState: State = {
     action: {
       value: 'select'
     },
+    typeFilter: 'all',
     leftActionBarOpen: true,
   },
   callbacks: {

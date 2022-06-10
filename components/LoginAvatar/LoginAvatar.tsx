@@ -4,6 +4,8 @@ import { Popover, Avatar, Button } from "@nextui-org/react";
 import { FaSignOutAlt } from "@react-icons/all-files/fa/FaSignOutAlt";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const LinkButton = styled.a({
@@ -20,7 +22,7 @@ const LinkButton = styled.a({
 })
 
 const LoginAvatar = () => {
-  const { data, isFetching } = useQuery(['auth.user']);
+  const { data } = useQuery(['auth.user']);
   const { refetch } = useQuery(['auth.logout'], { enabled: false });
   const router = useRouter();
 
@@ -30,7 +32,13 @@ const LoginAvatar = () => {
     })
   }
 
-  if (!data || !data.isLoggedIn) {
+  if (!data) {
+    return (
+      <Skeleton width={40} height={40} borderRadius="50%" style={{ lineHeight: 'unset' }} />
+    )
+  }
+
+  if (!data.isLoggedIn) {
     return (
       <Link href="/login" passHref>
         <LinkButton>Login</LinkButton>

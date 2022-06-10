@@ -30,11 +30,7 @@ export type UIAction = 'select' | 'add' | 'delete' | 'filter' | 'settings';
 export type Taxonomy = TreeItem[];
 export type FlattenedTaxonomy = FlatTreeObj
 
-export type State = {
-  /**
-   * Document data
-   */
-  data: Document | undefined;
+export type UIState = {
   /**
    * Taxonomy in tree structure
    */
@@ -46,11 +42,19 @@ export type State = {
       value: UIAction;
       data?: string;
     };
+    typeFilter: string;
     leftActionBarOpen: boolean;
   },
   callbacks: {
     scrollEntityIntoView: (id: number) => void;
   }
+}
+
+export type State = UIState & {
+  /**
+   * Document data
+   */
+  data: Document;
 }
 
 

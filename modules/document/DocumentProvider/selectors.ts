@@ -1,7 +1,7 @@
 import { isEmptyObject } from "@/utils/shared";
 import { useContext, useMemo } from "react";
 import { createSelector } from "reselect";
-import { buildTreeFromFlattenedObject } from "../SidebarAddAnnotation/Tree";
+import { buildTreeFromFlattenedObject, getAllNodeData } from "../SidebarAddAnnotation/Tree";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
 import { getCandidateId } from "./utils";
@@ -42,14 +42,15 @@ export function useSelector<T>(cb: (state: State) => T) {
 
 // input selectors just select part of the state
 export const selectDocumentData = (state: State) => state.data;
-export const selectDocumentText = (state: State) => state.data?.text;
-export const selectDocumentEntityAnnotations = (state: State) => state.data?.annotation_sets.entities.annotations;
+export const selectDocumentText = (state: State) => state.data.text;
+export const selectDocumentEntityAnnotations = (state: State) => state.data.annotation_sets.entities.annotations;
 export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
 export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
 export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
 export const selectDocumentCallbacks = (state: State) => state.callbacks;
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
+export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
 
 // For expensive selectors memoize them with createSelector (e.g. array operations)
 export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));
@@ -57,13 +58,16 @@ export const selectCurrentEntity = createSelector(
   selectDocumentEntityAnnotations,
   selectDocumentCurrentEntityId,
   (annotation, entityId) => {
-    if (!annotation || entityId == null) {
+    if (entityId == null) {
       return undefined;
     }
     return annotation.find((ann) => ann.id === entityId);
   }
 );
 
+/**
+ * Select linking features for the current entity
+ */
 export const selectCurrentEntityLinkingFeatures = createSelector(
   selectCurrentEntity,
   (annotation) => {
@@ -73,7 +77,7 @@ export const selectCurrentEntityLinkingFeatures = createSelector(
     const { candidates, top_candidate, ...rest } = annotation.features.linking;
 
     if (!candidates) {
-      return annotation.features.linking
+      return undefined
     }
     // order candidates
     const orderedCandidates = candidates.sort((a, b) => {
@@ -89,6 +93,41 @@ export const selectCurrentEntityLinkingFeatures = createSelector(
       candidates: orderedCandidates,
       top_candidate,
       ...rest
+    }
+  }
+)
+
+/**
+ * Get entities filtered by the current type filter
+ */
+export const selectFilteredEntityAnnotations = createSelector(
+  selectDocumentEntityAnnotations,
+  selectDocumentTagTypeFilter,
+  (annotations, typeFilter) => {
+    return annotations.filter((ann) => {
+      if (typeFilter === 'all') {
+        return true;
+      }
+      return typeFilter === ann.type;
+    })
+  }
+)
+
+/**
+ * Get add selection color based on the taxonomy type selected
+ */
+export const selectAddSelectionColor = createSelector(
+  selectDocumentTaxonomy,
+  selectDocumentAction,
+  (taxonomy, action) => {
+    if (!action.data) {
+      return ''
+    }
+    try {
+      return getAllNodeData(taxonomy, action.data).color
+    } catch (err) {
+      // trying to access a node that doesn't exist
+      return ''
     }
   }
 )

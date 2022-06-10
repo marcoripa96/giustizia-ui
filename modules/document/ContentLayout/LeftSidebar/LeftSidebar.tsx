@@ -12,8 +12,6 @@ const Container = styled.div({
   top: '48px',
   left: 0,
   bottom: 0,
-  // width: '320px',
-  // borderRight: '1px solid #F3F3F5',
   background: '#FFF',
   zIndex: 100
 })

@@ -1,0 +1,1 @@
+export { default as DocumentSkeleton } from './DocumentSkeleton';

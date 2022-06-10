@@ -16,7 +16,7 @@ const Container = styled.div({
   zIndex: 100
 });
 
-const SidebarContent = () => {
+const RightSidebarContent = () => {
   const annotation = useSelector(selectCurrentEntity);
 
   return (
@@ -26,4 +26,4 @@ const SidebarContent = () => {
   )
 }
 
-export default SidebarContent;
+export default RightSidebarContent;

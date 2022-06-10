@@ -20,7 +20,6 @@ export const documentReducer = createImmerReducer<State, Action>({
     state.ui.selectedEntityId = payload.annotationId;
   },
   addAnnotation: (state, payload) => {
-    if (!state.data) return;
     const { type, startOffset, endOffset, text } = payload;
     const {
       next_annid,
@@ -42,7 +41,6 @@ export const documentReducer = createImmerReducer<State, Action>({
     state.data.annotation_sets.entities.next_annid = next_annid + 1;
   },
   editAnnotation: (state, payload) => {
-    if (!state.data) return;
     const { annotationId, type, topCandidate } = payload;
     const { annotations } = state.data.annotation_sets.entities;
     const newAnnotations = annotations.map((ann) => {
@@ -64,9 +62,6 @@ export const documentReducer = createImmerReducer<State, Action>({
     state.data.annotation_sets.entities.annotations = newAnnotations;
   },
   deleteAnnotation: (state, payload) => {
-    if (!state.data) {
-      return state;
-    }
     const { id } = payload;
     const { annotations } = state.data.annotation_sets.entities;
     const newAnnotations = annotations.filter((ann) => ann.id !== id);
@@ -88,9 +83,6 @@ export const documentReducer = createImmerReducer<State, Action>({
     state.taxonomy[key] = newType;
   },
   deleteTaxonomyType: (state, payload) => {
-    if (!state.data) {
-      return state;
-    }
     const { taxonomy } = state;
     const { annotations } = state.data.annotation_sets.entities;
     const { key } = payload;

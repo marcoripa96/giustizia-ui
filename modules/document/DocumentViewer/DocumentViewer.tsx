@@ -1,21 +1,11 @@
-import { DocumentViewerSkeleton, NERViewer, SelectionNode } from "@/components";
-import { Document, EntityAnnotation } from "@/server/routers/document";
+import { NERViewer, SelectionNode } from "@/components";
+import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
-import { Card } from "@nextui-org/react";
-import { MouseEvent, useMemo } from "react";
-import { selectDocumentAction, selectDocumentCurrentEntityId, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
-import { FlattenedTaxonomy } from "../DocumentProvider/types";
-import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
-
-type DocumentViewerProps = {
-  taxonomy: FlattenedTaxonomy;
-  document: Document;
-  filter: string;
-}
+import { MouseEvent } from "react";
+import { selectAddSelectionColor, selectDocumentAction, selectDocumentTaxonomy, selectDocumentText, selectFilteredEntityAnnotations, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
   padding: '0 20px',
-  // margin: '20px'
 })
 
 const DocumentContainer = styled.div`
@@ -28,26 +18,13 @@ const DocumentContainer = styled.div`
 `
 
 
-const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => {
+const DocumentViewer = () => {
   const action = useSelector(selectDocumentAction);
+  const text = useSelector(selectDocumentText);
+  const taxonomy = useSelector(selectDocumentTaxonomy);
+  const filteredAnnotations = useSelector(selectFilteredEntityAnnotations);
+  const addSelectionColor = useSelector(selectAddSelectionColor);
   const dispatch = useDocumentDispatch();
-  const {
-    text,
-    annotation_sets: {
-      entities: {
-        annotations
-      }
-    }
-  } = document;
-
-  const filteredAnnotations = useMemo(() => {
-    return annotations.filter((ann) => {
-      if (filter === 'all') {
-        return true;
-      }
-      return filter === ann.type;
-    })
-  }, [annotations, filter])
 
   const handleTagClick = (event: MouseEvent, annotation: EntityAnnotation) => {
     switch (action.value) {
@@ -81,26 +58,13 @@ const DocumentViewer = ({ taxonomy, document, filter }: DocumentViewerProps) => 
     })
   }
 
-  const isAddMode = action.value === 'add';
-  const addSelectionColor = useMemo(() => {
-    if (!action.data) {
-      return ''
-    }
-    try {
-      return getAllNodeData(taxonomy, action.data).color
-    } catch (err) {
-      // trying to access a node that doesn't exist
-      return ''
-    }
-  }, [taxonomy, action.data]);
-
   return (
     <Container>
       <DocumentContainer>
         <NERViewer
           disableLink
           disablePreview
-          addMode={isAddMode}
+          addMode={action.value === 'add'}
           addSelectionColor={addSelectionColor}
           taxonomy={taxonomy}
           content={text}
