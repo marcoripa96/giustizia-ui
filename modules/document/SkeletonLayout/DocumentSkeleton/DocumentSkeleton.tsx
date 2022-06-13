@@ -11,26 +11,13 @@ const DocumentContainer = styled.div({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
-  margin: '20px'
-})
-
-const AnnotationTypeFilterContainer = styled.div({
-  position: 'sticky',
-  top: '48px',
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '5px',
-  zIndex: 10,
-  background: '#FFF',
-  borderBottom: '1px solid #F3F3F5'
+  margin: '20px',
+  padding: '0 20px'
 })
 
 const DocumentSkeleton = () => {
   return (
     <Container>
-      <AnnotationTypeFilterContainer>
-        <AnnotationTypeFilterSkeleton />
-      </AnnotationTypeFilterContainer>
       <DocumentContainer>
         <DocumentViewerSkeleton />
       </DocumentContainer>

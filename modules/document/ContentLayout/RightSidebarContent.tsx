@@ -6,7 +6,7 @@ import { selectCurrentEntity, useSelector } from "../DocumentProvider/selectors"
 
 const Container = styled.div({
   position: 'fixed',
-  top: '48px',
+  top: '90px',
   right: '0',
   bottom: '0px',
   display: 'flex',
@@ -29,7 +29,7 @@ const sections = [
 const RightSidebarContent = () => {
   return (
     <Container id="right-sidebar">
-      <Text css={{ fontWeight: 500, marginBottom: '15px' }} size={16}>Document sections</Text>
+      <Text css={{ fontWeight: 500, marginBottom: '15px', textTransform: 'uppercase' }} size={16}>Document sections</Text>
       <SectionsList sections={sections} activeSection="preambolo" />
       {/* {annotation && <AnnotationDetails annotation={annotation} />} */}
     </Container>

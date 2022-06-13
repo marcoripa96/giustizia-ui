@@ -75,7 +75,7 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
           auto
           rounded
           bordered
-          icon={<FiArrowRight size={20} />}
+          icon={<FiArrowRight size={16} />}
           size="xs"
           css={{
             position: 'absolute',

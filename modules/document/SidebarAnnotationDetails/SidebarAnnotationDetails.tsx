@@ -8,7 +8,7 @@ const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   position: 'fixed',
-  top: '70px',
+  top: '110px',
   right: '0',
   bottom: '20px',
   width: '320px',

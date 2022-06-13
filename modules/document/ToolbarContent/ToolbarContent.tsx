@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
-import { useDocumentState } from "../DocumentProvider/selectors";
+import { selectDocumentData, useDocumentState, useSelector } from "../DocumentProvider/selectors";
 import { HiArrowLeft } from '@react-icons/all-files/hi/HiArrowLeft';
-import { Button, Text } from "@nextui-org/react";
-import { IconButton } from "@/components";
+import { Text } from "@nextui-org/react";
+import { IconButton, Button } from "@/components";
 import Link from "next/link";
+import { useMutation, useQuery } from "@/utils/trpc";
 
 const Container = styled.div({
   flexGrow: 1,
@@ -16,10 +17,13 @@ const Container = styled.div({
 
 
 const ToolbarContent = () => {
-  const { data } = useDocumentState();
-  if (!data) {
-    // TODO: skeleton
-    return null;
+  const document = useSelector(selectDocumentData);
+  const save = useMutation(['document.save'])
+
+  const handleSave = () => {
+    save.mutate({
+      entitiesAnnotations: document.annotation_sets.entities
+    })
   }
 
   return (
@@ -27,8 +31,15 @@ const ToolbarContent = () => {
       <Link href="/documents" passHref>
         <IconButton as="a"><HiArrowLeft /></IconButton>
       </Link>
-      <Text h4>{data.name}</Text>
-      <Button auto size="sm" disabled css={{ marginLeft: 'auto' }}>Save</Button>
+      <Text h4>{document.name}</Text>
+      <Button
+        auto
+        size="sm"
+        loading={save.isLoading}
+        onClick={handleSave}
+        css={{ marginLeft: 'auto' }}>
+        Save
+      </Button>
     </Container>
   )
 }

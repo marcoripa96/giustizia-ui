@@ -52,10 +52,11 @@ export type AdditionalAnnotationProps = {
 
 export type EntityAnnotation = Annotation<AdditionalAnnotationProps>
 
+const baseURL = `${process.env.API_BASE_URI}/mongo`;
 
 const getDocumentById = async (id: number): Promise<Document> => {
   try {
-    const document = await fetchJson<any, Document>(`${process.env.API_BASE_URI}/mongo/document/${id}`, {
+    const document = await fetchJson<any, Document>(`${baseURL}/document/${id}`, {
       headers: {
         Authorization: getAuthHeader()
       }
@@ -76,7 +77,7 @@ export type GetAllDocuments = {
 }[]
 
 const getDocuments = async (): Promise<GetAllDocuments> => {
-  const documents = await fetchJson<any, GetAllDocuments>(`${process.env.API_BASE_URI}/mongo/document`, {
+  const documents = await fetchJson<any, GetAllDocuments>(`${baseURL}/document`, {
     headers: {
       Authorization: getAuthHeader()
     }
@@ -98,5 +99,23 @@ export const documents = createProtectedRouter()
   .query('getAllDocuments', {
     resolve: () => {
       return getDocuments();
+    },
+  })
+  .mutation('save', {
+    input: z
+      .object({
+        entitiesAnnotations: z.any().optional(),
+      }),
+    resolve: async ({ input }) => {
+      const { entitiesAnnotations } = input;
+      return fetchJson<any, void>(`${baseURL}/save`, {
+        method: 'POST',
+        headers: {
+          Authorization: getAuthHeader()
+        },
+        body: {
+          entitiesAnnotations
+        }
+      });
     },
   })
