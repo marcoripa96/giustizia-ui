@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
 import { PropsWithChildren } from "react";
 import { useSelector, selectDocumentLeftSidebarOpen } from "../DocumentProvider/selectors";
+import { SidebarAnnotationDetails } from "../SidebarAnnotationDetails";
 import { LeftSidebar } from "./LeftSidebar";
 import RightSidebarContent from "./RightSidebarContent";
 
@@ -22,6 +23,7 @@ const ContentLayout = ({ children }: PropsWithChildren<{}>) => {
         {children}
       </Container>
       <RightSidebarContent />
+      <SidebarAnnotationDetails />
     </>
   )
 }

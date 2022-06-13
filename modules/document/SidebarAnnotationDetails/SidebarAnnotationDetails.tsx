@@ -1,78 +1,54 @@
 import styled from "@emotion/styled";
-import { Button, Col, Divider, Text } from "@nextui-org/react";
-import TextAnnotationDetails from "./AnnotationTextDetails";
-import AnnotationLinkDetails from "./AnnotationLinkDetails";
-import { EditAnnotationModal } from "./EditAnnotationModal";
-import useModal from "@/hooks/use-modal";
-import { selectCurrentEntityLinkingFeatures, selectDocumentData, selectDocumentText, useSelector } from "../DocumentProvider/selectors";
-import { EntityAnnotation } from "@/server/routers/document";
-import { getCandidateId } from "../DocumentProvider/utils";
-
-type AnnotationDetailsProps = {
-  annotation: EntityAnnotation;
-}
+import { useSelector, selectCurrentEntity, useDocumentDispatch } from "../DocumentProvider/selectors";
+import AnnotationDetailsContent from "./SidebarAnnotationDetailsContent";
+import { CSSTransition } from 'react-transition-group';
+import { useClickOutside } from "@/hooks";
 
 const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  height: '100%'
-})
-
-const DetailsContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '10px',
-  padding: '10px 14px',
-  overflowY: 'scroll',
-  '::-webkit-scrollbar': {
-    height: '4px',
-    width: '2px'
+  position: 'fixed',
+  top: '70px',
+  right: '0',
+  bottom: '20px',
+  width: '320px',
+  boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+  borderRadius: '4px',
+  background: '#FFF',
+  transform: 'translateX(-20px)',
+  zIndex: 101,
+  '&.alert-enter': {
+    transform: 'translateX(100%)'
   },
-  '::-webkit-scrollbar-thumb': {
-    background: 'rgba(0,0,0,0.1)'
+  '&.alert-enter-active': {
+    transform: 'translateX(-20px)',
+    transition: 'transform 0.2s cubic-bezier(0.4,0,0.2,1)'
+  },
+  '&.alert-exit': {
+    transform: 'translateX(-20px)'
+  },
+  '&.alert-exit-active': {
+    transform: 'translateX(100%)',
+    transition: 'transform 0.2s cubic-bezier(0.4,0,0.2,1)'
   }
 })
 
-const ButtonContainer = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '10px',
-  marginTop: 'auto'
-})
+const AnnotationDetails = () => {
+  const annotation = useSelector(selectCurrentEntity);
 
-const AnnotationDetails = ({ annotation }: AnnotationDetailsProps) => {
-  const text = useSelector(selectDocumentText);
-  const linkingFeatures = useSelector(selectCurrentEntityLinkingFeatures);
-  const { setVisible, bindings } = useModal();
-
-  if (!linkingFeatures || !text) {
-    return null;
-  }
-
-  const { candidates, top_candidate } = linkingFeatures
 
   return (
-    <>
-      <Container>
-        <DetailsContainer>
-          <Col>
-            <Text b size={18}>Annotation details</Text>
-            <Text css={{ fontSize: '16px', lineHeight: '1', color: 'rgba(0,0,0,0.5)' }}>
-              Inspect the details for a selected annotation.
-            </Text>
-          </Col>
-          <Divider />
-          <TextAnnotationDetails text={text} annotation={annotation} />
-          <AnnotationLinkDetails selectedId={getCandidateId(top_candidate)} candidates={candidates} />
-        </DetailsContainer>
-        <ButtonContainer>
-          <Button onClick={() => setVisible(true)}>Edit</Button>
-        </ButtonContainer>
+    <CSSTransition
+      in={!!annotation}
+      timeout={200}
+      classNames="alert"
+      unmountOnExit
+    >
+      <Container id="annotation-details-sidebar">
+        {annotation && <AnnotationDetailsContent annotation={annotation} />}
       </Container>
-      <EditAnnotationModal setVisible={setVisible} {...bindings} />
-    </>
+    </CSSTransition>
   )
 }
 
 export default AnnotationDetails;
-

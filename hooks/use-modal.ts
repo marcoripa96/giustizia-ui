@@ -1,7 +1,7 @@
 import { useModal as useNextModal } from "@nextui-org/react";
 import { useCallback, useEffect } from "react";
 
-const elementsToShift = ['right-sidebar', 'toolbar'];
+const elementsToShift = ['right-sidebar', 'toolbar', 'annotation-details-sidebar'];
 
 const forEachElement = (arr: string[], cb: (elem: HTMLElement) => void) => {
   arr.forEach((id) => {
@@ -34,14 +34,14 @@ const useModal = () => {
 
   useEffect(() => {
     // I do this in the useEffect otherswise properties are overwritten
-    setTimeout(() => {
-      if (modalProps.bindings.open) {
-        stopScroll();
-      } else {
-        console.log(modalProps.bindings)
-        removeStopScroll();
-      }
-    }, 0)
+    // setTimeout(() => {
+    if (modalProps.bindings.open) {
+      stopScroll();
+    } else {
+      // console.log(modalProps.bindings)
+      removeStopScroll();
+    }
+    // }, 0)
 
   }, [modalProps.bindings.open])
 

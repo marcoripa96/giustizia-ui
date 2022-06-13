@@ -8,7 +8,10 @@ const Container = styled.div({
   height: '100%',
   width: '250px',
   borderRight: '1px solid #F3F3F5',
-  padding: '10px'
+  padding: '10px',
+  '@media screen and (max-width: 1250px)': {
+    display: 'none'
+  }
 });
 
 

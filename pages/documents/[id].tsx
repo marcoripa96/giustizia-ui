@@ -57,13 +57,13 @@ const Document: NextPageWithLayout = () => {
 
   return (
     <Container>
-      <AnnotationTypeFilterContainer>
+      {/* <AnnotationTypeFilterContainer>
         <AnnotationTypeFilter
           value={typeFitler}
           onChange={handleAnnotationTypeFilterChange}
           taxonomy={taxonomy}
           annotations={annotations} />
-      </AnnotationTypeFilterContainer>
+      </AnnotationTypeFilterContainer> */}
       <DocumentContainer>
         <DocumentViewer />
       </DocumentContainer>

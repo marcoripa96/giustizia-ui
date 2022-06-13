@@ -17,6 +17,7 @@
     "@trpc/next": "^9.22.0",
     "@trpc/react": "^9.22.0",
     "@trpc/server": "^9.22.0",
+    "@types/react-transition-group": "^4.4.4",
     "immer": "^9.0.14",
     "iron-session": "^6.1.2",
     "next": "12.1.4",
@@ -26,6 +27,7 @@
     "react-dom": "18.0.0",
     "react-loading-skeleton": "^3.0.3",
     "react-query": "^3.38.0",
+    "react-transition-group": "^4.4.2",
     "reselect": "^4.1.5",
     "zod": "^3.14.4"
   },

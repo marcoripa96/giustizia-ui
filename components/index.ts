@@ -13,3 +13,4 @@ export * from "./ConfirmationDialog";
 export * from "./AnnotationTypeFilter";
 export * from "./Flex";
 export * from "./TranslationProvider";
+export * from "./SectionsList";

@@ -1,3 +1,3 @@
-export { default as AnnotationDetails } from './SidebarAnnotationDetails';
+export { default as SidebarAnnotationDetails } from './SidebarAnnotationDetails';
 export * from './SidebarAnnotationDetails';
 
