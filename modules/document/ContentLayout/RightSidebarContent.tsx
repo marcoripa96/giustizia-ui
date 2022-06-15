@@ -33,12 +33,12 @@ const RightSidebarContent = () => {
     })
   }
 
-  return sections.length > 0 && (
+  return sections.length > 0 ? (
     <Container id="right-sidebar">
       <Text css={{ fontWeight: 500, marginBottom: '15px', textTransform: 'uppercase' }} size={16}>Document sections</Text>
       <SectionsList sections={sections} activeSection={activeSection} onChange={handleSectionChange} />
     </Container>
-  )
+  ) : null
 }
 
 export default RightSidebarContent;

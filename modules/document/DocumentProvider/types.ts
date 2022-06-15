@@ -45,9 +45,6 @@ export type UIState = {
     typeFilter: string;
     activeSection: string | undefined;
     leftActionBarOpen: boolean;
-  },
-  callbacks: {
-    scrollEntityIntoView: (id: number) => void;
   }
 }
 

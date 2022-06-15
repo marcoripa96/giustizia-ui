@@ -18,6 +18,10 @@ type AnnotationNodeRequiredProps = {
   index: number;
   text: string;
   type: string;
+  start: number;
+  end: number;
+  startSection: number;
+  endSection: number;
 };
 
 export type SectionNode<P> = {
@@ -59,6 +63,17 @@ const _getTextSection = <E, S>(
   return text.slice(section.start, endSectionOffset);
 };
 
+const _getTextSpan = (text: string, start: number, end: number, offset: number) => {
+  const span = text.slice(start, end);
+  return {
+    text: span,
+    start,
+    end,
+    startSection: start + offset,
+    endSection: end + offset
+  }
+}
+
 const _buildSectionNodes = <E, S>(
   text: string,
   section: Annotation<S>,
@@ -72,26 +87,30 @@ const _buildSectionNodes = <E, S>(
   sectionEntities.forEach((annotation) => {
     const { start, end } = annotation;
     // node of type text
-    const textNode = text.slice(lastPosition, start - offset);
+    const spanTextNode = _getTextSpan(text, lastPosition, start - offset, offset);
     // node of type entity
-    const entityNode = text.slice(start - offset, end - offset);
+    const spanEntityNode = _getTextSpan(text, start - offset, end - offset, offset);
     nodes.push({
       index,
-      text: textNode,
-      type: "text"
+      type: "text",
+      ...spanTextNode
     });
     nodes.push({
       index: index + 1,
-      text: entityNode,
       type: "entity",
+      ...spanEntityNode,
       props: { ...annotation }
     });
     index += 2;
     lastPosition = end - offset;
   });
   // finally add the last piece of text
-  const textNode = text.slice(lastPosition, text.length);
-  nodes.push({ index, text: textNode, type: "text" });
+  const spanTextNode = _getTextSpan(text, lastPosition, text.length, offset);
+  nodes.push({
+    index,
+    type: "text",
+    ...spanTextNode
+  });
 
   return nodes;
 };

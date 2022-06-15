@@ -50,7 +50,6 @@ export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
 export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
 export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
-export const selectDocumentCallbacks = (state: State) => state.callbacks;
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
 export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
 export const selectDocumentActiveSection = (state: State) => state.ui.activeSection;

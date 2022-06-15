@@ -1,8 +1,19 @@
 import { NERViewer, SelectionNode } from "@/components";
+import { useHashUrlId } from "@/hooks";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
-import { MouseEvent } from "react";
-import { selectAddSelectionColor, selectDocumentAction, selectDocumentAnnotationSets, selectDocumentEntityAnnotations, selectDocumentSectionAnnotations, selectDocumentTaxonomy, selectDocumentText, selectFilteredEntityAnnotations, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
+import { useRouter } from "next/router";
+import { MouseEvent, useEffect } from "react";
+import {
+  selectAddSelectionColor,
+  selectDocumentAction,
+  selectDocumentSectionAnnotations,
+  selectDocumentTaxonomy,
+  selectDocumentText,
+  selectFilteredEntityAnnotations,
+  useDocumentDispatch,
+  useSelector
+} from "../DocumentProvider/selectors";
 
 const Container = styled.div({
   padding: '0 20px',
@@ -21,12 +32,19 @@ const DocumentContainer = styled.div`
 const DocumentViewer = () => {
   const action = useSelector(selectDocumentAction);
   const text = useSelector(selectDocumentText);
-  const entityAnnotations = useSelector(selectDocumentEntityAnnotations);
   const sectionAnnotations = useSelector(selectDocumentSectionAnnotations);
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const filteredAnnotations = useSelector(selectFilteredEntityAnnotations);
   const addSelectionColor = useSelector(selectAddSelectionColor);
+  const sectionUrlHashId = useHashUrlId();
   const dispatch = useDocumentDispatch();
+
+  useEffect(() => {
+    const element = document.querySelector(`#${sectionUrlHashId}`);
+    if (element) {
+      element.scrollIntoView()
+    }
+  }, [sectionUrlHashId]);
 
   const handleTagClick = (event: MouseEvent, annotation: EntityAnnotation) => {
     switch (action.value) {

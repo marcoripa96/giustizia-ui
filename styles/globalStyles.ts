@@ -12,7 +12,7 @@ const GlobalStyles = css`
   }
 
   html {
-    scroll-padding-top: 100px;
+    scroll-padding-top: 95px;
   }
 
   a {

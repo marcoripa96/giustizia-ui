@@ -43,21 +43,12 @@ export const getOriginalOffset = ({
   startOffsetNode: number;
   endOffsetNode: number;
 }) => {
-  const sectionsToKey = nodes.slice(0, sectionId + 1);
-
-  const startOffset = sectionsToKey.reduce((accSections, section, index) => {
-    if (!section.nodes) {
-      return accSections;
-    }
-    const sectionNodes = index === sectionId
-      ? section.nodes.slice(0, nodeId)
-      : section.nodes
-
-    return sectionNodes.reduce((accNodes, node) => {
-      return accNodes + node.text.length;
-    }, accSections);
-  }, 0) + startOffsetNode + sectionId;
-
+  const sectioNodes = nodes[sectionId].nodes;
+  if (!sectioNodes) {
+    return null;
+  }
+  const selectionNode = sectioNodes[nodeId];
+  const startOffset = selectionNode.startSection + startOffsetNode;
   const endOffset = startOffset + (endOffsetNode - startOffsetNode);
   return {
     startOffset,

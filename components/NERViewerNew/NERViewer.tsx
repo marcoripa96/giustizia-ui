@@ -10,7 +10,9 @@ import { AdditionalAnnotationProps, EntityAnnotation, SectionAnnotation } from '
 import { SectionNode, useNewNER } from '@/hooks/use-ner-new';
 import { useWindowEventListener } from '@/hooks';
 import { useThrottle } from '@/hooks/use-throttle';
-import { beautifyString, forEachCouple } from '@/utils/shared';
+import { beautifyString } from '@/utils/shared';
+import { FiLink } from '@react-icons/all-files/fi/FiLink';
+
 
 type NERViewerProps = {
   taxonomy: FlattenedTaxonomy;
@@ -71,6 +73,22 @@ const SectionTitle = styled.div({
   margin: '15px 0px',
   fontSize: '22px',
   fontWeight: 500,
+  '> a': {
+    display: 'none'
+  },
+  '&:hover': {
+    '> a': {
+      display: 'flex'
+    }
+  }
+})
+
+const IconLink = styled.a({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: 'rgba(0,0,0,0.5)',
+  fontSize: '18px'
 })
 
 
@@ -98,16 +116,17 @@ function NERViewer({
     if (sectionRefs.current.length === 0) {
       return;
     }
-    const firstSectionRef = sectionRefs.current[0];
+
+    const firstSectionRef = sectionRefs.current[sectionRefs.current.length - 1];
+    if (firstSectionRef.node && window.scrollY < firstSectionRef.node.offsetTop) {
+      onSectionChange(firstSectionRef.section.type)
+      return;
+    }
     for (const ref of sectionRefs.current) {
       if (!ref || !ref.node) {
         break;
       }
-      if (firstSectionRef.node && window.scrollY < firstSectionRef.node.offsetTop) {
-        onSectionChange(firstSectionRef.section.type)
-        break;
-      }
-      if (window.scrollY > ref.node.offsetTop && window.scrollY < ref.node.offsetTop + ref.node.offsetHeight) {
+      if (window.scrollY >= ref.node.offsetTop) {
         onSectionChange(ref.section.type)
         break;
       }
@@ -119,11 +138,11 @@ function NERViewer({
     handleScrollEvent();
   }, [handleScrollEvent])
 
-  const throttledScrollHandler = useThrottle(handleScrollEvent, 100);
+  // const throttledScrollHandler = useThrottle(handleScrollEvent, 100);
 
   useWindowEventListener('scroll', () => {
     // handle section on scroll
-    throttledScrollHandler()
+    handleScrollEvent();
   })
 
   /**
@@ -152,13 +171,16 @@ function NERViewer({
     }
     // get the offset to the original text
     const offset = getOriginalOffset({ nodes, ...eventSelection, ...nodeSelectionOffset })
+    if (!offset) {
+      return;
+    }
     const text = selection.toString();
     const selectionNode = { text, ...offset }
     onTextSelection(event, selectionNode);
   }
 
   const setSectionRefs = (node: HTMLElement | null, section: SectionNode<AdditionalAnnotationProps>) => {
-    sectionRefs.current.push({
+    sectionRefs.current.unshift({
       section,
       node
     })
@@ -171,6 +193,7 @@ function NERViewer({
           <Section ref={(node) => setSectionRefs(node, section)} key={section.index}>
             <SectionTitle id={section.type}>
               {beautifyString(section.type)}
+              <IconLink href={`#${section.type}`}><FiLink /></IconLink>
             </SectionTitle>
             <SectionContent>
               {section.nodes && section.nodes.map((node) => {
@@ -206,29 +229,6 @@ function NERViewer({
           </Section>
         )
       })}
-      {/* {nodes.map((node) =>
-        node.type === 'text' ? (
-          <TextNode
-            key={node.key}
-            selectionColor={addSelectionColor}
-            onMouseUp={(e) => handleMouseUp(e, node.key)}>
-            {node.text}
-          </TextNode>
-        ) : (
-          <NERTag
-            key={node.key}
-            annotation={node.props}
-            disableLink={disableLink}
-            tooltipPlacement={tooltipPlacement}
-            disablePreview={disablePreview}
-            onClick={onTagClick}
-            onFocus={onTagFocus}
-            getTaxonomyNode={getTaxonomyNode}
-          >
-            {node.text}
-          </NERTag>
-        )
-      )} */}
     </>
   );
 }

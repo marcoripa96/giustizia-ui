@@ -66,8 +66,5 @@ export const initialUIState: UIState = {
     typeFilter: 'all',
     activeSection: undefined,
     leftActionBarOpen: true,
-  },
-  callbacks: {
-    scrollEntityIntoView: scrollEntityIntoView
   }
 }
