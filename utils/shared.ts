@@ -57,3 +57,18 @@ export const deepEqual = (a: any, b: any) => {
 
   return propsInA == propsInB;
 }
+
+export const forEachCouple = <T>(array: T[], callback: (current: T, next: T | undefined, index: number) => boolean | void) => {
+  let index = 0;
+  for (const item of array) {
+    const keepGoing = callback(item, array[index + 1], index);
+    if (keepGoing === false) {
+      break;
+    }
+    index += 1;
+  }
+}
+
+export const beautifyString = (val: string) => {
+  return `${val.charAt(0).toUpperCase()}${val.slice(1)}`.replaceAll('_', ' ');
+}

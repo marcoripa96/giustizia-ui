@@ -8,6 +8,7 @@ import { Action, State } from "./types";
  */
 export const addAnnotation = (annotation: EntityAnnotation[], newAnnotation: EntityAnnotation) => {
   const insIndex = annotation.findIndex((annotation) => newAnnotation.start < annotation.start);
+  console.log(insIndex);
 
   return [
     ...annotation.slice(0, insIndex),

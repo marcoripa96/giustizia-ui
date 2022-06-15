@@ -12,7 +12,8 @@ export type Document = {
   text: string;
   annotation_sets: {
     entities: AnnotationSet<EntityAnnotation>;
-    sentences: AnnotationSet;
+    Sections?: AnnotationSet<SectionAnnotation>;
+    // sentences: AnnotationSet;
   }
 };
 
@@ -51,6 +52,7 @@ export type AdditionalAnnotationProps = {
 };
 
 export type EntityAnnotation = Annotation<AdditionalAnnotationProps>
+export type SectionAnnotation = Annotation;
 
 const baseURL = `${process.env.API_BASE_URI}/mongo`;
 

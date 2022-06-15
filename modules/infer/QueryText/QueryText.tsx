@@ -136,7 +136,7 @@ const QueryText = () => {
             onChange={handleAnnotationTypeFilterChange}
             taxonomy={taxonomy}
             annotations={document.annotation_sets.entities.annotations} />
-          <NERViewer taxonomy={taxonomy} content={content} annotations={filteredAnnotations} />
+          <NERViewer taxonomy={taxonomy} text={content} entityAnnotations={filteredAnnotations} />
         </Column>
       ) : null}
     </>

@@ -2,7 +2,7 @@ import { NERViewer, SelectionNode } from "@/components";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { MouseEvent } from "react";
-import { selectAddSelectionColor, selectDocumentAction, selectDocumentTaxonomy, selectDocumentText, selectFilteredEntityAnnotations, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
+import { selectAddSelectionColor, selectDocumentAction, selectDocumentAnnotationSets, selectDocumentEntityAnnotations, selectDocumentSectionAnnotations, selectDocumentTaxonomy, selectDocumentText, selectFilteredEntityAnnotations, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
   padding: '0 20px',
@@ -21,6 +21,8 @@ const DocumentContainer = styled.div`
 const DocumentViewer = () => {
   const action = useSelector(selectDocumentAction);
   const text = useSelector(selectDocumentText);
+  const entityAnnotations = useSelector(selectDocumentEntityAnnotations);
+  const sectionAnnotations = useSelector(selectDocumentSectionAnnotations);
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const filteredAnnotations = useSelector(selectFilteredEntityAnnotations);
   const addSelectionColor = useSelector(selectAddSelectionColor);
@@ -58,6 +60,15 @@ const DocumentViewer = () => {
     })
   }
 
+  const onSectionChange = (sectionId: string) => {
+    dispatch({
+      type: 'setUI',
+      payload: {
+        activeSection: sectionId
+      }
+    })
+  }
+
   return (
     <Container>
       <DocumentContainer>
@@ -67,10 +78,12 @@ const DocumentViewer = () => {
           addMode={action.value === 'add'}
           addSelectionColor={addSelectionColor}
           taxonomy={taxonomy}
-          content={text}
-          annotations={filteredAnnotations}
+          text={text}
+          entityAnnotations={filteredAnnotations}
+          sectionAnnotations={sectionAnnotations}
           onTagClick={handleTagClick}
           onTextSelection={onTextSelection}
+          onSectionChange={onSectionChange}
         />
       </DocumentContainer>
     </Container>

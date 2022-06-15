@@ -43,6 +43,10 @@ const DocumentStateProvider = ({ data, children }: PropsWithChildren<DocumentSta
  * Lazy initializer for the reducer
  */
 const initializeState = (data: Document): State => {
+  // hopefully I get already sorted annotations
+  if (data.annotation_sets.entities) {
+    data.annotation_sets.entities.annotations.sort((a, b) => a.start - b.start);
+  }
   return {
     data,
     ...initialUIState

@@ -64,6 +64,7 @@ export const initialUIState: UIState = {
       value: 'select'
     },
     typeFilter: 'all',
+    activeSection: undefined,
     leftActionBarOpen: true,
   },
   callbacks: {

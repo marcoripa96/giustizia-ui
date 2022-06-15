@@ -1,7 +1,7 @@
 import { SectionsList } from "@/components";
 import styled from "@emotion/styled"
 import { Text } from "@nextui-org/react";
-import { selectCurrentEntity, useSelector } from "../DocumentProvider/selectors";
+import { selectCurrentEntity, selectDocumentActiveSection, selectSectionsSidebar, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 // import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
@@ -18,20 +18,25 @@ const Container = styled.div({
   zIndex: 100
 });
 
-const sections = [
-  { id: 'preambolo', label: 'Preambolo' },
-  { id: 'fatto_e_diritto', label: 'Fatto e diritto' },
-  { id: 'conclusioni', label: 'Conclusioni' },
-  { id: 'dispositivo', label: 'Dispositivo' },
-  { id: 'firma_e_data', label: 'Firma e data' }
-]
 
 const RightSidebarContent = () => {
-  return (
+  const sections = useSelector(selectSectionsSidebar);
+  const activeSection = useSelector(selectDocumentActiveSection);
+  const dispatch = useDocumentDispatch();
+
+  const handleSectionChange = (sectionId: string) => {
+    dispatch({
+      type: 'setUI',
+      payload: {
+        activeSection: sectionId
+      }
+    })
+  }
+
+  return sections.length > 0 && (
     <Container id="right-sidebar">
       <Text css={{ fontWeight: 500, marginBottom: '15px', textTransform: 'uppercase' }} size={16}>Document sections</Text>
-      <SectionsList sections={sections} activeSection="preambolo" />
-      {/* {annotation && <AnnotationDetails annotation={annotation} />} */}
+      <SectionsList sections={sections} activeSection={activeSection} onChange={handleSectionChange} />
     </Container>
   )
 }

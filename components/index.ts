@@ -1,7 +1,7 @@
 export * from "./DocumentViewerSkeleton";
 export * from "./Button";
 export * from "./Toolbar";
-export * from "./NERViewer";
+// export * from "./NERViewer";
 export * from "./NERTag";
 export * from "./EntityCard";
 export * from "./Tag";
@@ -14,3 +14,4 @@ export * from "./AnnotationTypeFilter";
 export * from "./Flex";
 export * from "./TranslationProvider";
 export * from "./SectionsList";
+export * from "./NERViewerNew";

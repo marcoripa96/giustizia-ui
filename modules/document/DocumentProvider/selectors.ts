@@ -1,4 +1,4 @@
-import { isEmptyObject } from "@/utils/shared";
+import { beautifyString, isEmptyObject } from "@/utils/shared";
 import { useContext, useMemo } from "react";
 import { createSelector } from "reselect";
 import { buildTreeFromFlattenedObject, getAllNodeData } from "../SidebarAddAnnotation/Tree";
@@ -43,7 +43,9 @@ export function useSelector<T>(cb: (state: State) => T) {
 // input selectors just select part of the state
 export const selectDocumentData = (state: State) => state.data;
 export const selectDocumentText = (state: State) => state.data.text;
+export const selectDocumentAnnotationSets = (state: State) => state.data.annotation_sets;
 export const selectDocumentEntityAnnotations = (state: State) => state.data.annotation_sets.entities.annotations;
+export const selectDocumentSectionAnnotations = (state: State) => state.data.annotation_sets.Sections?.annotations;
 export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
 export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
@@ -51,6 +53,7 @@ export const selectDocumentCurrentEntityId = (state: State) => state.ui.selected
 export const selectDocumentCallbacks = (state: State) => state.callbacks;
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
 export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
+export const selectDocumentActiveSection = (state: State) => state.ui.activeSection;
 
 // For expensive selectors memoize them with createSelector (e.g. array operations)
 export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));
@@ -129,5 +132,18 @@ export const selectAddSelectionColor = createSelector(
       // trying to access a node that doesn't exist
       return ''
     }
+  }
+)
+
+export const selectSectionsSidebar = createSelector(
+  selectDocumentSectionAnnotations,
+  (sectionAnnotations) => {
+    if (!sectionAnnotations) {
+      return [];
+    }
+    return sectionAnnotations.map((section) => ({
+      id: section.type,
+      label: beautifyString(section.type)
+    }));
   }
 )

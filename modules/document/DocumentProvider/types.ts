@@ -43,6 +43,7 @@ export type UIState = {
       data?: string;
     };
     typeFilter: string;
+    activeSection: string | undefined;
     leftActionBarOpen: boolean;
   },
   callbacks: {

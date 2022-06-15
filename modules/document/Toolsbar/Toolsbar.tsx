@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Switch } from "@nextui-org/react";
 import TypeFilter from "./TypeFilter";
 
 const Container = styled.div({
@@ -16,6 +17,8 @@ const Container = styled.div({
 const Toolsbar = () => {
   return (
     <Container>
+      {/* <Switch
+      <Switch initialChecked />; */}
       <TypeFilter />
     </Container>
   )

@@ -11,6 +11,10 @@ const GlobalStyles = css`
     background: #FFF;
   }
 
+  html {
+    scroll-padding-top: 100px;
+  }
+
   a {
     color: inherit;
     text-decoration: none;
