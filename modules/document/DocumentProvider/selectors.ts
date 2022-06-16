@@ -4,7 +4,7 @@ import { createSelector } from "reselect";
 import { buildTreeFromFlattenedObject, getAllNodeData } from "../SidebarAddAnnotation/Tree";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
-import { getCandidateId } from "./utils";
+import { getAnnotationTypes, getCandidateId } from "./utils";
 
 /**
  * Access the document state within the DocumentProvider.
@@ -107,11 +107,16 @@ export const selectFilteredEntityAnnotations = createSelector(
   selectDocumentTagTypeFilter,
   (annotations, typeFilter) => {
     return annotations.filter((ann) => {
-      if (typeFilter === 'all') {
-        return true;
-      }
-      return typeFilter === ann.type;
+      return typeFilter.indexOf(ann.type) !== -1;
     })
+  }
+)
+
+export const selectAnnotationTypes = createSelector(
+  selectDocumentTaxonomy,
+  selectDocumentEntityAnnotations,
+  (taxonomy, annotations) => {
+    return getAnnotationTypes(taxonomy, annotations)
   }
 )
 

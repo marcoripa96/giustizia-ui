@@ -63,7 +63,7 @@ export const initialUIState: UIState = {
     action: {
       value: 'select'
     },
-    typeFilter: 'all',
+    typeFilter: [],
     activeSection: undefined,
     leftActionBarOpen: true,
   }

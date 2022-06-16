@@ -1,7 +1,7 @@
 import { Candidate, EntityAnnotation } from "@/server/routers/document";
 import { deepEqual } from "@/utils/shared";
 import { Draft } from "immer";
-import { Action, State } from "./types";
+import { Action, FlattenedTaxonomy, State } from "./types";
 
 /**
  * Add a new annotation
@@ -47,3 +47,21 @@ export const toggleLeftSidebar = (state: Draft<State>, payload: (Action & { type
 }
 
 export const isSameAction = (oldAction: State['ui']['action'], newAction: State['ui']['action']) => deepEqual(oldAction, newAction);
+
+export const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: EntityAnnotation[]) => {
+  const items = annotations.reduce((acc, ann) => {
+    if (!acc[ann.type]) {
+      acc[ann.type] = 1;
+    } else {
+      acc[ann.type] = acc[ann.type] + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+  return Object.keys(taxonomy).map((key) => {
+    return {
+      key,
+      label: taxonomy[key].label,
+      n: items[key] || 0
+    }
+  }).sort((a, b) => b.n - a.n);
+}

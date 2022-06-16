@@ -42,7 +42,7 @@ export type UIState = {
       value: UIAction;
       data?: string;
     };
-    typeFilter: string;
+    typeFilter: string[];
     activeSection: string | undefined;
     leftActionBarOpen: boolean;
   }

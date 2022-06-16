@@ -1,27 +1,28 @@
 import { AnnotationTypeFilter } from "@/components";
-import { useSelector, selectDocumentTagTypeFilter, useDocumentDispatch, selectDocumentTaxonomy, selectDocumentEntityAnnotations } from "../DocumentProvider/selectors";
+import { useSelector, selectDocumentTagTypeFilter, useDocumentDispatch, selectDocumentTaxonomy, selectDocumentEntityAnnotations, selectAnnotationTypes } from "../DocumentProvider/selectors";
 
 const TypeFilter = () => {
-  const annotations = useSelector(selectDocumentEntityAnnotations);
-  const taxonomy = useSelector(selectDocumentTaxonomy);
-  const typeFitler = useSelector(selectDocumentTagTypeFilter);
+  // const annotations = useSelector(selectDocumentEntityAnnotations);
+  // const taxonomy = useSelector(selectDocumentTaxonomy);
+  const items = useSelector(selectAnnotationTypes);
+  const typeFilters = useSelector(selectDocumentTagTypeFilter);
   const dispatch = useDocumentDispatch();
 
-  const handleAnnotationTypeFilterChange = (key: string) => {
+  const handleAnnotationTypeFilterChange = (types: string[]) => {
     dispatch({
       type: 'setUI',
       payload: {
-        typeFilter: key
+        typeFilter: types
       }
     })
   }
 
   return (
     <AnnotationTypeFilter
-      value={typeFitler}
+      items={items}
+      value={typeFilters}
       onChange={handleAnnotationTypeFilterChange}
-      taxonomy={taxonomy}
-      annotations={annotations} />
+    />
   )
 };
 

@@ -2,7 +2,7 @@ import { Select } from "@/components";
 import { useForm } from "@/hooks";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
 import { selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { ascend, ParentNode } from "./Tree";
 
@@ -90,7 +90,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
     })
   }, [taxonomy]);
 
-  const handleOnChange = (value: string) => {
+  const handleOnChange = (event: MouseEvent, value: string) => {
     setValue(value);
     onChange(value);
   }
@@ -99,7 +99,8 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
     setChecked((s) => {
       const newState = !s;
       if (!newState) {
-        handleOnChange('');
+        setValue('');
+        onChange('');
       }
       return newState;
     })

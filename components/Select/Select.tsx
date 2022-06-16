@@ -1,9 +1,6 @@
-import { useClickOutside, useDocumentEventListener, useWindowEventListener } from "@/hooks";
-import styled from "@emotion/styled";
-import { Card, FormElement, Input, InputProps } from "@nextui-org/react";
-import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown";
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Portal } from "../Portal";
+import { FormElement, InputProps } from "@nextui-org/react";
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
+import { BaseSelect, BaseSelectItem } from "../BaseSelect";
 
 export type Item = {
   label: string;
@@ -13,74 +10,12 @@ export type Item = {
 export type SelectProps = {
   items: Item[];
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (event: MouseEvent, value: string) => void;
   inputProps?: Partial<InputProps>;
-  // disabled?: boolean;
 }
-
-type Anchor = {
-  top: number;
-  left: number;
-  width: number;
-}
-
-const Container = styled.div({
-  position: 'relative',
-  display: 'flex',
-  flexDirection: 'column'
-})
-
-const ItemContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
-  position: 'absolute',
-  display: 'flex',
-  flexDirection: 'column',
-  maxHeight: '250px',
-  overflowY: 'auto',
-  paddingTop: '5px',
-  paddingBottom: '5px',
-  zIndex: 999999,
-  ...anchor,
-  '> div': {
-    padding: 0
-  }
-}));
-
-const ListItem = styled.button({
-  outline: 'none',
-  border: 'none',
-  background: 'transparent',
-  textAlign: 'start',
-  padding: '10px 18px',
-  cursor: 'pointer',
-  '&:hover': {
-    background: 'rgba(0,0,0,0.03)'
-  },
-  '&:active': {
-    background: 'rgba(0,0,0,0.08)'
-  },
-})
 
 const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
   const [inputValue, setInputValue] = useState(value);
-  const [anchor, setAnchor] = useState<Anchor>();
-  const inputRef = useRef<HTMLDivElement>(null);
-  const containerRef = useClickOutside(() => {
-    setAnchor(undefined);
-  })
-
-  useWindowEventListener('resize', () => {
-    setAnchor((s) => s ? getAnchorCoords() : undefined);
-  });
-
-  const getAnchorCoords = () => {
-    if (!inputRef.current) return;
-    const bbox = inputRef.current.getBoundingClientRect();
-    return {
-      top: bbox.top + bbox.height,
-      left: bbox.left,
-      width: bbox.width
-    }
-  }
 
   useEffect(() => {
     const item = items.find((item) => item.value === value);
@@ -91,18 +26,15 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
     }
   }, [items, value])
 
-  const handleClick = () => {
-    setAnchor(getAnchorCoords());
-  }
-
-  const handleChange = (event: ChangeEvent<FormElement>) => {
+  const handleInputChange = (event: ChangeEvent<FormElement>) => {
     setInputValue(event.target.value);
   }
 
-  const handleItemClick = (event: MouseEvent, item: Item) => {
-    event.stopPropagation();
-    onChange(item.value)
-    setAnchor(undefined);
+  const handleChange = (event: MouseEvent, value: string | string[]) => {
+    if (!onChange || Array.isArray(value)) {
+      return;
+    }
+    onChange(event, value);
   }
 
   const filteredItems = useMemo(() => {
@@ -111,25 +43,20 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
   }, [inputValue, items]);
 
   return (
-    <Container ref={inputRef}>
-      <Input
-        {...inputProps}
-        onClick={handleClick}
-        onChange={handleChange}
-        contentRight={<FiChevronDown />}
-        value={inputValue} />
-      {anchor && (
-        <Portal elementSelector="select-popup">
-          <ItemContainer anchor={anchor} ref={containerRef}>
-            {filteredItems.map((item) => (
-              <ListItem key={item.value} onClick={(e) => handleItemClick(e, item)}>
-                {item.label}
-              </ListItem>
-            ))}
-          </ItemContainer>
-        </Portal>
-      )}
-    </Container>
+    <BaseSelect
+      onChange={handleChange}
+      value={inputValue}
+      selectableInput
+      inputProps={{
+        ...inputProps,
+        onChange: handleInputChange
+      }}>
+      {filteredItems.map((item) => (
+        <BaseSelectItem key={item.value} value={item.value} label={item.label}>
+          {item.label}
+        </BaseSelectItem>
+      ))}
+    </BaseSelect>
   )
 };
 

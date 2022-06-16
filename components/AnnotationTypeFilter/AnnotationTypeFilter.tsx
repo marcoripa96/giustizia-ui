@@ -34,56 +34,64 @@ const FilterButton = styled.button<{ selected: boolean }>(({ selected }) => ({
     }
   }),
   ...(selected && {
-    background: '#bfd8fc',
-    color: '#0070F3',
+    background: 'rgba(0, 112, 243, 0.05)',
+    color: 'rgb(0, 112, 243)',
     boxShadow: '0 0 0 1px #0070F3',
   })
 }));
 
 type AnnotationTypeListProps = {
-  taxonomy: FlattenedTaxonomy,
-  annotations: EntityAnnotation[],
-  value: string;
-  onChange: (key: string) => void;
+  items: Item[];
+  value: string[];
+  onChange: (types: string[]) => void;
 }
 
-const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: EntityAnnotation[]) => {
-  const items = annotations.reduce((acc, ann) => {
-    if (!acc[ann.type]) {
-      acc[ann.type] = 1;
-    } else {
-      acc[ann.type] = acc[ann.type] + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
-  return Object.keys(items).map((key) => ({
-    key,
-    label: taxonomy[key].label,
-    n: items[key as keyof typeof items]
-  }))
+type Item = {
+  key: string,
+  label: string,
+  n: number;
 }
 
-const AnnotationTypeFilter = ({ value, taxonomy, annotations, onChange }: AnnotationTypeListProps) => {
-  const items = useMemo(() => {
-    return getAnnotationTypes(taxonomy, annotations).sort((a, b) => b.n - a.n);
-  }, [annotations]);
-
+const AnnotationTypeFilter = ({ items, value, onChange }: AnnotationTypeListProps) => {
   const total = useMemo(() => {
     return items.reduce((acc, item) => acc + item.n, 0);
   }, [items]);
 
+  const handleAllClick = () => {
+    let newValue: string[] = [];
+    if (value.length !== items.length) {
+      newValue = items.map((item) => item.key);
+    }
+
+    onChange(newValue);
+  }
+
+  const handleItemClick = (key: string) => {
+    let newValue = Array.isArray(value) ? value.slice() : [];
+    const itemIndex = value.indexOf(key);
+
+    if (itemIndex === -1) {
+      newValue.push(key);
+    } else {
+      newValue.splice(itemIndex, 1);
+    }
+    onChange(newValue);
+  }
+
+  const isAllSelcted = value.length === items.length;
+
   return (
     <Container>
       <FilterButton
-        selected={value === 'all'}
-        onClick={() => onChange('all')}>
+        selected={isAllSelcted}
+        onClick={handleAllClick}>
         All - {total}
       </FilterButton>
       {items.map((item) => (
         <FilterButton
           key={item.key}
-          selected={value === item.key}
-          onClick={() => onChange(item.key)}>
+          selected={value.indexOf(item.key) !== -1}
+          onClick={() => handleItemClick(item.key)}>
           {item.label} - {item.n}
         </FilterButton>
       ))}

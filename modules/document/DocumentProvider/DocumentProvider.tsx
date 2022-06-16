@@ -49,7 +49,11 @@ const initializeState = (data: Document): State => {
   }
   return {
     data,
-    ...initialUIState
+    ...initialUIState,
+    ui: {
+      ...initialUIState.ui,
+      typeFilter: Object.keys(initialUIState.taxonomy)
+    }
   }
 }
 

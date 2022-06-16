@@ -1,5 +1,5 @@
 import { Select } from "@/components";
-import { useState, useMemo } from "react";
+import { useState, useMemo, MouseEvent } from "react";
 import { selectDocumentTaxonomy, useSelector } from "../../DocumentProvider/selectors";
 
 type SelectTypeProps = {
@@ -20,7 +20,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
     })
   }, [taxonomy]);
 
-  const handleOnChange = (value: string) => {
+  const handleOnChange = (event: MouseEvent, value: string) => {
     setValue(value);
     onChange(value);
   }
