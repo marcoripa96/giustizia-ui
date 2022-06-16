@@ -70,5 +70,6 @@ export const forEachCouple = <T>(array: T[], callback: (current: T, next: T | un
 }
 
 export const beautifyString = (val: string) => {
-  return `${val.charAt(0).toUpperCase()}${val.slice(1)}`.replaceAll('_', ' ');
+  const rgx = new RegExp('_', 'g')
+  return `${val.charAt(0).toUpperCase()}${val.slice(1)}`.replace(rgx, ' ');
 }
