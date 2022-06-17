@@ -2,6 +2,7 @@ import { FlattenedTaxonomy, Taxonomy } from "@/modules/document/DocumentProvider
 import { getAnnotationTypes } from "@/modules/document/DocumentProvider/utils";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
+import { Checkbox } from "@nextui-org/react";
 import { useMemo, useState } from "react";
 
 const Container = styled.div({
@@ -17,7 +18,11 @@ const Container = styled.div({
   },
 })
 
-const FilterButton = styled.button<{ selected: boolean }>(({ selected }) => ({
+const FilterButton = styled.button({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: '10px',
   flexShrink: 0,
   border: 'none',
   outline: 'none',
@@ -29,17 +34,15 @@ const FilterButton = styled.button<{ selected: boolean }>(({ selected }) => ({
   boxShadow: '0 0 0 1px rgb(0 0 0 / 10%)',
   fontWeight: 600,
   cursor: 'pointer',
-  ...(!selected && {
-    '&:hover': {
-      background: 'rgba(0,0,0,0.05)',
-    }
-  }),
-  ...(selected && {
-    background: 'rgba(0, 112, 243, 0.05)',
-    color: 'rgb(0, 112, 243)',
-    boxShadow: '0 0 0 1px #0070F3',
-  })
-}));
+  '&:hover': {
+    background: 'rgba(0,0,0,0.05)',
+  }
+  // ...(selected && {
+  //   background: 'rgba(0, 112, 243, 0.05)',
+  //   color: 'rgb(0, 112, 243)',
+  //   boxShadow: '0 0 0 1px #0070F3',
+  // })
+});
 
 type AnnotationTypeListProps = {
   annotations: EntityAnnotation[],
@@ -83,22 +86,22 @@ const AnnotationTypeFilter = ({ taxonomy, annotations, value, onChange }: Annota
     }
     onChange(newValue);
   }
-  console.log(value);
-  console.log(items);
-  const isAllSelcted = value.length === items.length;
+
+  const isAllSelected = value.length === items.length;
+  const isAllIndeterminate = value.length < items.length && value.length > 0;
 
   return (
     <Container>
       <FilterButton
-        selected={isAllSelcted}
         onClick={handleAllClick}>
+        <Checkbox isSelected={isAllSelected} isIndeterminate={isAllIndeterminate} />
         All - {total}
       </FilterButton>
       {items.map((item) => (
         <FilterButton
           key={item.key}
-          selected={value.indexOf(item.key) !== -1}
           onClick={() => handleItemClick(item.key)}>
+          <Checkbox size="sm" isSelected={value.indexOf(item.key) !== -1} />
           {item.label} - {item.n}
         </FilterButton>
       ))}
