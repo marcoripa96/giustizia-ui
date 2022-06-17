@@ -112,14 +112,6 @@ export const selectFilteredEntityAnnotations = createSelector(
   }
 )
 
-export const selectAnnotationTypes = createSelector(
-  selectDocumentTaxonomy,
-  selectDocumentEntityAnnotations,
-  (taxonomy, annotations) => {
-    return getAnnotationTypes(taxonomy, annotations)
-  }
-)
-
 /**
  * Get add selection color based on the taxonomy type selected
  */

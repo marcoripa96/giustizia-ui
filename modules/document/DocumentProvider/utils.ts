@@ -57,11 +57,11 @@ export const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: Ent
     }
     return acc;
   }, {} as Record<string, number>);
-  return Object.keys(taxonomy).map((key) => {
+  return Object.keys(items).map((key) => {
     return {
       key,
       label: taxonomy[key].label,
-      n: items[key] || 0
+      n: items[key]
     }
   }).sort((a, b) => b.n - a.n);
 }

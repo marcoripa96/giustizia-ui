@@ -47,12 +47,17 @@ const initializeState = (data: Document): State => {
   if (data.annotation_sets.entities) {
     data.annotation_sets.entities.annotations.sort((a, b) => a.start - b.start);
   }
+  let typeFilter = new Set<string>();
+  data.annotation_sets.entities.annotations.forEach((ann) => {
+    typeFilter.add(ann.type);
+  })
+
   return {
     data,
     ...initialUIState,
     ui: {
       ...initialUIState.ui,
-      typeFilter: Object.keys(initialUIState.taxonomy)
+      typeFilter: Array.from(typeFilter)
     }
   }
 }

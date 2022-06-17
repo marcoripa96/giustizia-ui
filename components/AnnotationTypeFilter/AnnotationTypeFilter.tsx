@@ -1,4 +1,5 @@
 import { FlattenedTaxonomy, Taxonomy } from "@/modules/document/DocumentProvider/types";
+import { getAnnotationTypes } from "@/modules/document/DocumentProvider/utils";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { useMemo, useState } from "react";
@@ -41,7 +42,8 @@ const FilterButton = styled.button<{ selected: boolean }>(({ selected }) => ({
 }));
 
 type AnnotationTypeListProps = {
-  items: Item[];
+  annotations: EntityAnnotation[],
+  taxonomy: FlattenedTaxonomy,
   value: string[];
   onChange: (types: string[]) => void;
 }
@@ -52,7 +54,11 @@ type Item = {
   n: number;
 }
 
-const AnnotationTypeFilter = ({ items, value, onChange }: AnnotationTypeListProps) => {
+const AnnotationTypeFilter = ({ taxonomy, annotations, value, onChange }: AnnotationTypeListProps) => {
+  const items = useMemo(() => {
+    return getAnnotationTypes(taxonomy, annotations);
+  }, [taxonomy, annotations]);
+
   const total = useMemo(() => {
     return items.reduce((acc, item) => acc + item.n, 0);
   }, [items]);
@@ -77,7 +83,8 @@ const AnnotationTypeFilter = ({ items, value, onChange }: AnnotationTypeListProp
     }
     onChange(newValue);
   }
-
+  console.log(value);
+  console.log(items);
   const isAllSelcted = value.length === items.length;
 
   return (

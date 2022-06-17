@@ -65,14 +65,6 @@ const QueryText = () => {
   // for now use base taxonomy
   const taxonomy = useMemo(() => flattenTree(baseTaxonomy), []);
 
-  const itemsFilter = useMemo(() => {
-    if (!document) {
-      return [];
-    }
-    const { annotations } = document.annotation_sets.entities;
-    return getAnnotationTypes(taxonomy, annotations);
-  }, [taxonomy, document]);
-
   useEffect(() => {
     if (!textAreaRef.current) return;
 
@@ -94,8 +86,15 @@ const QueryText = () => {
   }, [query, result, content])
 
   useEffect(() => {
-    setEntityFilter(Object.keys(taxonomy));
-  }, [taxonomy])
+    if (!document) {
+      return;
+    }
+    let typeFilter = new Set<string>();
+    document.annotation_sets.entities.annotations.forEach((ann) => {
+      typeFilter.add(ann.type);
+    })
+    setEntityFilter(Array.from(typeFilter));
+  }, [document])
 
   const onClick = () => {
     if (textAreaRef.current) {
@@ -142,9 +141,11 @@ const QueryText = () => {
       {document ? (
         <Column>
           <AnnotationTypeFilter
+            taxonomy={taxonomy}
+            annotations={document.annotation_sets.entities.annotations}
             value={entityFilter}
             onChange={handleAnnotationTypeFilterChange}
-            items={itemsFilter} />
+          />
           <NERViewer taxonomy={taxonomy} text={content} entityAnnotations={filteredAnnotations} />
         </Column>
       ) : null}
