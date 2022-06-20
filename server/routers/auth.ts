@@ -17,7 +17,7 @@ const login = (username: string, password: string) => {
 }
 
 export const auth = createRouter()
-  .query('login', {
+  .mutation('login', {
     input: z
       .object({
         username: z.string(),

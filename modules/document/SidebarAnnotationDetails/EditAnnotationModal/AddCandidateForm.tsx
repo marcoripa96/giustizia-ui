@@ -47,20 +47,19 @@ const detectKB = (url: string) => {
 }
 
 const AddCandidateLink = () => {
-  const [value, onChange] = useInput();
+  const { binds, setValue } = useInput();
   const [label, setCurrentLabel] = useState<string>('https://');
 
   const handleChange = (event: ChangeEvent<FormElement>) => {
     const value = event.target.value;
     setCurrentLabel(detectKB(value));
-    onChange(event);
+    setValue(value);
   }
 
   return (
     <Flex direction="row" gap="10px">
       <Input
-        value={value}
-        onChange={handleChange}
+        {...binds}
         labelLeft={label}
         placeholder="Rosource link..."
         shadow={false}

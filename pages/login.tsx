@@ -1,10 +1,10 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { FormEvent } from 'react'
-import { useInput } from '@/hooks';
+import { useForm, useInput } from '@/hooks';
 import { useRouter } from 'next/router';
 import { withAuthSsr } from '@/lib/withAuthSsr';
 import styled from '@emotion/styled';
-import { useQuery } from '@/utils/trpc';
+import { useMutation, useQuery } from '@/utils/trpc';
 import { Card, Input, Text, Spacer } from '@nextui-org/react';
 import { Button } from '@/components';
 import { FaRegUser } from '@react-icons/all-files/fa/FaRegUser';
@@ -37,25 +37,31 @@ const Box = styled.div`
  * Login page component
  */
 const Login: NextPage<{}> = () => {
-  const [username, onChangeUsxername] = useInput('');
-  const [loginPassword, onChangePassword] = useInput('');
+  // const [username, onChangeUsxername] = useInput('');
+  // const [loginPassword, onChangePassword] = useInput('');
+  const { register, value } = useForm({
+    username: '',
+    password: ''
+  });
 
   const router = useRouter();
-  const { isFetching, error, refetch } = useQuery(['auth.login', { username, password: loginPassword }], { enabled: false, retry: false })
+  const loginMutation = useMutation(['auth.login'], {
+    onSuccess: () => {
+      router.push('/infer');
+    }
+  });
 
   const onFormSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    refetch().then(({ isSuccess }) => {
-      if (isSuccess) {
-        router.push('/infer');
-      }
+    loginMutation.mutate({
+      ...value
     })
   }
 
   return (
     <Container>
-      <Card css={{ maxWidth: '500px', margin: '0 auto' }}>
+      <Card css={{ maxWidth: '500px', margin: '0 auto', padding: '12px 16px' }}>
         <Box as="form" onSubmit={onFormSubmit}>
           <Text h2 css={{ textAlign: 'center' }}>GiustiziaUI 🔨</Text>
           <Spacer y={0.5} />
@@ -63,20 +69,20 @@ const Login: NextPage<{}> = () => {
             bordered
             placeholder="Username"
             aria-label="username"
-            onChange={onChangeUsxername}
+            {...register('username')}
             contentLeft={<FaRegUser />}
-            status={error ? 'error' : 'default'}
+            status={loginMutation.error ? 'error' : 'default'}
           />
           <Input.Password
             bordered
             placeholder="Password"
             aria-label="password"
-            onChange={onChangePassword}
+            {...register('password')}
             contentLeft={<FaLock />}
-            status={error ? 'error' : 'default'}
+            status={loginMutation.error ? 'error' : 'default'}
           />
-          {error && <Text color="error">Invalid username or password.</Text>}
-          <Button type="submit" disabled={!loginPassword || !username} loading={isFetching}>
+          {loginMutation.error && <Text color="error">Invalid username or password.</Text>}
+          <Button type="submit" disabled={!value.password || !value.username} loading={loginMutation.isLoading}>
             Login
           </Button>
         </Box>
