@@ -64,6 +64,7 @@ export const initialUIState: UIState = {
       value: 'select'
     },
     typeFilter: [],
+    activeAnnotationSet: '',
     activeSection: undefined,
     leftActionBarOpen: true,
   }

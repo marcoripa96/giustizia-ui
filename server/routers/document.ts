@@ -11,8 +11,9 @@ export type Document = {
   preview: string;
   text: string;
   annotation_sets: {
-    entities: AnnotationSet<EntityAnnotation>;
-    Sections?: AnnotationSet<SectionAnnotation>;
+    [key: string]: AnnotationSet<EntityAnnotation>;
+    // entities: AnnotationSet<EntityAnnotation>;
+    // Sections?: AnnotationSet<SectionAnnotation>;
     // sentences: AnnotationSet;
   }
 };

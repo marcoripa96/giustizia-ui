@@ -92,6 +92,17 @@ export const documentReducer = createImmerReducer<State, Action>({
     state.ui.selectedEntityId = null;
     state.taxonomy = removeProps(taxonomy, types)
   },
+  changeAnnotationSet: (state, payload) => {
+    const { annotationSet } = payload;
+
+    let typeFilter = new Set<string>();
+    state.data.annotation_sets[annotationSet].annotations.forEach((ann) => {
+      typeFilter.add(ann.type);
+    })
+
+    state.ui.typeFilter = Array.from(typeFilter);
+    state.ui.activeAnnotationSet = annotationSet;
+  },
   setUI: (state, payload) => {
     state.ui = {
       ...state.ui,

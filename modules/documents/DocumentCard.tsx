@@ -13,13 +13,12 @@ const DocumentCard = ({ id, name, preview }: DocumentCardProps) => {
     <Link href={`/documents/${id}`} passHref>
       <Card
         as="a"
-        bordered
-        clickable
-        hoverable
-        shadow={false}
-        ripple={false}
+        variant="bordered"
+        isPressable
+        isHoverable
+        disableRipple
         css={{ borderWidth: '1px', width: 'auto', boxShadow: 'none !important' }}>
-        <Card.Body css={{ overflow: 'hidden', height: '150px', fontSize: '14px', padding: 0, WebkitLineClamp: '7', WebkitBoxOrient: 'vertical', display: ' -webkit-box' }}>
+        <Card.Body css={{ overflow: 'hidden', height: '150px', fontSize: '14px', WebkitLineClamp: '7', WebkitBoxOrient: 'vertical', display: ' -webkit-box' }}>
           {preview}
         </Card.Body>
         <Card.Footer>

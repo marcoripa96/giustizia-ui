@@ -94,14 +94,14 @@ const AnnotationTypeFilter = ({ taxonomy, annotations, value, onChange }: Annota
     <Container>
       <FilterButton
         onClick={handleAllClick}>
-        <Checkbox isSelected={isAllSelected} isIndeterminate={isAllIndeterminate} />
+        <Checkbox aria-label="select all" isSelected={isAllSelected} isIndeterminate={isAllIndeterminate} />
         All - {total}
       </FilterButton>
       {items.map((item) => (
         <FilterButton
           key={item.key}
           onClick={() => handleItemClick(item.key)}>
-          <Checkbox size="sm" isSelected={value.indexOf(item.key) !== -1} />
+          <Checkbox aria-label="item" size="sm" isSelected={value.indexOf(item.key) !== -1} />
           {item.label} - {item.n}
         </FilterButton>
       ))}

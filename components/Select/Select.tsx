@@ -26,9 +26,6 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
     }
   }, [items, value])
 
-  const handleInputChange = (event: ChangeEvent<FormElement>) => {
-    setInputValue(event.target.value);
-  }
 
   const handleChange = (event: MouseEvent, value: string | string[]) => {
     if (!onChange || Array.isArray(value)) {
@@ -37,21 +34,15 @@ const Select = ({ items, value, onChange, inputProps }: SelectProps) => {
     onChange(event, value);
   }
 
-  const filteredItems = useMemo(() => {
-    const regex = new RegExp(inputValue, 'i')
-    return items.filter((item) => item.label.match(regex))
-  }, [inputValue, items]);
-
   return (
     <BaseSelect
       onChange={handleChange}
-      value={inputValue}
+      value={value}
       selectableInput
       inputProps={{
-        ...inputProps,
-        onChange: handleInputChange
+        ...inputProps
       }}>
-      {filteredItems.map((item) => (
+      {items.map((item) => (
         <BaseSelectItem key={item.value} value={item.value} label={item.label}>
           {item.label}
         </BaseSelectItem>

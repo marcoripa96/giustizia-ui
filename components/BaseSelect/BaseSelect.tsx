@@ -1,4 +1,5 @@
-import { useClickOutside } from "@/hooks";
+import { useClickOutside, useWindowEventListener } from "@/hooks";
+import { removeStopScroll, stopScroll } from "@/utils/shared";
 import styled from "@emotion/styled";
 import { Card, Checkbox, FormElement, Input, InputProps } from "@nextui-org/react";
 import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown";
@@ -14,6 +15,7 @@ type BaseSelectProps = {
   selectableInput?: boolean;
   multiple?: boolean;
   inputProps?: Partial<InputProps>;
+  backdrop?: boolean;
 }
 
 type Anchor = {
@@ -43,34 +45,63 @@ const ItemContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
   }
 }));
 
+const Backdrop = styled.div({
+  position: 'fixed',
+  inset: 0
+})
+
 const BaseSelect = ({
   value,
   onChange,
   inputProps,
   multiple,
   selectableInput,
+  backdrop,
   children
 }: PropsWithChildren<BaseSelectProps>) => {
   const [anchor, setAnchor] = useState<Anchor>();
 
   const inputRef = useRef<HTMLDivElement>(null);
-  const containerRef = useClickOutside(() => {
-    setAnchor(undefined);
-  })
 
-  const getAnchorCoords = () => {
-    if (!inputRef.current) return;
-    const bbox = inputRef.current.getBoundingClientRect();
-    return {
-      top: bbox.top + bbox.height,
-      left: bbox.left,
-      width: bbox.width
+  const updateAnchor = (active = true) => {
+    if (!active) {
+      setAnchor(undefined);
+      if (backdrop) {
+        removeStopScroll();
+      }
+      return;
+    }
+    const getAnchorCoords = () => {
+      if (!inputRef.current) return;
+      const bbox = inputRef.current.getBoundingClientRect();
+      return {
+        top: bbox.top + bbox.height,
+        left: bbox.left,
+        width: bbox.width
+      }
+    }
+    setAnchor(getAnchorCoords());
+    if (backdrop) {
+      stopScroll();
     }
   }
 
+  useWindowEventListener('resize', () => {
+    if (anchor) {
+      setTimeout(() => {
+        updateAnchor()
+      }, 0);
+    }
+  })
+
+  const containerRef = useClickOutside(() => {
+    updateAnchor(false)
+  })
+
+
   const handleClick = () => {
     if (!inputProps?.disabled) {
-      setAnchor(getAnchorCoords());
+      updateAnchor();
     }
   }
 
@@ -123,7 +154,7 @@ const BaseSelect = ({
     }
 
     if (!multiple) {
-      setAnchor(undefined);
+      updateAnchor(false);
     }
   };
 
@@ -178,9 +209,14 @@ const BaseSelect = ({
       <Container ref={inputRef} onClick={handleClick}>
         <Input
           {...inputProps}
+          autoComplete="off"
+          spellCheck="false"
           contentRight={<FiChevronDown />}
           value={renderValue()}
-          onChange={handleInputChange} />
+          onChange={handleInputChange}
+          css={{
+            caretColor: 'transparent'
+          }} />
       </Container>
       {anchor && (
         <Portal elementSelector="select-popup">
@@ -193,6 +229,7 @@ const BaseSelect = ({
             )}
             {items}
           </ItemContainer>
+          {backdrop && <Backdrop />}
         </Portal>
       )}
     </>

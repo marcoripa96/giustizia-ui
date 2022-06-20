@@ -44,7 +44,7 @@ export function useSelector<T>(cb: (state: State) => T) {
 export const selectDocumentData = (state: State) => state.data;
 export const selectDocumentText = (state: State) => state.data.text;
 export const selectDocumentAnnotationSets = (state: State) => state.data.annotation_sets;
-export const selectDocumentEntityAnnotations = (state: State) => state.data.annotation_sets.entities.annotations;
+// export const selectDocumentEntityAnnotations = (state: State) => state.data.annotation_sets.entities.annotations;
 export const selectDocumentSectionAnnotations = (state: State) => state.data.annotation_sets.Sections?.annotations;
 export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
 export const selectDocumentAction = (state: State) => state.ui.action;
@@ -52,12 +52,29 @@ export const selectDocumentActiveType = (state: State) => state.ui.action.data;
 export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
 export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
+export const selectDocumentActiveAnnotationSet = (state: State) => state.ui.activeAnnotationSet;
 export const selectDocumentActiveSection = (state: State) => state.ui.activeSection;
+
+export const selectActiveEntityAnnotations = createSelector(
+  selectDocumentActiveAnnotationSet,
+  selectDocumentAnnotationSets,
+  (activeAnnotationSet, annotationSets) => {
+    if (annotationSets[activeAnnotationSet]) {
+      return annotationSets[activeAnnotationSet].annotations
+    }
+    return [];
+  }
+)
+
+export const selectAllEntityAnnotationSets = createSelector(
+  selectDocumentAnnotationSets,
+  (annotationSets) => Object.values(annotationSets).filter((set) => set.name.startsWith('entities'))
+)
 
 // For expensive selectors memoize them with createSelector (e.g. array operations)
 export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));
 export const selectCurrentEntity = createSelector(
-  selectDocumentEntityAnnotations,
+  selectActiveEntityAnnotations,
   selectDocumentCurrentEntityId,
   (annotation, entityId) => {
     if (entityId == null) {
@@ -103,7 +120,7 @@ export const selectCurrentEntityLinkingFeatures = createSelector(
  * Get entities filtered by the current type filter
  */
 export const selectFilteredEntityAnnotations = createSelector(
-  selectDocumentEntityAnnotations,
+  selectActiveEntityAnnotations,
   selectDocumentTagTypeFilter,
   (annotations, typeFilter) => {
     return annotations.filter((ann) => {

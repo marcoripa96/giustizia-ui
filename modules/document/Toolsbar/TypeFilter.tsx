@@ -1,8 +1,8 @@
 import { AnnotationTypeFilter } from "@/components";
-import { useSelector, selectDocumentTagTypeFilter, useDocumentDispatch, selectDocumentTaxonomy, selectDocumentEntityAnnotations } from "../DocumentProvider/selectors";
+import { useSelector, selectDocumentTagTypeFilter, useDocumentDispatch, selectDocumentTaxonomy, selectActiveEntityAnnotations } from "../DocumentProvider/selectors";
 
 const TypeFilter = () => {
-  const annotations = useSelector(selectDocumentEntityAnnotations);
+  const annotations = useSelector(selectActiveEntityAnnotations);
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const typeFilters = useSelector(selectDocumentTagTypeFilter);
   const dispatch = useDocumentDispatch();

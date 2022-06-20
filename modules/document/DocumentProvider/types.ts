@@ -12,6 +12,7 @@ export type Action =
   | { type: 'deleteAnnotation', payload: { id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
+  | { type: 'changeAnnotationSet', payload: { annotationSet: string } }
   | { type: 'setUI', payload: Partial<State['ui']> };
 
 export type ActionType = Action['type'];
@@ -43,6 +44,7 @@ export type UIState = {
       data?: string;
     };
     typeFilter: string[];
+    activeAnnotationSet: string;
     activeSection: string | undefined;
     leftActionBarOpen: boolean;
   }

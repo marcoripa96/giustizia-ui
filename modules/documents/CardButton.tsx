@@ -22,7 +22,12 @@ const TextContent = styled.div({
 
 const CardButton = ({ contentLeft, contentRight, title, description }: CardButtonProps) => {
   return (
-    <Card bordered clickable hoverable shadow={false} ripple={false} css={{ borderWidth: '1px', width: 'auto', boxShadow: 'none !important' }}>
+    <Card
+      variant="bordered"
+      isPressable
+      isHoverable
+      disableRipple
+      css={{ borderWidth: '1px', width: 'auto', boxShadow: 'none !important', padding: '10px' }}>
       <Content>
         {contentLeft}
         <TextContent>

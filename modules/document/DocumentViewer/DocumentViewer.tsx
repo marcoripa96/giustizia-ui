@@ -26,6 +26,7 @@ const DocumentContainer = styled.div`
   padding: 24px 36px;
   border-radius: 6px;
   margin: 0 auto;
+  content-visibility: 'auto';
 `
 
 

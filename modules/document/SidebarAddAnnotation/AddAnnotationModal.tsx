@@ -91,6 +91,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   }, [taxonomy]);
 
   const handleOnChange = (event: MouseEvent, value: string) => {
+    console.log(value);
     setValue(value);
     onChange(value);
   }

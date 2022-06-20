@@ -73,3 +73,29 @@ export const beautifyString = (val: string) => {
   const rgx = new RegExp('_', 'g')
   return `${val.charAt(0).toUpperCase()}${val.slice(1)}`.replace(rgx, ' ');
 }
+
+const elementsToShift = ['right-sidebar', 'toolbar', 'annotation-details-sidebar'];
+
+export const forEachElement = (arr: string[], cb: (elem: HTMLElement) => void) => {
+  arr.forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      cb(element);
+    };
+  });
+}
+
+export const stopScroll = () => {
+  document.body.setAttribute('style', 'overflow: hidden; padding-right: 17px');
+  forEachElement(elementsToShift, (elem) => {
+    elem.setAttribute('style', 'right: 17px');
+  });
+}
+
+export const removeStopScroll = () => {
+  document.body.setAttribute('style', '');
+  forEachElement(elementsToShift, (elem) => {
+    elem.setAttribute('style', '');
+  });
+}
+
