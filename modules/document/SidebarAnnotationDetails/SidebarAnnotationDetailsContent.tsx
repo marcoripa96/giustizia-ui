@@ -7,7 +7,7 @@ import useModal from "@/hooks/use-modal";
 import { selectCurrentEntityLinkingFeatures, selectDocumentText, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { EntityAnnotation } from "@/server/routers/document";
 import { getCandidateId } from "../DocumentProvider/utils";
-import { Flex } from "@/components";
+import { Flex, IconButton } from "@/components";
 import { FiArrowRight } from '@react-icons/all-files/fi/FiArrowRight';
 
 type AnnotationDetailsProps = {
@@ -70,24 +70,15 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
   return (
     <>
       <Container>
-        <Button
-          onClick={handleCloseClick}
-          auto
-          rounded
-          bordered
-          icon={<FiArrowRight size={16} />}
-          size="xs"
-          css={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            padding: 0,
-            color: 'rgba(0,0,0,0.5)',
-            borderColor: 'rgba(0,0,0,0.5)'
-          }} />
         <DetailsContainer>
           <Col>
-            <Text b size={18}>Annotation details</Text>
+            <Flex direction="row" alignItems="center" justifyContent="space-between">
+              <Text b size={18}>Annotation details</Text>
+              <IconButton onClick={handleCloseClick}>
+                <FiArrowRight size={16} />
+              </IconButton>
+            </Flex>
+
             <Text css={{ fontSize: '16px', lineHeight: '1', color: 'rgba(0,0,0,0.5)' }}>
               Inspect the details for a selected annotation.
             </Text>

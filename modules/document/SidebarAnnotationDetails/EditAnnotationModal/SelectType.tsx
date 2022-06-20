@@ -1,4 +1,4 @@
-import { Select } from "@/components";
+import { BaseSelect, BaseSelectItem } from "@/components/BaseSelect";
 import { useState, useMemo, MouseEvent } from "react";
 import { selectDocumentTaxonomy, useSelector } from "../../DocumentProvider/selectors";
 
@@ -11,33 +11,32 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const [value, setValue] = useState(valueProp);
   const taxonomy = useSelector(selectDocumentTaxonomy);
 
-  const items = useMemo(() => {
-    return Object.values(taxonomy).map((type) => {
-      return {
-        label: type.label,
-        value: type.key
-      }
-    })
-  }, [taxonomy]);
-
-  const handleOnChange = (event: MouseEvent, value: string) => {
+  const handleOnChange = (event: MouseEvent, value: string | string[]) => {
+    if (Array.isArray(value)) {
+      return;
+    }
     setValue(value);
     onChange(value);
   }
 
 
   return (
-    <Select
+    <BaseSelect
+      value={value}
+      onChange={handleOnChange}
       inputProps={{
         'aria-label': 'Entity type',
         placeholder: 'Type',
         shadow: false,
         bordered: true
-      }}
-      items={items}
-      value={value}
-      onChange={handleOnChange} />
-  )
+      }}>
+      {Object.values(taxonomy).map((type) => (
+        <BaseSelectItem key={type.key} value={type.key} label={type.label}>
+          {type.label}
+        </BaseSelectItem>
+      ))}
+    </BaseSelect>
+  );
 };
 
 export default SelectType;

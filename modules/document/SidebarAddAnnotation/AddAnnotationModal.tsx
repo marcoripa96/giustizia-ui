@@ -1,4 +1,5 @@
-import { Select } from "@/components";
+// import { Select } from "@/components";
+import { BaseSelect, BaseSelectItem } from "@/components/BaseSelect";
 import { useForm } from "@/hooks";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
@@ -81,17 +82,11 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   const [checked, setChecked] = useState(false);
   const taxonomy = useSelector(selectDocumentTaxonomy);
 
-  const items = useMemo(() => {
-    return Object.values(taxonomy).map((type) => {
-      return {
-        label: type.label,
-        value: type.key
-      }
-    })
-  }, [taxonomy]);
 
-  const handleOnChange = (event: MouseEvent, value: string) => {
-    console.log(value);
+  const handleOnChange = (event: MouseEvent, value: string | string[]) => {
+    if (Array.isArray(value)) {
+      return;
+    }
     setValue(value);
     onChange(value);
   }
@@ -112,17 +107,22 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
       <Checkbox aria-label="Enable sub-type" isSelected={checked} onChange={handleCheck} />
       <Text css={{ margin: 0 }}>Subclass of</Text>
       <SelectContainer>
-        <Select
+        <BaseSelect
+          value={value}
+          onChange={handleOnChange}
           inputProps={{
             'aria-label': 'Type color',
             placeholder: 'Type',
             shadow: false,
             bordered: true,
             disabled: !checked
-          }}
-          items={items}
-          value={value}
-          onChange={handleOnChange} />
+          }}>
+          {Object.values(taxonomy).map((type) => (
+            <BaseSelectItem key={type.key} value={type.key} label={type.label}>
+              {type.label}
+            </BaseSelectItem>
+          ))}
+        </BaseSelect>
       </SelectContainer>
     </ContainerSelectType>
   )

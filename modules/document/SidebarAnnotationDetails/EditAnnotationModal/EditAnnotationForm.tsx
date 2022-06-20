@@ -47,7 +47,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
     type: type,
     linkCandidate: top_candidate
   });
-  const [searchValue, onSearchChange] = useInput('');
+  const { binds: searchBinds } = useInput('');
   const text = useSelector(selectDocumentText)
   const dispatch = useDocumentDispatch();
 
@@ -65,8 +65,8 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
 
   const filteredCandidates = useMemo(() => {
     if (!candidates) return [];
-    return matchTitleContains(candidates, searchValue)
-  }, [candidates, searchValue]);
+    return matchTitleContains(candidates, searchBinds.value)
+  }, [candidates, searchBinds.value]);
 
   return (
     <Form onSubmit={onSubmit(handleSubmit)}>
@@ -95,8 +95,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
             aria-label="Search link"
             placeholder="Search link..."
             shadow={false}
-            value={searchValue}
-            onChange={onSearchChange}
+            {...searchBinds}
             contentLeft={<FiSearch />} />
           <AddLinkItem setAnnotation={setAnnotation} />
           <LinkList candidates={filteredCandidates} {...register('linkCandidate')} />

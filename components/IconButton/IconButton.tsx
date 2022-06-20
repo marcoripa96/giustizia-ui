@@ -22,7 +22,7 @@ const IconButton = styled.button<IconButtonProps>(({ active }) => ({
     height: '22px',
   },
   '&:hover': {
-    background: '#e2e2e2d6',
+    background: 'rgba(0,0,0,0.05)',
   },
   '&:active': {
     background: '#cecece'

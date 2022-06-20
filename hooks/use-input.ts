@@ -9,8 +9,14 @@ const useInput = (initialValue?: string) => {
   const onChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValue(event.target.value);
   }
-
-  return [value, onChange] as const;
+  return {
+    binds: {
+      value,
+      onChange
+    },
+    setValue
+  }
+  // return [value, onChange] as const;
 };
 
 export default useInput;

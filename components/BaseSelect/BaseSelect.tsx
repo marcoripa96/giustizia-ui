@@ -1,18 +1,19 @@
-import { useClickOutside, useWindowEventListener } from "@/hooks";
+import { useClickOutside, useInput, useWindowEventListener } from "@/hooks";
 import { removeStopScroll, stopScroll } from "@/utils/shared";
 import styled from "@emotion/styled";
 import { Card, Checkbox, FormElement, Input, InputProps } from "@nextui-org/react";
 import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown";
-import { ChangeEvent, Children, cloneElement, isValidElement, MouseEvent, PropsWithChildren, ReactElement, useRef, useState } from "react";
+import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
+import { ChangeEvent, Children, cloneElement, isValidElement, MouseEvent, PropsWithChildren, ReactElement, useMemo, useRef, useState } from "react";
 import { BaseSelectItem } from ".";
 import { Portal } from "../Portal";
 import { BaseSelectItemProps } from "./BaseSelectItem";
+
 
 type BaseSelectProps = {
   value: string | string[];
   onChange?: (event: MouseEvent, value: string | string[]) => void;
   renderValue?: (value: string) => string;
-  selectableInput?: boolean;
   multiple?: boolean;
   inputProps?: Partial<InputProps>;
   backdrop?: boolean;
@@ -30,20 +31,42 @@ const Container = styled.div({
   flexDirection: 'column'
 })
 
-const ItemContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
-  position: 'absolute',
+const PopoverContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
+  position: 'fixed',
   display: 'flex',
   flexDirection: 'column',
-  maxHeight: '250px',
-  overflowY: 'auto',
-  paddingTop: '5px',
+  maxHeight: '300px',
+  overflow: 'hidden',
   paddingBottom: '5px',
   zIndex: 999999,
-  ...anchor,
-  '> div': {
-    padding: 0
-  }
+  ...anchor
 }));
+
+const PopoverContent = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  overflowY: 'scroll',
+  '::-webkit-scrollbar': {
+    height: '4px',
+    width: '4px'
+  },
+  '::-webkit-scrollbar-thumb': {
+    background: 'rgba(0,0,0,0.1)'
+  }
+})
+
+const ContainerSearch = styled.div({
+  position: 'sticky',
+  top: 0,
+  padding: '8px',
+  background: '#FFF',
+  borderBottom: '1px solid rgba(0,0,0,0.1)',
+  zIndex: 101
+})
+
+const EmptyItem = styled.div({
+  padding: '10px 18px',
+})
 
 const Backdrop = styled.div({
   position: 'fixed',
@@ -55,46 +78,47 @@ const BaseSelect = ({
   onChange,
   inputProps,
   multiple,
-  selectableInput,
   backdrop,
+  renderValue,
   children
 }: PropsWithChildren<BaseSelectProps>) => {
-  const [anchor, setAnchor] = useState<Anchor>();
-
-  const inputRef = useRef<HTMLDivElement>(null);
+  const { binds: searchBinds, setValue: setSearchValue } = useInput('');
+  const [popoverAnchor, setPopoverAncho] = useState<Anchor | undefined>();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const updateAnchor = (active = true) => {
     if (!active) {
-      setAnchor(undefined);
+      setPopoverAncho(undefined);
+      setSearchValue('');
       if (backdrop) {
         removeStopScroll();
       }
       return;
     }
     const getAnchorCoords = () => {
-      if (!inputRef.current) return;
-      const bbox = inputRef.current.getBoundingClientRect();
+      if (!containerRef.current) return;
+      const bbox = containerRef.current.getBoundingClientRect();
       return {
         top: bbox.top + bbox.height,
         left: bbox.left,
         width: bbox.width
       }
     }
-    setAnchor(getAnchorCoords());
+    setPopoverAncho(getAnchorCoords());
     if (backdrop) {
       stopScroll();
     }
   }
 
   useWindowEventListener('resize', () => {
-    if (anchor) {
+    if (popoverAnchor) {
       setTimeout(() => {
         updateAnchor()
       }, 0);
     }
   })
 
-  const containerRef = useClickOutside(() => {
+  const popoverRef = useClickOutside(() => {
     updateAnchor(false)
   })
 
@@ -102,16 +126,6 @@ const BaseSelect = ({
   const handleClick = () => {
     if (!inputProps?.disabled) {
       updateAnchor();
-    }
-  }
-
-  const handleInputChange = (event: ChangeEvent<FormElement>) => {
-    if (!selectableInput) {
-      event.stopPropagation();
-      return;
-    }
-    if (inputProps?.onChange) {
-      inputProps.onChange(event);
     }
   }
 
@@ -158,36 +172,34 @@ const BaseSelect = ({
     }
   };
 
-
-  const items = Children.map(children, (child) => {
-    if (!isValidElement(child)) {
-      return null;
-    }
-    return cloneElement(child, {
-      onClick: handleItemClick(child)
-    })
-  });
-
-  const renderValue = () => {
-    if (!items) {
+  const prerenderValue = () => {
+    if (!children) {
       return '';
     }
-    if (multiple && Array.isArray(value)) {
+    const childrenItems = Children.toArray(children) as ReactElement<BaseSelectItemProps>[];
+
+    if (multiple && Array.isArray(childrenItems)) {
       if (value.length === 0) {
         return 'None'
       }
-      if (value.length === items.length) {
+      if (value.length === childrenItems.length) {
         return 'All'
       }
       let val = [];
-      for (const item of items) {
+      for (const item of childrenItems) {
         if (value.indexOf(item.props.value) !== -1) {
           val.push(item.props.label);
         }
       }
+      if (renderValue) {
+        return renderValue(val.join(', '));
+      }
       return val.join(', ');
     }
-    const item = items.find((item) => item.props.value === value);
+    const item = childrenItems.find((item) => item.props.value === value);
+    if (renderValue) {
+      return renderValue(item ? item.props.label : '');
+    }
     return item ? item.props.label : '';
   }
 
@@ -204,31 +216,70 @@ const BaseSelect = ({
     }
   }
 
+  const renderItems = () => {
+    if (!filteredItems || filteredItems.length === 0) {
+      return <EmptyItem>No items</EmptyItem>;
+    }
+    return filteredItems;
+  }
+
+  const items = useMemo(() => {
+    return Children.map(children, (child) => {
+      if (!isValidElement(child)) {
+        return null;
+      }
+      return cloneElement(child, {
+        onClick: handleItemClick(child)
+      })
+    })
+  }, [children]);
+
+  const filteredItems = useMemo(() => {
+    if (!items) {
+      return null;
+    }
+    const regex = new RegExp(searchBinds.value, 'i');
+    return items.filter((child) => child.props.label.match(regex))
+  }, [searchBinds.value, items])
+
   return (
     <>
-      <Container ref={inputRef} onClick={handleClick}>
+      <Container ref={containerRef} onClick={handleClick}>
         <Input
           {...inputProps}
           autoComplete="off"
           spellCheck="false"
           contentRight={<FiChevronDown />}
-          value={renderValue()}
-          onChange={handleInputChange}
+          value={prerenderValue()}
           css={{
             caretColor: 'transparent'
           }} />
       </Container>
-      {anchor && (
+      {popoverAnchor && (
         <Portal elementSelector="select-popup">
-          <ItemContainer anchor={anchor} ref={containerRef}>
-            {multiple && (
-              <BaseSelectItem label="All" value="all" onClick={handleAllClick}>
-                <Checkbox {...getAllCheckProps()} />
-                All
-              </BaseSelectItem>
-            )}
-            {items}
-          </ItemContainer>
+          <PopoverContainer anchor={popoverAnchor} ref={popoverRef}>
+            <PopoverContent>
+              <ContainerSearch>
+                <Input
+                  aria-label="Filter select items"
+                  bordered
+                  placeholder="Filter items"
+                  fullWidth
+                  shadow={false}
+                  animated={false}
+                  contentRight={<FiSearch />}
+                  {...searchBinds}
+                />
+              </ContainerSearch>
+              {multiple && (
+                <BaseSelectItem label="All" value="all" onClick={handleAllClick}>
+                  <Checkbox aria-label="Select all items" {...getAllCheckProps()} />
+                  All
+                </BaseSelectItem>
+              )}
+              {renderItems()}
+            </PopoverContent>
+          </PopoverContainer>
           {backdrop && <Backdrop />}
         </Portal>
       )}
