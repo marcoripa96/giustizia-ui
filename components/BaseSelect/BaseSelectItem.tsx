@@ -4,9 +4,10 @@ import { HTMLAttributes } from "react";
 export type BaseSelectItemProps = HTMLAttributes<HTMLButtonElement> & {
   value: string;
   label: string;
+  selected?: boolean;
 }
 
-const BaseSelectItem = styled.button<BaseSelectItemProps>({
+const BaseSelectItem = styled.button<BaseSelectItemProps>(({ selected }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -22,7 +23,11 @@ const BaseSelectItem = styled.button<BaseSelectItemProps>({
   },
   '&:active': {
     background: 'rgba(0,0,0,0.08)'
-  }
-})
+  },
+  ...(selected && {
+    opacity: 0.5,
+    pointerEvents: 'none'
+  })
+}));
 
 export default BaseSelectItem;

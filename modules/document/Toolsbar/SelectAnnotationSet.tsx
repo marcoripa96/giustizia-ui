@@ -19,6 +19,18 @@ const SelectAnnotationSet = () => {
     })
   }
 
+  const renderItems = () => {
+    return annotationSets.map((item) => {
+      const annotationName = item.name.split('_')[1];
+
+      return (
+        <BaseSelectItem key={item.name} value={item.name} label={annotationName}>
+          {annotationName}
+        </BaseSelectItem>
+      )
+    })
+  }
+
   return (
     <BaseSelect
       onChange={handleChange}
@@ -27,11 +39,7 @@ const SelectAnnotationSet = () => {
         labelLeft: 'Set:',
         'aria-label': 'select annotation set'
       }}>
-      {annotationSets.map((item) => (
-        <BaseSelectItem key={item.name} value={item.name} label={item.name}>
-          {item.name}
-        </BaseSelectItem>
-      ))}
+      {renderItems()}
     </BaseSelect>
   )
 }

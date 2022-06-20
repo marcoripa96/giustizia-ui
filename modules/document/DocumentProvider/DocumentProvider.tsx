@@ -46,19 +46,29 @@ const initializeState = (data: Document): State => {
   // hopefully I get already sorted annotations
   if (data.annotation_sets.entities) {
     data.annotation_sets.entities.annotations.sort((a, b) => a.start - b.start);
+    data.annotation_sets.entities_default = {
+      ...data.annotation_sets.entities,
+      name: 'entities_default'
+    }
     data.annotation_sets = {
       ...data.annotation_sets,
-      entities_other: {
+      entities_test: {
         ...data.annotation_sets.entities,
-        name: 'entities_other',
+        name: 'entities_test',
         annotations: data.annotation_sets.entities.annotations.filter((ent, index) => index % 2 === 0)
       }
     }
+    delete data.annotation_sets.entities;
   }
+  const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities'));
   let typeFilter = new Set<string>();
-  data.annotation_sets.entities.annotations.forEach((ann) => {
-    typeFilter.add(ann.type);
-  })
+
+  if (firstEntityAnnSetKey) {
+    data.annotation_sets[firstEntityAnnSetKey].annotations.forEach((ann) => {
+      typeFilter.add(ann.type);
+    })
+
+  }
 
   const activeAnnotationSet = Object.values(data.annotation_sets).filter((set) => set.name.startsWith('entities'))[0].name;
 

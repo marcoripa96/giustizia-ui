@@ -229,7 +229,8 @@ const BaseSelect = ({
         return null;
       }
       return cloneElement(child, {
-        onClick: handleItemClick(child)
+        onClick: handleItemClick(child),
+        selected: !multiple && value === child.props.value
       })
     })
   }, [children]);
