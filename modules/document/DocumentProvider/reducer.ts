@@ -2,7 +2,7 @@ import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
-import { addAnnotation, isSameAction, toggleLeftSidebar } from "./utils";
+import { addAnnotation, getAnnotationTypes, isSameAction, toggleLeftSidebar } from "./utils";
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
@@ -21,10 +21,11 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   addAnnotation: (state, payload) => {
     const { type, startOffset, endOffset, text } = payload;
+    const { activeAnnotationSet } = state.ui;
     const {
       next_annid,
       annotations
-    } = state.data.annotation_sets.entities;
+    } = state.data.annotation_sets[activeAnnotationSet];
 
     const newAnnotation: any = {
       id: next_annid,
@@ -37,12 +38,17 @@ export const documentReducer = createImmerReducer<State, Action>({
         linking: {}
       }
     }
-    state.data.annotation_sets.entities.annotations = addAnnotation(annotations, newAnnotation);
-    state.data.annotation_sets.entities.next_annid = next_annid + 1;
+    state.data.annotation_sets[activeAnnotationSet].annotations = addAnnotation(annotations, newAnnotation);
+    state.data.annotation_sets[activeAnnotationSet].next_annid = next_annid + 1;
+
+    if (state.ui.typeFilter.indexOf(type) === -1) {
+      state.ui.typeFilter.push(type);
+    }
   },
   editAnnotation: (state, payload) => {
     const { annotationId, type, topCandidate } = payload;
-    const { annotations } = state.data.annotation_sets.entities;
+    const { activeAnnotationSet } = state.ui;
+    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
     const newAnnotations = annotations.map((ann) => {
       if (ann.id === annotationId) {
         return {
@@ -59,13 +65,14 @@ export const documentReducer = createImmerReducer<State, Action>({
       }
       return ann;
     });
-    state.data.annotation_sets.entities.annotations = newAnnotations;
+    state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
   },
   deleteAnnotation: (state, payload) => {
     const { id } = payload;
-    const { annotations } = state.data.annotation_sets.entities;
+    const { activeAnnotationSet } = state.ui;
+    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
     const newAnnotations = annotations.filter((ann) => ann.id !== id);
-    state.data.annotation_sets.entities.annotations = newAnnotations;
+    state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
   },
   addTaxonomyType: (state, payload) => {
     const { type } = payload;
@@ -84,11 +91,12 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   deleteTaxonomyType: (state, payload) => {
     const { taxonomy } = state;
-    const { annotations } = state.data.annotation_sets.entities;
+    const { activeAnnotationSet } = state.ui;
+    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
     const { key } = payload;
 
     const types = getNodeAndChildren(taxonomy, key, (node) => node.key);
-    state.data.annotation_sets.entities.annotations = annotations.filter((ann) => types.indexOf(ann.type) === -1);
+    state.data.annotation_sets[activeAnnotationSet].annotations = annotations.filter((ann) => types.indexOf(ann.type) === -1);
     state.ui.selectedEntityId = null;
     state.taxonomy = removeProps(taxonomy, types)
   },
