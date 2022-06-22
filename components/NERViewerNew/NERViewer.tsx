@@ -112,38 +112,38 @@ function NERViewer({
   const nodes = useNewNER({ text, entityAnnotations, sectionAnnotations });
   const sectionRefs = useRef<SectionRefNode[]>([]);
 
-  const handleScrollEvent = useCallback(() => {
-    if (sectionRefs.current.length === 0) {
-      return;
-    }
+  // const handleScrollEvent = useCallback(() => {
+  //   if (sectionRefs.current.length === 0) {
+  //     return;
+  //   }
 
-    const firstSectionRef = sectionRefs.current[sectionRefs.current.length - 1];
-    if (firstSectionRef.node && window.scrollY < firstSectionRef.node.offsetTop) {
-      onSectionChange(firstSectionRef.section.type)
-      return;
-    }
-    for (const ref of sectionRefs.current) {
-      if (!ref || !ref.node) {
-        break;
-      }
-      if (window.scrollY >= ref.node.offsetTop) {
-        onSectionChange(ref.section.type)
-        break;
-      }
-    }
-  }, []);
+  //   const firstSectionRef = sectionRefs.current[sectionRefs.current.length - 1];
+  //   if (firstSectionRef.node && window.scrollY < firstSectionRef.node.offsetTop) {
+  //     onSectionChange(firstSectionRef.section.type)
+  //     return;
+  //   }
+  //   for (const ref of sectionRefs.current) {
+  //     if (!ref || !ref.node) {
+  //       break;
+  //     }
+  //     if (window.scrollY >= ref.node.offsetTop) {
+  //       onSectionChange(ref.section.type)
+  //       break;
+  //     }
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    // get first section on render
-    handleScrollEvent();
-  }, [handleScrollEvent])
+  // useEffect(() => {
+  //   // get first section on render
+  //   handleScrollEvent();
+  // }, [handleScrollEvent])
 
   // const throttledScrollHandler = useThrottle(handleScrollEvent, 100);
 
-  useWindowEventListener('scroll', () => {
-    // handle section on scroll
-    handleScrollEvent();
-  })
+  // useWindowEventListener('scroll', () => {
+  //   // handle section on scroll
+  //   handleScrollEvent();
+  // })
 
   /**
    * Get the node from the taxonomy so that I have all info for a certain type

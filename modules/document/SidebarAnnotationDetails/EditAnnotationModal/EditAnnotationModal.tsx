@@ -1,6 +1,7 @@
 import { useDraftState } from "@/hooks";
 import { ModalProps, Modal, Text } from "@nextui-org/react";
 import { selectCurrentEntity } from "../../DocumentProvider/selectors";
+import { useViewIndex } from "../../ViewProvider/ViewProvider";
 import EditAnnotationForm from "./EditAnnotationForm";
 
 type EditModalProps = ModalProps & {
@@ -8,7 +9,8 @@ type EditModalProps = ModalProps & {
 }
 
 const EditAnnotationModal = ({ setVisible, ...props }: EditModalProps) => {
-  const [annotation, setAnnotation] = useDraftState(selectCurrentEntity);
+  const viewIndex = useViewIndex();
+  const [annotation, setAnnotation] = useDraftState((state) => selectCurrentEntity(state, viewIndex));
 
   if (!annotation) {
     return null;

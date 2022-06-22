@@ -77,8 +77,13 @@ const initializeState = (data: Document): State => {
     ...initialUIState,
     ui: {
       ...initialUIState.ui,
-      typeFilter: Array.from(typeFilter),
-      activeAnnotationSet
+      views: [
+        {
+          typeFilter: Array.from(typeFilter),
+          activeAnnotationSet,
+          activeSection: undefined
+        }
+      ]
     }
   }
 }

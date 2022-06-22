@@ -27,7 +27,7 @@ specifiers:
   react-loading-skeleton: ^3.0.3
   react-query: ^3.38.0
   react-transition-group: ^4.4.2
-  reselect: ^4.1.5
+  reselect: ^4.1.6
   typescript: 4.6.3
   zod: ^3.14.4
 
@@ -51,7 +51,7 @@ dependencies:
   react-loading-skeleton: 3.0.3_react@18.0.0
   react-query: 3.38.0_react-dom@18.0.0+react@18.0.0
   react-transition-group: 4.4.2_react-dom@18.0.0+react@18.0.0
-  reselect: 4.1.5
+  reselect: 4.1.6
   zod: 3.14.4
 
 devDependencies:
@@ -2886,8 +2886,8 @@ packages:
     resolution: {integrity: sha1-CkPTqq4egNuRngeuJUsoXZ4ce7U=}
     dev: false
 
-  /reselect/4.1.5:
-    resolution: {integrity: sha512-uVdlz8J7OO+ASpBYoz1Zypgx0KasCY20H+N8JD13oUMtPvSHQuscrHop4KbXrbsBcdB9Ds7lVK7eRkBIfO43vQ==}
+  /reselect/4.1.6:
+    resolution: {integrity: sha512-ZovIuXqto7elwnxyXbBtCPo9YFEr3uJqj2rRbcOOog1bmu2Ag85M4hixSwFWyaBMKXNgvPaJ9OSu9SkBPIeJHQ==}
     dev: false
 
   /resolve-from/4.0.0:

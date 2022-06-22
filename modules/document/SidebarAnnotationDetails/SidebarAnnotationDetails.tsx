@@ -3,6 +3,7 @@ import { useSelector, selectCurrentEntity, useDocumentDispatch } from "../Docume
 import AnnotationDetailsContent from "./SidebarAnnotationDetailsContent";
 import { CSSTransition } from 'react-transition-group';
 import { useClickOutside } from "@/hooks";
+import { useViewIndex } from "../ViewProvider/ViewProvider";
 
 const Container = styled.div({
   display: 'flex',
@@ -34,7 +35,8 @@ const Container = styled.div({
 })
 
 const AnnotationDetails = () => {
-  const annotation = useSelector(selectCurrentEntity);
+  const viewIndex = useViewIndex();
+  const annotation = useSelector((state) => selectCurrentEntity(state, viewIndex));
 
 
   return (

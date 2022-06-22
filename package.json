@@ -28,7 +28,7 @@
     "react-loading-skeleton": "^3.0.3",
     "react-query": "^3.38.0",
     "react-transition-group": "^4.4.2",
-    "reselect": "^4.1.5",
+    "reselect": "^4.1.6",
     "zod": "^3.14.4"
   },
   "devDependencies": {

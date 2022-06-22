@@ -1,9 +1,11 @@
 import { BaseSelect, BaseSelectItem } from "@/components/BaseSelect";
 import { useSelector, selectDocumentActiveAnnotationSet, selectAllEntityAnnotationSets, useDocumentDispatch } from "../DocumentProvider/selectors";
 import { MouseEvent } from "react";
+import { useViewIndex } from "../ViewProvider/ViewProvider";
 
 const SelectAnnotationSet = () => {
-  const activeAnnotationSet = useSelector(selectDocumentActiveAnnotationSet);
+  const viewIndex = useViewIndex();
+  const activeAnnotationSet = useSelector((state) => selectDocumentActiveAnnotationSet(state, viewIndex));
   const annotationSets = useSelector(selectAllEntityAnnotationSets);
   const dispatch = useDocumentDispatch();
 
@@ -14,6 +16,7 @@ const SelectAnnotationSet = () => {
     dispatch({
       type: 'changeAnnotationSet',
       payload: {
+        viewIndex,
         annotationSet: value
       }
     })

@@ -6,25 +6,57 @@ import { Toolsbar } from "../Toolsbar";
 import { LeftSidebar } from "./LeftSidebar";
 import RightSidebarContent from "./RightSidebarContent";
 
-const Container = styled.div<{ leftSidebarOpen: boolean }>(({ leftSidebarOpen }) => ({
+// const FixedContainer = styled.div({
+//   position: 'fixed',
+//   top:
+// })
+
+// const Container = styled.div<{ leftSidebarOpen: boolean }>(({ leftSidebarOpen }) => ({
+//   display: 'flex',
+//   flexDirection: 'column',
+//   paddingLeft: leftSidebarOpen ? '320px' : '70px',
+// }));
+
+
+const Container = styled.div({
+  height: 'calc(100vh - 48px)',
+  display: 'flex',
+  flexDirection: 'row'
+})
+
+const ContentOuterWrapper = styled.div({
+  flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  paddingLeft: leftSidebarOpen ? '320px' : '70px',
-}));
+  background: '#FAFAFA',
+});
+
+
+const ContentInnerWrapper = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  background: '#FAFAFA',
+  overflowY: 'auto'
+});
 
 const Content = styled.div({
+  flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
-  paddingRight: '320px',
   background: '#FAFAFA',
 });
 
 
 const ContentLayout = ({ children }: PropsWithChildren<{}>) => {
-  const leftSidebarOpen = useSelector(selectDocumentLeftSidebarOpen);
+  // const leftSidebarOpen = useSelector(selectDocumentLeftSidebarOpen);
   return (
-    <>
+    <Container>
       <LeftSidebar />
+      <Content>
+        {children}
+      </Content>
+      {/* <SidebarAnnotationDetails /> */}
+      {/* 
       <Container leftSidebarOpen={leftSidebarOpen}>
         <Toolsbar />
         <Content>
@@ -32,8 +64,8 @@ const ContentLayout = ({ children }: PropsWithChildren<{}>) => {
         </Content>
       </Container>
       <RightSidebarContent />
-      <SidebarAnnotationDetails />
-    </>
+      <SidebarAnnotationDetails /> */}
+    </Container>
   )
 }
 

@@ -7,12 +7,15 @@ export type Action =
   | { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
   | { type: 'changeAction', payload: { action: UIAction } }
   | { type: 'changeActionData', payload: { data: string } }
-  | { type: 'addAnnotation', payload: { text: string; startOffset: number; endOffset: number; type: string } }
-  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
-  | { type: 'deleteAnnotation', payload: { id: number } }
-  | { type: 'deleteTaxonomyType', payload: { key: string } }
+  | { type: 'addAnnotation', payload: { viewIndex: number, text: string; startOffset: number; endOffset: number; type: string } }
+  | { type: 'editAnnotation', payload: { viewIndex: number, annotationId: number; type: string; topCandidate: Candidate } }
+  | { type: 'deleteAnnotation', payload: { viewIndex: number, id: number } }
+  | { type: 'deleteTaxonomyType', payload: { viewIndex: number, key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
-  | { type: 'changeAnnotationSet', payload: { annotationSet: string } }
+  | { type: 'changeAnnotationSet', payload: { viewIndex: number, annotationSet: string } }
+  | { type: 'setView', payload: { viewIndex: number, view: Partial<View> } }
+  | { type: 'addView', payload: {} }
+  | { type: 'removeView', payload: {} }
   | { type: 'setUI', payload: Partial<State['ui']> };
 
 export type ActionType = Action['type'];
@@ -31,6 +34,12 @@ export type UIAction = 'select' | 'add' | 'delete' | 'filter' | 'settings';
 export type Taxonomy = TreeItem[];
 export type FlattenedTaxonomy = FlatTreeObj
 
+export type View = {
+  typeFilter: string[];
+  activeAnnotationSet: string;
+  activeSection: string | undefined;
+}
+
 export type UIState = {
   /**
    * Taxonomy in tree structure
@@ -38,15 +47,16 @@ export type UIState = {
   taxonomy: FlattenedTaxonomy,
 
   ui: {
-    selectedEntityId: number | null;
     action: {
       value: UIAction;
       data?: string;
     };
-    typeFilter: string[];
-    activeAnnotationSet: string;
-    activeSection: string | undefined;
     leftActionBarOpen: boolean;
+    selectedEntityId: number | null;
+    views: View[];
+    // typeFilter: string[];
+    // activeAnnotationSet: string;
+    // activeSection: string | undefined;
   }
 }
 

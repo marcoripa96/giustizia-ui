@@ -59,13 +59,17 @@ export const initialUIState: UIState = {
    */
   taxonomy: flattenTree(baseTaxonomy),
   ui: {
-    selectedEntityId: null,
     action: {
       value: 'select'
     },
-    typeFilter: [],
-    activeAnnotationSet: '',
-    activeSection: undefined,
     leftActionBarOpen: true,
+    selectedEntityId: null,
+    views: [
+      {
+        typeFilter: [],
+        activeAnnotationSet: '',
+        activeSection: undefined
+      }
+    ]
   }
 }

@@ -14,6 +14,7 @@ import {
   useDocumentDispatch,
   useSelector
 } from "../DocumentProvider/selectors";
+import { useViewIndex } from "../ViewProvider/ViewProvider";
 
 const Container = styled.div({
   padding: '0 20px',
@@ -26,16 +27,17 @@ const DocumentContainer = styled.div`
   padding: 24px 36px;
   border-radius: 6px;
   margin: 0 auto;
-  content-visibility: 'auto';
+  content-visibility: auto;
 `
 
 
 const DocumentViewer = () => {
+  const viewIndex = useViewIndex();
   const action = useSelector(selectDocumentAction);
   const text = useSelector(selectDocumentText);
   const sectionAnnotations = useSelector(selectDocumentSectionAnnotations);
   const taxonomy = useSelector(selectDocumentTaxonomy);
-  const filteredAnnotations = useSelector(selectFilteredEntityAnnotations);
+  const filteredAnnotations = useSelector((state) => selectFilteredEntityAnnotations(state, viewIndex));
   const addSelectionColor = useSelector(selectAddSelectionColor);
   const sectionUrlHashId = useHashUrlId();
   const dispatch = useDocumentDispatch();
@@ -59,7 +61,10 @@ const DocumentViewer = () => {
       case 'delete': {
         dispatch({
           type: 'deleteAnnotation',
-          payload: { id: annotation.id }
+          payload: {
+            viewIndex,
+            id: annotation.id
+          }
         })
       }
         break;
@@ -73,6 +78,7 @@ const DocumentViewer = () => {
     dispatch({
       type: 'addAnnotation',
       payload: {
+        viewIndex,
         type: action.data || '',
         ...selectionNode
       }
@@ -80,12 +86,12 @@ const DocumentViewer = () => {
   }
 
   const onSectionChange = (sectionId: string) => {
-    dispatch({
-      type: 'setUI',
-      payload: {
-        activeSection: sectionId
-      }
-    })
+    // dispatch({
+    //   type: 'setUI',
+    //   payload: {
+    //     activeSection: sectionId
+    //   }
+    // })
   }
 
   return (

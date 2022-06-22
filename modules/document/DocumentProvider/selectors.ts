@@ -51,9 +51,29 @@ export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
 export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
-export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
-export const selectDocumentActiveAnnotationSet = (state: State) => state.ui.activeAnnotationSet;
-export const selectDocumentActiveSection = (state: State) => state.ui.activeSection;
+// export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
+// export const selectDocumentActiveAnnotationSet = (state: State) => state.ui.activeAnnotationSet;
+// export const selectDocumentActiveSection = (state: State) => state.ui.activeSection;
+export const selectViews = (state: State) => state.ui.views;
+
+// selector which receives an input
+const selectViewIndex = (state: State, viewIndex: number) => viewIndex;
+
+export const selectDocumentTagTypeFilter = createSelector(
+  [
+    selectViews,
+    selectViewIndex
+  ],
+  (views, viewIndex) => views[viewIndex].typeFilter
+);
+
+export const selectDocumentActiveAnnotationSet = createSelector(
+  [
+    selectViews,
+    selectViewIndex
+  ],
+  (views, viewIndex) => views[viewIndex].activeAnnotationSet
+);
 
 export const selectActiveEntityAnnotations = createSelector(
   selectDocumentActiveAnnotationSet,
@@ -64,7 +84,7 @@ export const selectActiveEntityAnnotations = createSelector(
     }
     return [];
   }
-)
+);
 
 export const selectAllEntityAnnotationSets = createSelector(
   selectDocumentAnnotationSets,

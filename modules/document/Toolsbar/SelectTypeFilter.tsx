@@ -3,11 +3,13 @@ import { useSelector, useDocumentDispatch, selectActiveEntityAnnotations, select
 import { MouseEvent, useMemo } from "react";
 import { Checkbox } from "@nextui-org/react";
 import { getAnnotationTypes } from "../DocumentProvider/utils";
+import { useViewIndex } from "../ViewProvider/ViewProvider";
 
 const SelectTypeFilter = () => {
-  const annotations = useSelector(selectActiveEntityAnnotations);
+  const viewIndex = useViewIndex();
+  const annotations = useSelector((state) => selectActiveEntityAnnotations(state, viewIndex));
   const taxonomy = useSelector(selectDocumentTaxonomy);
-  const typeFilters = useSelector(selectDocumentTagTypeFilter);
+  const typeFilters = useSelector((state) => selectDocumentTagTypeFilter(state, viewIndex));
   const dispatch = useDocumentDispatch();
 
 
@@ -16,9 +18,12 @@ const SelectTypeFilter = () => {
       return;
     }
     dispatch({
-      type: 'setUI',
+      type: 'setView',
       payload: {
-        typeFilter: value
+        viewIndex,
+        view: {
+          typeFilter: value
+        }
       }
     })
   }

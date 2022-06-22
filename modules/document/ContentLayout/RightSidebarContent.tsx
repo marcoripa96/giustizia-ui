@@ -5,17 +5,21 @@ import { selectCurrentEntity, selectDocumentActiveSection, selectSectionsSidebar
 // import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
-  position: 'fixed',
-  top: '90px',
-  right: '0',
-  bottom: '0px',
+  // position: 'fixed',
+  // top: '90px',
+  // right: '0',
+  // bottom: '0px',
+  position: 'sticky',
+  top: 0,
+  height: '100%',
   display: 'flex',
   flexDirection: 'column',
   width: '320px',
   padding: '20px',
+  marginLeft: 'auto'
   // borderLeft: '1px solid #F3F3F5',
   // background: '#FFF',
-  zIndex: 100
+  // zIndex: 100
 });
 
 
