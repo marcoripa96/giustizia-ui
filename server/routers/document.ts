@@ -18,7 +18,7 @@ export type Document = {
   }
 };
 
-type AnnotationSet<P = []> = {
+export type AnnotationSet<P = []> = {
   name: string;
   next_annid: number;
   annotations: P[];

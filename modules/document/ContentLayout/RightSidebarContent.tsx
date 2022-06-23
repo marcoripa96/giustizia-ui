@@ -1,7 +1,7 @@
 import { SectionsList } from "@/components";
 import styled from "@emotion/styled"
 import { Text } from "@nextui-org/react";
-import { selectCurrentEntity, selectDocumentActiveSection, selectSectionsSidebar, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
+import { selectCurrentEntity, selectSectionsSidebar, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 // import { useDocumentCurrentEntity } from "../DocumentProvider/selectors";
 
 const Container = styled.div({
@@ -25,22 +25,22 @@ const Container = styled.div({
 
 const RightSidebarContent = () => {
   const sections = useSelector(selectSectionsSidebar);
-  const activeSection = useSelector(selectDocumentActiveSection);
+  // const activeSection = useSelector(selectDocumentActiveSection);
   const dispatch = useDocumentDispatch();
 
   const handleSectionChange = (sectionId: string) => {
-    dispatch({
-      type: 'setUI',
-      payload: {
-        activeSection: sectionId
-      }
-    })
+    // dispatch({
+    //   type: 'setUI',
+    //   payload: {
+    //     activeSection: sectionId
+    //   }
+    // })
   }
 
   return sections.length > 0 ? (
     <Container id="right-sidebar">
       <Text css={{ fontWeight: 500, marginBottom: '15px', textTransform: 'uppercase' }} size={16}>Document sections</Text>
-      <SectionsList sections={sections} activeSection={activeSection} onChange={handleSectionChange} />
+      {/* <SectionsList sections={sections} activeSection={activeSection} onChange={handleSectionChange} /> */}
     </Container>
   ) : null
 }

@@ -4,13 +4,13 @@ import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
 export type Action =
   | { type: 'setData', payload: { data: Document } }
-  | { type: 'setCurrentEntityId', payload: { annotationId: number | null } }
+  | { type: 'setCurrentEntityId', payload: { annotationId: string | null } }
   | { type: 'changeAction', payload: { action: UIAction } }
   | { type: 'changeActionData', payload: { data: string } }
   | { type: 'addAnnotation', payload: { viewIndex: number, text: string; startOffset: number; endOffset: number; type: string } }
-  | { type: 'editAnnotation', payload: { viewIndex: number, annotationId: number; type: string; topCandidate: Candidate } }
+  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
   | { type: 'deleteAnnotation', payload: { viewIndex: number, id: number } }
-  | { type: 'deleteTaxonomyType', payload: { viewIndex: number, key: string } }
+  | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }
   | { type: 'changeAnnotationSet', payload: { viewIndex: number, annotationSet: string } }
   | { type: 'setView', payload: { viewIndex: number, view: Partial<View> } }
@@ -52,7 +52,7 @@ export type UIState = {
       data?: string;
     };
     leftActionBarOpen: boolean;
-    selectedEntityId: number | null;
+    selectedEntityId: string | null;
     views: View[];
     // typeFilter: string[];
     // activeAnnotationSet: string;

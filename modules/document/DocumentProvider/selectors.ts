@@ -2,9 +2,10 @@ import { beautifyString, isEmptyObject } from "@/utils/shared";
 import { useContext, useMemo } from "react";
 import { createSelector } from "reselect";
 import { buildTreeFromFlattenedObject, getAllNodeData } from "../SidebarAddAnnotation/Tree";
+import SelectAnnotationSet from "../Toolsbar/SelectAnnotationSet";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
-import { getAnnotationTypes, getCandidateId } from "./utils";
+import { getAnnotationTypes, getCandidateId, getEntityId } from "./utils";
 
 /**
  * Access the document state within the DocumentProvider.
@@ -94,13 +95,17 @@ export const selectAllEntityAnnotationSets = createSelector(
 // For expensive selectors memoize them with createSelector (e.g. array operations)
 export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));
 export const selectCurrentEntity = createSelector(
-  selectActiveEntityAnnotations,
+  selectViews,
+  selectDocumentAnnotationSets,
   selectDocumentCurrentEntityId,
-  (annotation, entityId) => {
+  (views, annotationSets, entityId) => {
     if (entityId == null) {
       return undefined;
     }
-    return annotation.find((ann) => ann.id === entityId);
+    const [viewIndex, activeEntityId] = getEntityId(entityId);
+    const { activeAnnotationSet } = views[viewIndex];
+    const { annotations } = annotationSets[activeAnnotationSet];
+    return annotations.find((ann) => ann.id === activeEntityId);
   }
 );
 

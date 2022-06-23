@@ -10,7 +10,7 @@ type EditModalProps = ModalProps & {
 
 const EditAnnotationModal = ({ setVisible, ...props }: EditModalProps) => {
   const viewIndex = useViewIndex();
-  const [annotation, setAnnotation] = useDraftState((state) => selectCurrentEntity(state, viewIndex));
+  const [annotation, setAnnotation] = useDraftState(selectCurrentEntity);
 
   if (!annotation) {
     return null;

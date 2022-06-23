@@ -54,7 +54,7 @@ const DocumentViewer = () => {
       case 'select': {
         dispatch({
           type: 'setCurrentEntityId',
-          payload: { annotationId: annotation.id }
+          payload: { annotationId: `${viewIndex}/${annotation.id}` }
         })
       }
         break;

@@ -2,7 +2,7 @@ import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
-import { addAnnotation, getAnnotationTypes, isSameAction, toggleLeftSidebar } from "./utils";
+import { addAnnotation, getAnnotationTypes, getEntityId, isSameAction, toggleLeftSidebar } from "./utils";
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
@@ -48,8 +48,14 @@ export const documentReducer = createImmerReducer<State, Action>({
     }
   },
   editAnnotation: (state, payload) => {
-    const { views } = state.ui;
-    const { viewIndex, annotationId, type, topCandidate } = payload;
+    const { views, selectedEntityId } = state.ui;
+    if (!selectedEntityId) {
+      return state;
+    }
+
+    const { annotationId, type, topCandidate } = payload;
+    const viewIndex = getEntityId(selectedEntityId)[0];
+
     const { activeAnnotationSet } = views[viewIndex];
     const { annotations } = state.data.annotation_sets[activeAnnotationSet];
     const newAnnotations = annotations.map((ann) => {
@@ -94,16 +100,25 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   deleteTaxonomyType: (state, payload) => {
     const { taxonomy } = state;
-    const { views } = state.ui;
-    const { viewIndex, key } = payload;
-    const { activeAnnotationSet } = views[viewIndex];
-    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
-
+    const { key } = payload;
 
     const types = getNodeAndChildren(taxonomy, key, (node) => node.key);
-    state.data.annotation_sets[activeAnnotationSet].annotations = annotations.filter((ann) => types.indexOf(ann.type) === -1);
+
+    Object.values(state.data.annotation_sets).forEach((annSet) => {
+      if (annSet.name.startsWith('entities')) {
+        annSet.annotations = annSet.annotations.filter((ann) => types.indexOf(ann.type) === -1);
+      }
+    })
+
+    state.ui.views.forEach((view) => {
+      const indexToRemove = view.typeFilter.indexOf(key);
+      if (indexToRemove !== -1) {
+        view.typeFilter.splice(indexToRemove, 1);
+      }
+    })
     state.ui.selectedEntityId = null;
     state.taxonomy = removeProps(taxonomy, types)
+
   },
   changeAnnotationSet: (state, payload) => {
     const { annotationSet, viewIndex } = payload;

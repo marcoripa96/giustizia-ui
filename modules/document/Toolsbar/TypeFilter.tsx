@@ -11,9 +11,12 @@ const TypeFilter = () => {
 
   const handleAnnotationTypeFilterChange = (types: string[]) => {
     dispatch({
-      type: 'setUI',
+      type: 'setView',
       payload: {
-        typeFilter: types
+        viewIndex,
+        view: {
+          typeFilter: types
+        }
       }
     })
   }
