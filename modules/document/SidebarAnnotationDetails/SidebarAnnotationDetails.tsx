@@ -35,7 +35,6 @@ const Container = styled.div({
 })
 
 const AnnotationDetails = () => {
-  const viewIndex = useViewIndex();
   const annotation = useSelector(selectCurrentEntity);
 
 

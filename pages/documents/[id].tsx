@@ -13,6 +13,7 @@ import { selectViews, useSelector } from "@/modules/document/DocumentProvider/se
 import View from "@/modules/document/ViewProvider/View";
 import ViewProvider from "@/modules/document/ViewProvider/ViewProvider";
 import { MultiPane } from "@/components/MultiPane";
+import { SidebarAnnotationDetails } from "@/modules/document/SidebarAnnotationDetails";
 
 const ViewsContainer = styled.div({
   display: 'flex',
@@ -41,11 +42,15 @@ const Document: NextPageWithLayout = () => {
   const views = useSelector(selectViews);
 
   return (
-    <MultiPane>
-      {views.map((view, index) => (
-        <ViewProvider key={index} viewIndex={index} />
-      ))}
-    </MultiPane>
+    <>
+      <MultiPane>
+        {views.map((view, index) => (
+          <ViewProvider key={index} viewIndex={index} />
+        ))}
+      </MultiPane>
+      <SidebarAnnotationDetails />
+    </>
+
     // <ViewsContainer>
     //   {views.map((view, index) => (
     //     <ViewProvider key={index} viewIndex={index} />
