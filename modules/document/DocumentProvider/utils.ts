@@ -66,6 +66,14 @@ export const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: Ent
   }).sort((a, b) => b.n - a.n);
 }
 
+export const getTypeFilter = (annotations: EntityAnnotation[]) => {
+  let typeFilter = new Set<string>();
+  annotations.forEach((ann) => {
+    typeFilter.add(ann.type);
+  })
+  return Array.from(typeFilter);
+}
+
 export const getEntityId = (id: string) => {
   const [viewIndex, entityId] = id.split('/');
   return [parseInt(viewIndex), parseInt(entityId)] as const;

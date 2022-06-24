@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import dynamic, { Loader } from "next/dynamic";
-import { ComponentType } from "react";
+import { ComponentType, Suspense } from "react";
 import { UIAction } from "../../DocumentProvider/types";
 import { selectDocumentAction, useSelector } from "../../DocumentProvider/selectors";
 import ActionSidebarContentSkeleton from "./ActionSidebarContentSkeleton";
@@ -20,7 +20,9 @@ const dynamicWithLoading = (loader: Loader) => {
 }
 
 const content: Record<UIAction, ComponentType> = {
-  add: dynamicWithLoading(() => import('../../SidebarAddAnnotation/SidebarAddAnnotation')),
+  add: dynamic(() => import('../../SidebarAddAnnotation/SidebarAddAnnotation'), {
+    suspense: true
+  }),
   select: () => null,
   delete: () => null,
   filter: () => null,
@@ -33,7 +35,9 @@ const ActionSidebarContent = () => {
 
   return (
     <Container>
-      <Content />
+      <Suspense fallback={<ActionSidebarContentSkeleton />}>
+        <Content />
+      </Suspense>
     </Container>
   )
 }

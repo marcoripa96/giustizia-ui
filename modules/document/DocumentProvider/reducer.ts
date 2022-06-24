@@ -2,7 +2,7 @@ import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
-import { addAnnotation, getAnnotationTypes, getEntityId, isSameAction, toggleLeftSidebar } from "./utils";
+import { addAnnotation, getAnnotationTypes, getEntityId, getTypeFilter, isSameAction, toggleLeftSidebar } from "./utils";
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
@@ -83,6 +83,7 @@ export const documentReducer = createImmerReducer<State, Action>({
     const { annotations } = state.data.annotation_sets[activeAnnotationSet];
     const newAnnotations = annotations.filter((ann) => ann.id !== id);
     state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
+    state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
   },
   addTaxonomyType: (state, payload) => {
     const { type } = payload;
@@ -122,13 +123,9 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   changeAnnotationSet: (state, payload) => {
     const { annotationSet, viewIndex } = payload;
+    const { annotations } = state.data.annotation_sets[annotationSet]
 
-    let typeFilter = new Set<string>();
-    state.data.annotation_sets[annotationSet].annotations.forEach((ann) => {
-      typeFilter.add(ann.type);
-    })
-
-    state.ui.views[viewIndex].typeFilter = Array.from(typeFilter);
+    state.ui.views[viewIndex].typeFilter = getTypeFilter(annotations);
     state.ui.views[viewIndex].activeAnnotationSet = annotationSet;
   },
   setView: (state, payload) => {

@@ -3,8 +3,6 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const Container = styled.div({
-  position: 'sticky',
-  top: '48px',
   display: 'flex',
   flexDirection: 'row',
   gap: '10px',
@@ -12,10 +10,9 @@ const Container = styled.div({
   padding: '10px',
   background: '#FFF',
   borderBottom: '1px solid #F3F3F5',
-  zIndex: 10
 })
 
-const Toolsbar = () => {
+const ToolsbarSkeleton = () => {
   return (
     <Container>
       <Skeleton width={60} height={20} />
@@ -30,4 +27,4 @@ const Toolsbar = () => {
   )
 };
 
-export default Toolsbar;
+export default ToolsbarSkeleton;
