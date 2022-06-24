@@ -1,6 +1,6 @@
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
-import { Popover, Avatar, Button } from "@nextui-org/react";
+import { Popover, Avatar, Button, Dropdown, User, Text } from "@nextui-org/react";
 import { FaSignOutAlt } from "@react-icons/all-files/fa/FaSignOutAlt";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -31,6 +31,11 @@ const LoginAvatar = () => {
       router.push('/login');
     })
   }
+  const handleAction = (key: string | number) => {
+    if (key === 'logout') {
+      handleLogout();
+    }
+  }
 
   if (!data) {
     return (
@@ -47,18 +52,25 @@ const LoginAvatar = () => {
   }
 
   return (
-    <Popover>
-      <Popover.Trigger>
+    <Dropdown placement="bottom-left">
+      <Dropdown.Trigger>
         <Avatar
           size="md"
           text={data.username.slice(0, 1).toUpperCase()}
           pointer
         />
-      </Popover.Trigger>
-      <Popover.Content>
-        <Button onClick={handleLogout} iconRight={<FaSignOutAlt />}>Logout</Button>
-      </Popover.Content>
-    </Popover>
+      </Dropdown.Trigger>
+      <Dropdown.Menu aria-label="Static Actions" onAction={handleAction}>
+        <Dropdown.Item key="profile">
+          <Text b color="inherit">
+            Signed in as @{data.username}
+          </Text>
+        </Dropdown.Item>
+        <Dropdown.Item key="logout" color="error" withDivider>
+          Log Out
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   )
 }
 

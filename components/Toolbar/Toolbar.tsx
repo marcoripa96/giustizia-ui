@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '../Button';
 import { FaSignOutAlt } from '@react-icons/all-files/fa/FaSignOutAlt';
 import { useRouter } from 'next/router';
+import { LoginAvatar } from '../LoginAvatar';
 
 const Container = styled.div({
   position: 'sticky',
@@ -46,16 +47,6 @@ const LinkButton = styled.a({
 })
 
 const Toolbar = () => {
-  const { data, isFetching } = useQuery(['auth.user']);
-  const { refetch } = useQuery(['auth.logout'], { enabled: false });
-  const router = useRouter();
-
-  const handleLogout = () => {
-    refetch().then(() => {
-      router.push('/login');
-    })
-  }
-
   return (
     <Container>
       <Nav>
@@ -68,25 +59,7 @@ const Toolbar = () => {
           <Link href="/documents" passHref>
             <LinkButton>Browse documents</LinkButton>
           </Link>
-          {data?.isLoggedIn ? (
-            <Popover>
-              <Popover.Trigger>
-                <Avatar
-                  size="md"
-                  text={data.username.slice(0, 1).toUpperCase()}
-                  pointer
-                />
-              </Popover.Trigger>
-              <Popover.Content>
-                <Button onClick={handleLogout} iconRight={<FaSignOutAlt />}>Logout</Button>
-              </Popover.Content>
-            </Popover>
-
-          ) : (
-            <Link href="/login" passHref>
-              <LinkButton>Login</LinkButton>
-            </Link>
-          )}
+          <LoginAvatar />
         </Grid.Container>
       </Nav>
     </Container>
