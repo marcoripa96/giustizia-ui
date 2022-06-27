@@ -17,6 +17,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <div id="select-popup" />
+          <div id="sidebar-portal" />
           <NextScript />
         </body>
       </Html>
