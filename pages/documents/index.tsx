@@ -1,6 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { ToolbarLayout } from '@/components'
-import { withAuthSsr } from '@/lib/withAuthSsr'
 import styled from '@emotion/styled'
 import { useQuery } from '@/utils/trpc'
 import { NextPageWithLayout } from '../_app'

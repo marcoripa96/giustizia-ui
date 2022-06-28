@@ -1,5 +1,4 @@
 import { ToolbarLayout } from "@/components";
-import { withAuthSsr } from "@/lib/withAuthSsr";
 import { GetServerSideProps } from "next";
 import { ReactElement } from "react";
 import styled from '@emotion/styled';

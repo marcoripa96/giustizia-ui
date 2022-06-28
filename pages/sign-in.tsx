@@ -2,7 +2,6 @@ import type { GetServerSideProps, NextPage } from 'next'
 import { FormEvent } from 'react'
 import { useForm, useInput, useQueryParam } from '@/hooks';
 import { useRouter } from 'next/router';
-import { withAuthSsr } from '@/lib/withAuthSsr';
 import styled from '@emotion/styled';
 import { useMutation, useQuery } from '@/utils/trpc';
 import { Card, Input, Text, Spacer } from '@nextui-org/react';

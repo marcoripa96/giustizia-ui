@@ -1,5 +1,4 @@
 import type { GetServerSideProps, NextPage } from 'next'
-import { withAuthSsr } from '@/lib/withAuthSsr'
 import styled from '@emotion/styled'
 import { QueryText } from '@/modules/infer/QueryText'
 import { Text } from '@nextui-org/react'
