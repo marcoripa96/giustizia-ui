@@ -63,7 +63,7 @@ const AnnotationDetails = () => {
         unmountOnExit
       >
         <Backdrop onClick={handleBackdropClick}>
-          <Container id="annotation-details-sidebar">
+          <Container>
             {annotation && <AnnotationDetailsContent annotation={annotation} />}
           </Container>
         </Backdrop>

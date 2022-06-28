@@ -1,5 +1,3 @@
-import { Document } from "@/server/routers/document";
-
 export const contentExample = `Nell'ultima puntata di Non è l'arena, programma in onda la domenica sera su La7, si è parlato anche di armi nucleari. Un argomento attuale su cui è necessario essere chiari e che va trattato con estrema prudenza, visto che le conseguenze potrebbero essere tanto imprevedibili quanto drammatiche. In merito si è espresso il giornalista russo Vladimir Solovyev, che ha voluto fare una precisazione di grande rilievo: "La Russia sa quando può usare l'arma nucleare. Lo strategico utilizzo è possibile solo quando ci sono esistenziali pericoli per il nostro Paese".
 
 Poi Solovyev è stato ancora più netto e - senza ricorrere a giri di parole - ha tenuto a rassicurare che l'arma nucleare "non può essere usata contro l'Ucraina", in nessun modo. Infine è arrivata la precisazione che dà il segno di come i rapporti con gli Usa si stiano facendo sempre più pericolosi: l'arma nucleare potrebbe essere usata contro gli Stati Uniti, "ma solo come risposta". Questo vorrebbe dire che all'inizio gli Usa avrebbero colpito la Russia, che di seguito sarebbe chiamata a rispondere. "In quel caso utilizzeremmo la nostra arma nucleare", ha avvertito il giornalista russo.
@@ -2023,4 +2021,5 @@ export const annotationsExample = {
   },
   "offset_type": "p",
   "name": ""
-} as any;
+};
+

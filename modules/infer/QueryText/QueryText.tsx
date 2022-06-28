@@ -3,13 +3,16 @@ import { useQueryParam } from "@/hooks";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { annotationsExample, contentExample } from "../utils/example";
 import { useQuery } from "@/utils/trpc";
 import { fixedEncodeURIComponent } from "@/utils/shared";
 import { Textarea, Text, Loading } from "@nextui-org/react";
 import { flattenTree } from "@/modules/document/SidebarAddAnnotation/Tree";
 import { baseTaxonomy } from "@/modules/document/DocumentProvider/state";
-import { getAnnotationTypes } from "@/modules/document/DocumentProvider/utils";
+
+type QueryTextProps = {
+  contentExample: string;
+  annotationsExample: any;
+}
 
 const TextAreaWrapper = styled.div`
   display: flex;
@@ -17,7 +20,6 @@ const TextAreaWrapper = styled.div`
   position: relative;
   width: 100%;
   gap: 10px;
-  /* height: 200px; */
 `
 
 const StyledTextarea = styled(Textarea)`
@@ -44,7 +46,7 @@ const Column = styled.div`
   margin-top: 15px;
 `
 
-const QueryText = () => {
+const QueryText = ({ contentExample, annotationsExample }: QueryTextProps) => {
   const router = useRouter();
   // get query parameter if there is a query
   const query = useQueryParam('query');

@@ -1,4 +1,4 @@
-import type { GetServerSideProps, NextPage } from 'next'
+import type { GetServerSideProps, GetStaticProps, NextPage } from 'next'
 import styled from '@emotion/styled'
 import { QueryText } from '@/modules/infer/QueryText'
 import { Text } from '@nextui-org/react'
@@ -31,18 +31,23 @@ const SubTitle = styled(Text)`
   margin: 0;
   margin-bottom: 30px;
 `
-
+type HomeProps = {
+  exampleInfer: {
+    contentExample: string;
+    annotationsExample: any;
+  }
+}
 
 /**
  * Homepage component
  */
-const Home: NextPageWithLayout<{}> = () => {
+const Home: NextPageWithLayout<HomeProps> = ({ exampleInfer }) => {
   return (
     <Container>
       <Section>
         <Text h1>GiustiziaUI</Text>
         <SubTitle h3>Here you can try out the pipeline.</SubTitle>
-        <QueryText />
+        <QueryText {...exampleInfer} />
       </Section>
     </Container>
   )
@@ -55,6 +60,19 @@ Home.getLayout = function getLayout(page: ReactElement) {
       {page}
     </>
   )
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { annotationsExample, contentExample } = (await import('@/public/exampleInfer'));
+
+  return {
+    props: {
+      exampleInfer: {
+        annotationsExample,
+        contentExample
+      }
+    }
+  }
 }
 
 export default Home

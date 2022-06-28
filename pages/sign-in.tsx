@@ -1,5 +1,5 @@
 import type { GetServerSideProps, NextPage } from 'next'
-import { FormEvent } from 'react'
+import { FormEvent, useEffect } from 'react'
 import { useForm, useInput, useQueryParam } from '@/hooks';
 import { useRouter } from 'next/router';
 import styled from '@emotion/styled';
@@ -27,11 +27,6 @@ const Box = styled.div`
   gap: 10px;
 `
 
-// const Card = styled(NextUICard)({
-//   maxWidth: '500px',
-//   margin: '0 auto'
-// })
-
 
 /**
  * Login page component
@@ -39,19 +34,12 @@ const Box = styled.div`
 const Login: NextPage<{}> = () => {
   const { status } = useSession()
   const signInError = useQueryParam('error');
-  // const [username, onChangeUsxername] = useInput('');
-  // const [loginPassword, onChangePassword] = useInput('');
+
   const { register, value } = useForm({
     username: '',
     password: ''
   });
 
-  const router = useRouter();
-  // const loginMutation = useMutation(['auth.login'], {
-  //   onSuccess: () => {
-  //     router.push('/infer');
-  //   }
-  // });
 
   const onFormSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -59,9 +47,6 @@ const Login: NextPage<{}> = () => {
       ...value,
       callbackUrl: '/infer'
     });
-    // loginMutation.mutate({
-    //   ...value
-    // })
   }
 
   return (
@@ -76,7 +61,6 @@ const Login: NextPage<{}> = () => {
             aria-label="username"
             {...register('username')}
             contentLeft={<FaRegUser />}
-          // status={loginMutation.error ? 'error' : 'default'}
           />
           <Input.Password
             bordered
@@ -84,7 +68,6 @@ const Login: NextPage<{}> = () => {
             aria-label="password"
             {...register('password')}
             contentLeft={<FaLock />}
-          // status={loginMutation.error ? 'error' : 'default'}
           />
           {signInError && <Text color="error">Invalid username or password.</Text>}
           <Button type="submit" disabled={!value.password || !value.username} loading={status === 'loading'}>

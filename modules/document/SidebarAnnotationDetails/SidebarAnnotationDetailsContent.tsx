@@ -8,7 +8,7 @@ import { selectCurrentEntityLinkingFeatures, selectDocumentText, useDocumentDisp
 import { EntityAnnotation } from "@/server/routers/document";
 import { getCandidateId } from "../DocumentProvider/utils";
 import { Flex, IconButton } from "@/components";
-import { FiArrowRight } from '@react-icons/all-files/fi/FiArrowRight';
+import { FiX } from '@react-icons/all-files/fi/FiX';
 
 type AnnotationDetailsProps = {
   annotation: EntityAnnotation;
@@ -39,6 +39,7 @@ const DetailsContainer = styled.div({
 const ButtonContainer = styled.div({
   position: 'sticky',
   bottom: 0,
+  marginTop: 'auto',
   display: 'flex',
   flexDirection: 'column',
   background: '#FFF',
@@ -49,14 +50,8 @@ const ButtonContainer = styled.div({
 const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
   const text = useSelector(selectDocumentText);
   const linkingFeatures = useSelector(selectCurrentEntityLinkingFeatures);
-  const dispatch = useDocumentDispatch();
   const { setVisible, bindings } = useModal();
-
-  if (!linkingFeatures || !text) {
-    return null;
-  }
-
-  const { candidates, top_candidate } = linkingFeatures
+  const dispatch = useDocumentDispatch();
 
   const handleCloseClick = () => {
     dispatch({
@@ -75,7 +70,7 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
             <Flex direction="row" alignItems="center" justifyContent="space-between">
               <Text b size={18}>Annotation details</Text>
               <IconButton onClick={handleCloseClick}>
-                <FiArrowRight size={16} />
+                <FiX size={16} />
               </IconButton>
             </Flex>
 
@@ -85,7 +80,7 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
           </Col>
           <Divider />
           <TextAnnotationDetails text={text} annotation={annotation} />
-          <AnnotationLinkDetails selectedId={getCandidateId(top_candidate)} candidates={candidates} />
+          <AnnotationLinkDetails selectedId={getCandidateId(linkingFeatures?.top_candidate)} candidates={linkingFeatures?.candidates} />
         </DetailsContainer>
         <ButtonContainer>
           <Button onClick={() => setVisible(true)}>Edit</Button>
