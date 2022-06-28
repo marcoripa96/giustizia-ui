@@ -2,6 +2,7 @@ import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Popover, Avatar, Button, Dropdown, User, Text } from "@nextui-org/react";
 import { FaSignOutAlt } from "@react-icons/all-files/fa/FaSignOutAlt";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Skeleton from 'react-loading-skeleton'
@@ -22,28 +23,23 @@ const LinkButton = styled.a({
 })
 
 const LoginAvatar = () => {
-  const { data } = useQuery(['auth.user']);
-  const { refetch } = useQuery(['auth.logout'], { enabled: false });
-  const router = useRouter();
+  const { data, status } = useSession();
 
-  const handleLogout = () => {
-    refetch().then(() => {
-      router.push('/login');
-    })
-  }
   const handleAction = (key: string | number) => {
     if (key === 'logout') {
-      handleLogout();
+      signOut({
+        callbackUrl: '/login'
+      })
     }
   }
 
-  if (!data) {
+  if (status === 'loading') {
     return (
       <Skeleton width={40} height={40} borderRadius="50%" style={{ lineHeight: 'unset' }} />
     )
   }
 
-  if (!data.isLoggedIn) {
+  if (status === 'unauthenticated') {
     return (
       <Link href="/login" passHref>
         <LinkButton>Login</LinkButton>
@@ -56,14 +52,14 @@ const LoginAvatar = () => {
       <Dropdown.Trigger>
         <Avatar
           size="md"
-          text={data.username.slice(0, 1).toUpperCase()}
+          text={data?.user?.name?.slice(0, 1).toUpperCase()}
           pointer
         />
       </Dropdown.Trigger>
       <Dropdown.Menu aria-label="Static Actions" onAction={handleAction}>
         <Dropdown.Item key="profile">
           <Text b color="inherit">
-            Signed in as @{data.username}
+            Signed in as @{data?.user?.name}
           </Text>
         </Dropdown.Item>
         <Dropdown.Item key="logout" color="error" withDivider>

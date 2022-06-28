@@ -53,22 +53,22 @@ export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 // Helper function to create a router with your auth app context
 export function createRouter() {
-  return trpc.router<Context>();
+  return trpc.router();
 }
 
-export function createProtectedRouter() {
-  return trpc
-    .router<Context>()
-    .middleware(({ ctx, next }) => {
-      if (process.env.NODE_ENV === 'production') {
-        const { user } = ctx.req.session;
-        if (!user) {
-          throw new TRPCError({
-            code: 'FORBIDDEN',
-            message: 'Resource requires authentication',
-          });
-        }
-      }
-      return next();
-    });
-}
+// export function createProtectedRouter() {
+//   return trpc
+//     .router<Context>()
+//     .middleware(({ ctx, next }) => {
+//       if (process.env.NODE_ENV === 'production') {
+//         const { user } = ctx.req.session;
+//         if (!user) {
+//           throw new TRPCError({
+//             code: 'FORBIDDEN',
+//             message: 'Resource requires authentication',
+//           });
+//         }
+//       }
+//       return next();
+//     });
+// }

@@ -3,10 +3,12 @@ import { useRouter } from "next/router"
 /**
  * Get a query parameter
  */
-const useQueryParam = <T = any>(key: string) => {
+const useQueryParam = (key: string) => {
   const router = useRouter();
-  const param = router.query[key] as unknown as T;
-  return param;
+  if (router.query) {
+    return router.query[key] as unknown as string;
+  }
+  return '';
 }
 
 export default useQueryParam;

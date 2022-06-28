@@ -47,8 +47,8 @@ const Column = styled.div`
 const QueryText = () => {
   const router = useRouter();
   // get query parameter if there is a query
-  const query = useQueryParam<string>('query');
-  const result = useQueryParam<string>('result');
+  const query = useQueryParam('query');
+  const result = useQueryParam('result');
 
   // set content to example if there is no query otherwise set it empty
   // the content is only set when an annotation result is computed

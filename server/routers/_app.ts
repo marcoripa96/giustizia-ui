@@ -1,6 +1,5 @@
 import { createRouter } from '../context';
 import { annotations } from './annotation';
-import { auth } from './auth';
 import { documents } from './document';
 import { infer } from './infer';
 
@@ -11,4 +10,3 @@ export const appRouter = createRouter()
   .merge('document.', documents)
   .merge('annotation.', annotations)
   .merge('infer.', infer)
-  .merge('auth.', auth)

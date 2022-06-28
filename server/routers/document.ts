@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createProtectedRouter } from "../context";
+import { createRouter } from "../context";
 import { TRPCError } from "@trpc/server";
 import { Annotation } from "@/hooks/use-ner";
 import fetchJson from "@/lib/fetchJson";
@@ -88,7 +88,7 @@ const getDocuments = async (): Promise<GetAllDocuments> => {
   return documents;
 }
 
-export const documents = createProtectedRouter()
+export const documents = createRouter()
   .query('getDocument', {
     input: z
       .object({

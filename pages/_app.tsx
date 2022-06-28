@@ -8,7 +8,9 @@ import { AppRouter } from '@/server/routers/_app';
 import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import { ReactElement, ReactNode } from 'react';
+import { SessionProvider } from "next-auth/react"
 import { TranslationProvider } from '@/components';
+
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -24,23 +26,30 @@ const Layout = styled.div`
 `;
 
 const getTRPCUrl = () => {
-  if (process.env.NEXT_PUBLIC_PROD_VERCEL_URL) {
-    return `https://${process.env.NEXT_PUBLIC_PROD_VERCEL_URL}/api/trpc`;
-  }
-  if (process.env.NEXT_PUBLIC_DEV_VERCEL_URL) {
-    return `https://${process.env.NEXT_PUBLIC_DEV_VERCEL_URL}/api/trpc`;
-  }
-  if (process.env.NEXT_PUBLIC_VERCEL_URL) {
-    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`;
-  }
-  return 'http://localhost:3000/api/trpc';
+  return process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}/api/trpc`
+    : 'http://localhost:3000/api/trpc';
+  // if (process.env.NEXT_PUBLIC_PROD_VERCEL_URL) {
+  //   return `https://${process.env.NEXT_PUBLIC_PROD_VERCEL_URL}/api/trpc`;
+  // }
+  // if (process.env.NEXT_PUBLIC_DEV_VERCEL_URL) {
+  //   return `https://${process.env.NEXT_PUBLIC_DEV_VERCEL_URL}/api/trpc`;
+  // }
+  // if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+  //   return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`;
+  // }
+  // return 'http://localhost:3000/api/trpc';
 };
 
-function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
+function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+  router
+}: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
-    <>
+    <SessionProvider session={session}>
       <Global styles={GlobalStyles} />
       <NextUIProvider>
         {/* <TranslationProvider> */}
@@ -50,7 +59,7 @@ function MyApp({ Component, pageProps, router }: AppPropsWithLayout) {
         </Layout>
         {/* </TranslationProvider> */}
       </NextUIProvider>
-    </>
+    </SessionProvider>
   );
 }
 

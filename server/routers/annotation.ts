@@ -1,6 +1,6 @@
 import fetchJson from "@/lib/fetchJson";
 import { z } from "zod";
-import { createProtectedRouter } from "../context";
+import { createRouter } from "../context";
 import { getAuthHeader } from "../get-auth-header";
 
 export type GetAnnotationDetails = {
@@ -28,7 +28,7 @@ const getAnnotationById = async (id: number, indexer: number) => {
   return response.props;
 }
 
-export const annotations = createProtectedRouter()
+export const annotations = createRouter()
   .query('getAnnotationDetails', {
     input: z
       .object({

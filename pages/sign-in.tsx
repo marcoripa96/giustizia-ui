@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { FormEvent } from 'react'
-import { useForm, useInput } from '@/hooks';
+import { useForm, useInput, useQueryParam } from '@/hooks';
 import { useRouter } from 'next/router';
 import { withAuthSsr } from '@/lib/withAuthSsr';
 import styled from '@emotion/styled';
@@ -9,6 +9,7 @@ import { Card, Input, Text, Spacer } from '@nextui-org/react';
 import { Button } from '@/components';
 import { FaRegUser } from '@react-icons/all-files/fa/FaRegUser';
 import { FaLock } from '@react-icons/all-files/fa/FaLock';
+import { signIn, useSession } from 'next-auth/react';
 
 const Container = styled.div`
   display: flex;
@@ -37,6 +38,8 @@ const Box = styled.div`
  * Login page component
  */
 const Login: NextPage<{}> = () => {
+  const { status } = useSession()
+  const signInError = useQueryParam('error');
   // const [username, onChangeUsxername] = useInput('');
   // const [loginPassword, onChangePassword] = useInput('');
   const { register, value } = useForm({
@@ -45,18 +48,21 @@ const Login: NextPage<{}> = () => {
   });
 
   const router = useRouter();
-  const loginMutation = useMutation(['auth.login'], {
-    onSuccess: () => {
-      router.push('/infer');
-    }
-  });
+  // const loginMutation = useMutation(['auth.login'], {
+  //   onSuccess: () => {
+  //     router.push('/infer');
+  //   }
+  // });
 
   const onFormSubmit = (event: FormEvent) => {
     event.preventDefault();
-
-    loginMutation.mutate({
-      ...value
-    })
+    signIn('credentials', {
+      ...value,
+      callbackUrl: '/infer'
+    });
+    // loginMutation.mutate({
+    //   ...value
+    // })
   }
 
   return (
@@ -71,7 +77,7 @@ const Login: NextPage<{}> = () => {
             aria-label="username"
             {...register('username')}
             contentLeft={<FaRegUser />}
-            status={loginMutation.error ? 'error' : 'default'}
+          // status={loginMutation.error ? 'error' : 'default'}
           />
           <Input.Password
             bordered
@@ -79,10 +85,10 @@ const Login: NextPage<{}> = () => {
             aria-label="password"
             {...register('password')}
             contentLeft={<FaLock />}
-            status={loginMutation.error ? 'error' : 'default'}
+          // status={loginMutation.error ? 'error' : 'default'}
           />
-          {loginMutation.error && <Text color="error">Invalid username or password.</Text>}
-          <Button type="submit" disabled={!value.password || !value.username} loading={loginMutation.isLoading}>
+          {signInError && <Text color="error">Invalid username or password.</Text>}
+          <Button type="submit" disabled={!value.password || !value.username} loading={status === 'loading'}>
             Login
           </Button>
         </Box>
@@ -90,13 +96,5 @@ const Login: NextPage<{}> = () => {
     </Container>
   )
 }
-
-export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context) => {
-  return {
-    props: {}
-  }
-}, { destination: '/infer', redirectWhen: 'isLoggedIn' });
-
-
 
 export default Login

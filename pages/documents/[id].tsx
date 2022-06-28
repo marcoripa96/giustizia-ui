@@ -72,10 +72,4 @@ Document.getLayout = function getLayout(page: ReactElement) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context) => {
-  return {
-    props: {}
-  }
-});
-
 export default Document;

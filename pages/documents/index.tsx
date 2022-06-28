@@ -51,14 +51,4 @@ Documents.getLayout = function getLayout(page: ReactElement) {
   )
 }
 
-
-/**
- * Get all documents from the server before rendering the page
- */
-export const getServerSideProps: GetServerSideProps = withAuthSsr(async (context) => {
-  return {
-    props: {}
-  }
-});
-
 export default Documents
