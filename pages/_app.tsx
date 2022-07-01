@@ -30,18 +30,14 @@ const getTRPCUrl = () => {
   //   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`
   //   : 'http://localhost:3000/api/trpc';
   if (typeof window !== 'undefined') {
-    return {
-      url: '/api/trpc',
-    };
+    return '/api/trpc'
   }
 
   const url = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}/api/trpc`
     : 'http://localhost:3000/api/trpc';
 
-  return {
-    url,
-  };
+  return url;
 };
 
 function MyApp({
