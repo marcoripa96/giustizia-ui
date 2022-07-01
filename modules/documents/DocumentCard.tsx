@@ -25,7 +25,7 @@ const DocumentCard = ({ id, name, preview }: DocumentCardProps) => {
           <Row align="center" css={{ gap: '10px' }}>
             <FaFileAlt color="#0D99FF" />
             <Col>
-              <Text h6>{name}</Text>
+              <Text h6 css={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{name}</Text>
               <Text css={{ color: 'rgba(0, 0, 0, .5)', fontSize: '14px' }}>Edited 2 days ago</Text>
             </Col>
           </Row>
