@@ -63,7 +63,8 @@ export const initialUIState: UIState = {
       value: 'select'
     },
     leftActionBarOpen: true,
-    selectedEntityId: null,
+    newAnnotationModalOpen: false,
+    selectedEntity: null,
     views: [
       {
         typeFilter: [],

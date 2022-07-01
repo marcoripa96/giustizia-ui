@@ -11,13 +11,7 @@ const Container = styled.div({
   height: '100%',
   width: '250px',
   borderRight: '1px solid #F3F3F5',
-  // flexGrow: 1,
-  // minWidth: 0
 });
-
-const dynamicWithLoading = (loader: Loader) => {
-  return dynamic(loader, { loading: () => <ActionSidebarContentSkeleton /> })
-}
 
 const content: Record<UIAction, ComponentType> = {
   add: dynamic(() => import('../../SidebarAddAnnotation/SidebarAddAnnotation'), {

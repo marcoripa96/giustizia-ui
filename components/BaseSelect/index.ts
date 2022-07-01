@@ -1,4 +1,4 @@
 export { default as BaseSelect } from './BaseSelect';
-export { default as BaseSelectItem } from './BaseSelectItem';
+export { default as Option } from './Option';
 export * from './BaseSelect';
-export * from './BaseSelectItem';
+export * from './Option';

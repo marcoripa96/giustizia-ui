@@ -16,13 +16,11 @@ const FixedItems = () => {
   const toggleCompareView = () => {
     if (views.length === 1) {
       dispatch({
-        type: 'addView',
-        payload: {}
+        type: 'addView'
       })
     } else {
       dispatch({
-        type: 'removeView',
-        payload: {}
+        type: 'removeView'
       })
     }
   }

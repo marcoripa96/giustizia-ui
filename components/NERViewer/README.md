@@ -4,9 +4,21 @@ This document tries to present how the a document annotation works, different an
 
 ## Motivation
 
-HTML visualiation of all possible types of annotations, as described in the following sections, is not as straightforward as one can think, mostly because of possible annotations overlaps within the text. While one immediate solution would be overlapping annotation tag elements with `absolute` positioning, this isn't possible because of new lines included in a text block.
+HTML visualiation of all possible types of annotations, as described in the following sections, is not as straightforward as one can think, mostly because of possible annotations overlaps within the text. HTML does not allow the following:
 
-Finding a way to cover all those cases could enable advanced visualization and functionalities, e.g., annotation sets comparison.
+```html
+<span1> some text <span2> some other </span1> text </span2>
+```
+
+What html allows is the following but provides unexpected results:
+
+```html
+<span> some text <span> some other </span> text </span>
+```
+
+While one immediate solution would be overlapping annotation tag elements with `absolute` positioning, this isn't possible because of new lines included in a text block.
+
+Finding a way to cover all those cases could enable advanced visualization and functionalities, e.g., annotation sets comparison and visualization of nested and overlapping annotations.
 
 ## Annotation set
 
@@ -185,12 +197,15 @@ The following is still a work in progress. Let's considere the above example aga
   start: 0;
   end: 2;
   props: {
-    type: 'Location'
+    // some information to identify this offset
   }
 },
 {
   start: 3;
   end: 5;
+  props: {
+    // some information to identify this offset
+  }
 },
 {
   start: 6;

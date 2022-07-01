@@ -38,9 +38,13 @@ const _filterEntitiesForSection = <E, S>(
   section: Annotation<S>,
   entityAnnotations: Annotation<E>[]
 ) => {
-  const cutIndex = entityAnnotations.findIndex(
+  let cutIndex;
+
+  const entityIndex = entityAnnotations.findIndex(
     (entityAnn) => entityAnn.start > section.end
   );
+  cutIndex = entityIndex === -1 ? entityAnnotations.length : entityIndex;
+
   const filteredAnnotations = entityAnnotations.slice(0, cutIndex);
   const remainingAnnotations = entityAnnotations.slice(
     cutIndex,

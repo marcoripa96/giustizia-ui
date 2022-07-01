@@ -1,5 +1,5 @@
 // import { Select } from "@/components";
-import { BaseSelect, BaseSelectItem } from "@/components/BaseSelect";
+import { BaseSelect, Option } from "@/components/BaseSelect";
 import { useForm } from "@/hooks";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
@@ -110,6 +110,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
         <BaseSelect
           value={value}
           onChange={handleOnChange}
+          onTop
           inputProps={{
             'aria-label': 'Type color',
             placeholder: 'Type',
@@ -118,9 +119,9 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
             disabled: !checked
           }}>
           {Object.values(taxonomy).map((type) => (
-            <BaseSelectItem key={type.key} value={type.key} label={type.label}>
+            <Option key={type.key} value={type.key} label={type.label}>
               {type.label}
-            </BaseSelectItem>
+            </Option>
           ))}
         </BaseSelect>
       </SelectContainer>

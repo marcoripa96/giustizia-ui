@@ -1,4 +1,4 @@
-import { BaseSelect, BaseSelectItem } from "@/components/BaseSelect";
+import { BaseSelect, Option } from "@/components/BaseSelect";
 import { useSelector, useDocumentDispatch, selectActiveEntityAnnotations, selectDocumentTagTypeFilter, selectDocumentTaxonomy } from "../DocumentProvider/selectors";
 import { MouseEvent, useMemo } from "react";
 import { Checkbox } from "@nextui-org/react";
@@ -42,10 +42,10 @@ const SelectTypeFilter = () => {
         'aria-label': 'Select type filter'
       }}>
       {items.map((item) => (
-        <BaseSelectItem key={item.key} value={item.key} label={item.label}>
+        <Option key={item.key} value={item.key} label={item.label}>
           <Checkbox aria-label="Select item" isSelected={typeFilters.indexOf(item.key) !== -1} />
           {item.label}
-        </BaseSelectItem>
+        </Option>
       ))}
     </BaseSelect>
   )

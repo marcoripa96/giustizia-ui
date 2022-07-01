@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 import { HTMLAttributes } from "react";
 
-export type BaseSelectItemProps = HTMLAttributes<HTMLButtonElement> & {
+export type OptionProps = HTMLAttributes<HTMLButtonElement> & {
   value: string;
   label: string;
   selected?: boolean;
 }
 
-const BaseSelectItem = styled.button<BaseSelectItemProps>(({ selected }) => ({
+const Option = styled.button<OptionProps>(({ selected }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -30,4 +30,4 @@ const BaseSelectItem = styled.button<BaseSelectItemProps>(({ selected }) => ({
   })
 }));
 
-export default BaseSelectItem;
+export default Option;

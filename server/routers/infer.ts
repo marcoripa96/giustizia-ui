@@ -26,8 +26,6 @@ const inferText = async (value: string, options: InferOptions) => {
       },
     }
   );
-  console.log(response);
-  // return processInferResponse(response);
   return response;
 };
 

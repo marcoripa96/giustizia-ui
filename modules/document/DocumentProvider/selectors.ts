@@ -5,7 +5,7 @@ import { buildTreeFromFlattenedObject, getAllNodeData } from "../SidebarAddAnnot
 import SelectAnnotationSet from "../Toolsbar/SelectAnnotationSet";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
-import { getAnnotationTypes, getCandidateId, getEntityId } from "./utils";
+import { getAnnotationTypes, getCandidateId, getEntityIndex } from "./utils";
 
 /**
  * Access the document state within the DocumentProvider.
@@ -45,16 +45,13 @@ export function useSelector<T>(cb: (state: State) => T) {
 export const selectDocumentData = (state: State) => state.data;
 export const selectDocumentText = (state: State) => state.data.text;
 export const selectDocumentAnnotationSets = (state: State) => state.data.annotation_sets;
-// export const selectDocumentEntityAnnotations = (state: State) => state.data.annotation_sets.entities.annotations;
 export const selectDocumentSectionAnnotations = (state: State) => state.data.annotation_sets.Sections?.annotations;
 export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
 export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
-export const selectDocumentCurrentEntityId = (state: State) => state.ui.selectedEntityId;
+export const selectDocumentCurrentEntity = (state: State) => state.ui.selectedEntity;
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
-// export const selectDocumentTagTypeFilter = (state: State) => state.ui.typeFilter;
-// export const selectDocumentActiveAnnotationSet = (state: State) => state.ui.activeAnnotationSet;
-// export const selectDocumentActiveSection = (state: State) => state.ui.activeSection;
+export const selectNewAnnotationModalOpen = (state: State) => state.ui.newAnnotationModalOpen;
 export const selectViews = (state: State) => state.ui.views;
 
 // selector which receives an input
@@ -97,15 +94,15 @@ export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxono
 export const selectCurrentEntity = createSelector(
   selectViews,
   selectDocumentAnnotationSets,
-  selectDocumentCurrentEntityId,
-  (views, annotationSets, entityId) => {
-    if (entityId == null) {
+  selectDocumentCurrentEntity,
+  (views, annotationSets, currentEntity) => {
+    if (currentEntity == null) {
       return undefined;
     }
-    const [viewIndex, activeEntityId] = getEntityId(entityId);
+    const { viewIndex, entityIndex } = currentEntity;
     const { activeAnnotationSet } = views[viewIndex];
     const { annotations } = annotationSets[activeAnnotationSet];
-    return annotations.find((ann) => ann.id === activeEntityId);
+    return annotations[entityIndex];
   }
 );
 

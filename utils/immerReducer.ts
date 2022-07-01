@@ -4,7 +4,7 @@ type ImmerReducerFunction<S, A extends RequiredActionFields> = (state: Draft<S>,
 
 type RequiredActionFields<P = {}> = {
   type: string;
-  payload: P;
+  payload?: P;
 };
 
 type Reducers<S, A extends RequiredActionFields> = {
@@ -24,7 +24,6 @@ export function createImmerReducer<S, A extends RequiredActionFields<A['payload'
     const nextState = produce(state, draft => {
       reducer(draft, action.payload);
     })
-
     return nextState;
   }
 }

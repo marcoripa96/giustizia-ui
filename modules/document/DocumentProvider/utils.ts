@@ -7,8 +7,10 @@ import { Action, FlattenedTaxonomy, State } from "./types";
  * Add a new annotation
  */
 export const addAnnotation = (annotation: EntityAnnotation[], newAnnotation: EntityAnnotation) => {
+  if (annotation.length === 0) {
+    return [newAnnotation]
+  }
   const insIndex = annotation.findIndex((annotation) => newAnnotation.start < annotation.start);
-  console.log(insIndex);
 
   return [
     ...annotation.slice(0, insIndex),
@@ -74,7 +76,7 @@ export const getTypeFilter = (annotations: EntityAnnotation[]) => {
   return Array.from(typeFilter);
 }
 
-export const getEntityId = (id: string) => {
-  const [viewIndex, entityId] = id.split('/');
-  return [parseInt(viewIndex), parseInt(entityId)] as const;
+export const getEntityIndex = (id: string) => {
+  const [viewIndex, index] = id.split('/');
+  return [parseInt(viewIndex), parseInt(index)] as const;
 }

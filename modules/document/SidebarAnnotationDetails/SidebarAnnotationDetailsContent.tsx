@@ -9,6 +9,7 @@ import { EntityAnnotation } from "@/server/routers/document";
 import { getCandidateId } from "../DocumentProvider/utils";
 import { Flex, IconButton } from "@/components";
 import { FiX } from '@react-icons/all-files/fi/FiX';
+import { useDocumentEventListener } from "@/hooks";
 
 type AnnotationDetailsProps = {
   annotation: EntityAnnotation;
@@ -53,11 +54,27 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
   const { setVisible, bindings } = useModal();
   const dispatch = useDocumentDispatch();
 
+  useDocumentEventListener('keydown', (event) => {
+    switch (event.code) {
+      case 'ArrowRight': {
+        dispatch({
+          type: 'nextCurrentEntity'
+        })
+      }
+        break;
+      case 'ArrowLeft': {
+        dispatch({
+          type: 'previousCurrentEntity'
+        })
+      }
+    }
+  })
+
   const handleCloseClick = () => {
     dispatch({
       type: 'setUI',
       payload: {
-        selectedEntityId: null
+        selectedEntity: null
       }
     })
   }

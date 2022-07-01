@@ -4,10 +4,9 @@ import styled from "@emotion/styled";
 import { Card, Checkbox, FormElement, Input, InputProps } from "@nextui-org/react";
 import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown";
 import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
-import { ChangeEvent, Children, cloneElement, isValidElement, MouseEvent, PropsWithChildren, ReactElement, useMemo, useRef, useState } from "react";
-import { BaseSelectItem } from ".";
+import { ChangeEvent, Children, cloneElement, CSSProperties, isValidElement, MouseEvent, PropsWithChildren, ReactElement, ReactNode, useMemo, useRef, useState } from "react";
 import { Portal } from "../Portal";
-import { BaseSelectItemProps } from "./BaseSelectItem";
+import Option, { OptionProps } from "./Option";
 
 
 type BaseSelectProps = {
@@ -17,6 +16,8 @@ type BaseSelectProps = {
   multiple?: boolean;
   inputProps?: Partial<InputProps>;
   backdrop?: boolean;
+  nonOptionNode?: ReactNode;
+  onTop?: boolean
 }
 
 type Anchor = {
@@ -31,21 +32,21 @@ const Container = styled.div({
   flexDirection: 'column'
 })
 
-const PopoverContainer = styled(Card)<{ anchor: Anchor }>(({ anchor }) => ({
+const PopoverContainer = styled(Card)<{ anchor: Anchor, onTop?: boolean }>(({ anchor, onTop }) => ({
   position: 'fixed',
   display: 'flex',
   flexDirection: 'column',
   maxHeight: '300px',
   overflow: 'hidden',
   paddingBottom: '5px',
-  zIndex: 999999,
-  ...anchor
+  zIndex: onTop ? 999999 : 999,
+  ...anchor,
 }));
 
 const PopoverContent = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  overflowY: 'scroll',
+  overflowY: 'auto',
   '::-webkit-scrollbar': {
     height: '4px',
     width: '4px'
@@ -68,18 +69,21 @@ const EmptyItem = styled.div({
   padding: '10px 18px',
 })
 
-const Backdrop = styled.div({
+const Backdrop = styled.div<{ onTop?: boolean }>(({ onTop }) => ({
   position: 'fixed',
-  inset: 0
-})
+  inset: 0,
+  zIndex: onTop ? 999998 : 998
+}));
 
 const BaseSelect = ({
   value,
   onChange,
   inputProps,
   multiple,
-  backdrop,
+  backdrop = true,
   renderValue,
+  nonOptionNode,
+  onTop = false,
   children
 }: PropsWithChildren<BaseSelectProps>) => {
   const { binds: searchBinds, setValue: setSearchValue } = useInput('');
@@ -90,9 +94,6 @@ const BaseSelect = ({
     if (!active) {
       setPopoverAncho(undefined);
       setSearchValue('');
-      if (backdrop) {
-        removeStopScroll();
-      }
       return;
     }
     const getAnchorCoords = () => {
@@ -105,9 +106,6 @@ const BaseSelect = ({
       }
     }
     setPopoverAncho(getAnchorCoords());
-    if (backdrop) {
-      stopScroll();
-    }
   }
 
   useWindowEventListener('resize', () => {
@@ -119,7 +117,9 @@ const BaseSelect = ({
   })
 
   const popoverRef = useClickOutside(() => {
-    updateAnchor(false)
+    if (!backdrop) {
+      updateAnchor(false)
+    }
   })
 
 
@@ -147,7 +147,7 @@ const BaseSelect = ({
     }
   }
 
-  const handleItemClick = (child: ReactElement<BaseSelectItemProps>) => (event: MouseEvent) => {
+  const handleItemClick = (child: ReactElement<OptionProps>) => (event: MouseEvent) => {
     let newValue;
 
     if (multiple) {
@@ -176,7 +176,7 @@ const BaseSelect = ({
     if (!children) {
       return '';
     }
-    const childrenItems = Children.toArray(children) as ReactElement<BaseSelectItemProps>[];
+    const childrenItems = Children.toArray(children) as ReactElement<OptionProps>[];
 
     if (multiple && Array.isArray(childrenItems)) {
       if (value.length === 0) {
@@ -258,7 +258,7 @@ const BaseSelect = ({
       </Container>
       {popoverAnchor && (
         <Portal elementSelector="select-popup">
-          <PopoverContainer anchor={popoverAnchor} ref={popoverRef}>
+          <PopoverContainer anchor={popoverAnchor} onTop={!!onTop} ref={popoverRef}>
             <PopoverContent>
               <ContainerSearch>
                 <Input
@@ -273,15 +273,16 @@ const BaseSelect = ({
                 />
               </ContainerSearch>
               {multiple && (
-                <BaseSelectItem label="All" value="all" onClick={handleAllClick}>
+                <Option label="All" value="all" onClick={handleAllClick}>
                   <Checkbox aria-label="Select all items" {...getAllCheckProps()} />
                   All
-                </BaseSelectItem>
+                </Option>
               )}
               {renderItems()}
+              {nonOptionNode && nonOptionNode}
             </PopoverContent>
           </PopoverContainer>
-          {backdrop && <Backdrop />}
+          {backdrop && <Backdrop onClick={() => updateAnchor(false)} onTop={onTop} />}
         </Portal>
       )}
     </>

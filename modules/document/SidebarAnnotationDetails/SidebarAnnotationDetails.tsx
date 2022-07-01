@@ -4,17 +4,67 @@ import AnnotationDetailsContent from "./SidebarAnnotationDetailsContent";
 import { CSSTransition } from 'react-transition-group';
 import { Portal } from "@/components/Portal";
 import { MouseEvent } from "react";
+import { FiChevronRight } from '@react-icons/all-files/fi/FiChevronRight';
+import { FiChevronLeft } from '@react-icons/all-files/fi/FiChevronLeft';
+import { useDocumentEventListener } from "@/hooks";
 
 const Container = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  position: 'fixed',
+  right: 0,
+  top: 0,
+  // display: 'flex',
+  // flexDirection: 'column',
+  height: '100%',
+  // width: '420px',
+  // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+  // borderRadius: '4px',
+  // background: '#FFF',
+  // marginLeft: 'auto',
+  zIndex: 101
+})
+
+const SidebarContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
   width: '420px',
   boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
   borderRadius: '4px',
-  background: '#FFF',
-  marginLeft: 'auto',
-  zIndex: 101
+  background: '#FFF'
+})
+
+
+const ActionsContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  gap: '10px',
+  marginTop: 'auto',
+  padding: '10px'
+})
+
+const ActionButton = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  outline: 'none',
+  border: 'none',
+  margin: 0,
+  padding: '10px',
+  borderRadius: '50%',
+  background: 'rgba(0,0,0,0.6)',
+  transition: 'transform 250ms ease-out',
+  cursor: 'pointer',
+  '& > svg': {
+    color: 'rgba(255,255,255,1)',
+  },
+  '&:hover': {
+    transform: 'scale(1.1)'
+  },
+  '&:active': {
+    transform: 'scale(1)'
+  },
 })
 
 const Backdrop = styled.div({
@@ -49,8 +99,20 @@ const AnnotationDetails = () => {
     dispatch({
       type: 'setUI',
       payload: {
-        selectedEntityId: null
+        selectedEntity: null
       }
+    })
+  }
+
+  const selectNextEntity = () => {
+    dispatch({
+      type: 'nextCurrentEntity'
+    })
+  }
+
+  const selectPreviousEntity = () => {
+    dispatch({
+      type: 'previousCurrentEntity'
     })
   }
 
@@ -64,7 +126,17 @@ const AnnotationDetails = () => {
       >
         <Backdrop onClick={handleBackdropClick}>
           <Container>
-            {annotation && <AnnotationDetailsContent annotation={annotation} />}
+            <ActionsContainer>
+              <ActionButton onClick={selectPreviousEntity}>
+                <FiChevronLeft />
+              </ActionButton>
+              <ActionButton onClick={selectNextEntity}>
+                <FiChevronRight />
+              </ActionButton>
+            </ActionsContainer>
+            <SidebarContainer>
+              {annotation && <AnnotationDetailsContent annotation={annotation} />}
+            </SidebarContainer>
           </Container>
         </Backdrop>
       </CSSTransition>

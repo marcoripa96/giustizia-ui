@@ -1,8 +1,9 @@
+import { AnnotationSet, EntityAnnotation } from "@/server/routers/document";
 import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
 import { State, Action } from "./types";
-import { addAnnotation, getAnnotationTypes, getEntityId, getTypeFilter, isSameAction, toggleLeftSidebar } from "./utils";
+import { addAnnotation, getAnnotationTypes, getEntityIndex, getTypeFilter, isSameAction, toggleLeftSidebar } from "./utils";
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
@@ -16,8 +17,65 @@ export const documentReducer = createImmerReducer<State, Action>({
   changeActionData: (state, payload) => {
     state.ui.action.data = payload.data
   },
+  createAnnotationSet: (state, payload) => {
+    const { name, preset } = payload;
+
+    const keyAnnSet = `entities_${name}`;
+
+    const newAnnSet: AnnotationSet<EntityAnnotation> = {
+      name: keyAnnSet,
+      annotations: [],
+      next_annid: 0
+    };
+
+    if (preset !== '') {
+      newAnnSet.annotations = state.data.annotation_sets[preset].annotations
+    }
+
+    state.data.annotation_sets[keyAnnSet] = newAnnSet;
+  },
   setCurrentEntityId: (state, payload) => {
-    state.ui.selectedEntityId = payload.annotationId;
+    const { viewIndex, annotationId } = payload;
+    const { views } = state.ui;
+    const { activeAnnotationSet } = views[viewIndex];
+    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
+    const entityIndex = annotations.findIndex((ann) => ann.id === annotationId);
+    if (entityIndex !== -1) {
+      state.ui.selectedEntity = {
+        viewIndex,
+        entityIndex
+      };
+    } else {
+      state.ui.selectedEntity = null;
+    }
+  },
+  nextCurrentEntity: (state) => {
+    if (!state.ui.selectedEntity) {
+      return state;
+    }
+    const { views } = state.ui;
+    const previousSelectedEntity = state.ui.selectedEntity;
+    const { activeAnnotationSet } = views[previousSelectedEntity.viewIndex];
+    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
+    if (annotations.length - 1 === previousSelectedEntity.entityIndex) {
+      state.ui.selectedEntity.entityIndex = 0;
+    } else {
+      state.ui.selectedEntity.entityIndex = previousSelectedEntity.entityIndex + 1;
+    }
+  },
+  previousCurrentEntity: (state) => {
+    if (!state.ui.selectedEntity) {
+      return state;
+    }
+    const { views } = state.ui;
+    const previousSelectedEntity = state.ui.selectedEntity;
+    const { activeAnnotationSet } = views[previousSelectedEntity.viewIndex];
+    const { annotations } = state.data.annotation_sets[activeAnnotationSet];
+    if (previousSelectedEntity.entityIndex === 0) {
+      state.ui.selectedEntity.entityIndex = annotations.length - 1;
+    } else {
+      state.ui.selectedEntity.entityIndex = previousSelectedEntity.entityIndex - 1;
+    }
   },
   addAnnotation: (state, payload) => {
     const { views } = state.ui
@@ -48,13 +106,13 @@ export const documentReducer = createImmerReducer<State, Action>({
     }
   },
   editAnnotation: (state, payload) => {
-    const { views, selectedEntityId } = state.ui;
-    if (!selectedEntityId) {
+    const { views, selectedEntity } = state.ui;
+    if (!selectedEntity) {
       return state;
     }
 
     const { annotationId, type, topCandidate } = payload;
-    const viewIndex = getEntityId(selectedEntityId)[0];
+    const { viewIndex } = selectedEntity;
 
     const { activeAnnotationSet } = views[viewIndex];
     const { annotations } = state.data.annotation_sets[activeAnnotationSet];
@@ -118,7 +176,7 @@ export const documentReducer = createImmerReducer<State, Action>({
         view.typeFilter.splice(indexToRemove, 1);
       }
     })
-    state.ui.selectedEntityId = null;
+    state.ui.selectedEntity = null;
     state.taxonomy = removeProps(taxonomy, types)
 
   },
