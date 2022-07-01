@@ -62,7 +62,7 @@ export const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: Ent
   return Object.keys(items).map((key) => {
     return {
       key,
-      label: taxonomy[key].label,
+      label: (key in taxonomy) ? taxonomy[key].label : key,
       n: items[key]
     }
   }).sort((a, b) => b.n - a.n);

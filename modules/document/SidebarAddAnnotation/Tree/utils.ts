@@ -78,9 +78,15 @@ export const flattenTree = (items: TreeItem[]): FlatTreeObj => {
 };
 
 export const getNode = (obj: FlatTreeObj, key: string) => {
-  const node = obj[key];
+  let node = obj[key];
   if (!node) {
-    throw Error(`The key '${key}' doesn't exist in the tree`);
+    // throw Error(`The key '${key}' doesn't exist in the tree`);
+    node = {
+      "key": key,
+      "label": key,
+      "color": "#ffdebf",
+      "parent": null
+    }
   }
   return node;
 };
