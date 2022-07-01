@@ -44,33 +44,22 @@ const DocumentStateProvider = ({ data, children }: PropsWithChildren<DocumentSta
  */
 const initializeState = (data: Document): State => {
   // hopefully I get already sorted annotations
-  if (data.annotation_sets.entities) {
-    data.annotation_sets.entities.annotations.sort((a, b) => a.start - b.start);
-    data.annotation_sets.entities_default = {
-      ...data.annotation_sets.entities,
-      name: 'entities_default'
+  Object.values(data.annotation_sets).forEach((set) => {
+    if (set.name.startsWith('entities_')) {
+      data.annotation_sets[set.name].annotations.sort((a, b) => a.start - b.start);
     }
-    data.annotation_sets = {
-      ...data.annotation_sets,
-      entities_test: {
-        ...data.annotation_sets.entities,
-        name: 'entities_test',
-        annotations: data.annotation_sets.entities.annotations.filter((ent, index) => index % 2 === 0)
-      }
-    }
-    delete data.annotation_sets.entities;
-  }
-  const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities'));
+  })
+
+  const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities_'));
   let typeFilter = new Set<string>();
+  let activeAnnotationSet = '';
 
   if (firstEntityAnnSetKey) {
     data.annotation_sets[firstEntityAnnSetKey].annotations.forEach((ann) => {
       typeFilter.add(ann.type);
     })
-
+    activeAnnotationSet = firstEntityAnnSetKey;
   }
-
-  const activeAnnotationSet = Object.values(data.annotation_sets).filter((set) => set.name.startsWith('entities'))[0].name;
 
   return {
     data,
