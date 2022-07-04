@@ -1,10 +1,7 @@
-import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
-import { Avatar, Button, Input, Popover } from "@nextui-org/react";
-import { FaSignOutAlt } from "@react-icons/all-files/fa/FaSignOutAlt";
+import { Input, useModal } from "@nextui-org/react";
 import { FaSistrix } from '@react-icons/all-files/fa/FaSistrix';
-import Link from "next/link";
-import { useRouter } from "next/router";
+import SearchModal from "./SearchModal";
 
 const Container = styled.div({
   display: 'flex',
@@ -14,19 +11,25 @@ const Container = styled.div({
 
 
 const ToolbarContent = () => {
+  const { bindings, setVisible } = useModal();
+
   return (
-    <Container>
-      <Input
-        css={{
-          minWidth: '400px'
-        }}
-        aria-label="Search documents"
-        shadow={false}
-        contentLeft={<FaSistrix />}
-        placeholder="Search for a document"
-        status="default"
-      />
-    </Container>
+    <>
+      <Container>
+        <Input
+          css={{
+            minWidth: '400px'
+          }}
+          aria-label="Search documents"
+          shadow={false}
+          contentLeft={<FaSistrix />}
+          placeholder="Search for a document"
+          status="default"
+          onClick={() => setVisible(true)}
+        />
+      </Container>
+      <SearchModal {...bindings} />
+    </>
   )
 };
 

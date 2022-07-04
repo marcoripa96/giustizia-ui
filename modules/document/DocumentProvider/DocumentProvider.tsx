@@ -43,13 +43,6 @@ const DocumentStateProvider = ({ data, children }: PropsWithChildren<DocumentSta
  * Lazy initializer for the reducer
  */
 const initializeState = (data: Document): State => {
-  // hopefully I get already sorted annotations
-  Object.values(data.annotation_sets).forEach((set) => {
-    if (set.name.startsWith('entities_')) {
-      data.annotation_sets[set.name].annotations.sort((a, b) => a.start - b.start);
-    }
-  })
-
   const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities_'));
   let typeFilter = new Set<string>();
   let activeAnnotationSet = '';

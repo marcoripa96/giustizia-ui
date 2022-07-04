@@ -1,6 +1,7 @@
 import { Candidate, EntityAnnotation } from "@/server/routers/document";
 import { deepEqual } from "@/utils/shared";
 import { Draft } from "immer";
+import { getNode } from "../SidebarAddAnnotation/Tree";
 import { Action, FlattenedTaxonomy, State } from "./types";
 
 /**
@@ -51,21 +52,51 @@ export const toggleLeftSidebar = (state: Draft<State>, payload: (Action & { type
 export const isSameAction = (oldAction: State['ui']['action'], newAction: State['ui']['action']) => deepEqual(oldAction, newAction);
 
 export const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: EntityAnnotation[]) => {
-  const items = annotations.reduce((acc, ann) => {
-    if (!acc[ann.type]) {
-      acc[ann.type] = 1;
+
+  let map = {} as Record<string, {
+    key: string;
+    label: string;
+    n: number;
+  }>;
+
+  for (const ann of annotations) {
+    const node = getNode(taxonomy, ann.type);
+
+    if (!map[node.key]) {
+      map[node.key] = {
+        key: node.key,
+        label: node.label,
+        n: 1
+      };
     } else {
-      acc[ann.type] = acc[ann.type] + 1;
+      map[node.key] = {
+        ...map[node.key],
+        n: map[node.key].n + 1
+      };
     }
-    return acc;
-  }, {} as Record<string, number>);
-  return Object.keys(items).map((key) => {
-    return {
-      key,
-      label: taxonomy[key].label,
-      n: items[key]
-    }
-  }).sort((a, b) => b.n - a.n);
+  }
+
+  return Object.values(map).sort((a, b) => b.n - a.n);
+
+  // const items = annotations.reduce((acc, ann) => {
+  //   const node = getNode(taxonomy, ann.type);
+
+  //   if (!acc[node.key]) {
+  //     acc[node.key] = 1;
+  //   } else {
+  //     acc[node.key] = acc[node.key] + 1;
+  //   }
+  //   return acc;
+  // }, {} as Record<string, number>);
+  // return Object.keys(items).map((key) => {
+  //   const node = getNode(taxonomy, key);
+
+  //   return {
+  //     key,
+  //     label: node.label,
+  //     n: items[key]
+  //   }
+  // }).sort((a, b) => b.n - a.n);
 }
 
 export const getTypeFilter = (annotations: EntityAnnotation[]) => {

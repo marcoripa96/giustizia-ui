@@ -77,10 +77,12 @@ export const flattenTree = (items: TreeItem[]): FlatTreeObj => {
   }, {} as FlatTreeObj);
 };
 
-export const getNode = (obj: FlatTreeObj, key: string) => {
+export const getNode = (obj: FlatTreeObj, key: string): FlatTreeNode => {
   const node = obj[key];
   if (!node) {
-    throw Error(`The key '${key}' doesn't exist in the tree`);
+    // if there is no node return the 'unkown node'
+    return getNode(obj, 'UNK');
+    // throw Error(`The key '${key}' doesn't exist in the tree`);
   }
   return node;
 };

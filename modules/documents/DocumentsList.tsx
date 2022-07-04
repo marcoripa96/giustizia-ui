@@ -1,15 +1,16 @@
-import { GetAllDocuments } from "@/server/routers/document";
 import styled from "@emotion/styled";
-import { Table, styled as styledNext, Button, Text } from "@nextui-org/react";
+import { Table, styled as styledNext, Text } from "@nextui-org/react";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import DocumentCard from "./DocumentCard";
 import { FaTh } from "@react-icons/all-files/fa/FaTh"
 import { FaListUl } from "@react-icons/all-files/fa/FaListUl"
+import { InfiniteData } from "react-query";
+import { GetPaginatedDocuments } from "@/server/routers/document";
 
 
 type DocumentsListProps = {
-  documents: GetAllDocuments;
+  data: InfiniteData<GetPaginatedDocuments>;
 }
 
 const DocumentsGridContainer = styled.div({
@@ -18,69 +19,19 @@ const DocumentsGridContainer = styled.div({
   gridGap: '32px 32px'
 })
 
-const DocumentsGrid = ({ documents }: DocumentsListProps) => {
+const DocumentsGrid = ({ data }: DocumentsListProps) => {
   return (
     <DocumentsGridContainer>
-      {documents.map(({ id, ...props }) => <DocumentCard key={id} id={id} {...props} />)}
+      {data.pages.map((page) => (
+        <Fragment key={page.page}>
+          {page.docs.map((doc) => (
+            <DocumentCard key={doc.id} {...doc} />
+          ))}
+        </Fragment>
+      ))}
     </DocumentsGridContainer>
   )
 }
-
-const columns = [
-  {
-    key: "title",
-    label: "Title",
-  },
-  {
-    key: "preview",
-    label: "Preview",
-  },
-  {
-    key: "lastModified",
-    label: "Last modified",
-  },
-];
-
-const CellOverflowHidden = styled.div({
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  maxWidth: '400px',
-})
-
-const DocumentsTable = ({ documents }: DocumentsListProps) => {
-  return (
-    <Table
-      lined
-      shadow={false}
-      css={{
-        height: "auto",
-        minWidth: "100%",
-      }}
-    >
-      <Table.Header columns={columns}>
-        {(column) => (
-          <Table.Column key={column.key}>{column.label}</Table.Column>
-        )}
-      </Table.Header>
-      <Table.Body items={documents}>
-        {(item) => (
-          <Table.Row key={item.id}>
-            <Table.Cell>{item.name}</Table.Cell>
-            <Table.Cell>
-              <CellOverflowHidden>
-                {item.preview}
-              </CellOverflowHidden>
-            </Table.Cell>
-            <Table.Cell>Edited 2 days ago</Table.Cell>
-          </Table.Row>
-        )}
-      </Table.Body>
-    </Table>
-  )
-}
-
-type DocumentsListView = 'grid' | 'table';
 
 const Container = styled.div({
   display: 'flex',
@@ -89,17 +40,11 @@ const Container = styled.div({
 })
 
 
-const DocumentsList = ({ documents }: DocumentsListProps) => {
-  const [view, setView] = useState<DocumentsListView>('grid');
-
+const DocumentsList = ({ data }: DocumentsListProps) => {
   return (
     <Container>
-      <Text h3>{`Documents (${documents.length})`}</Text>
-      {view === 'grid' ? (
-        <DocumentsGrid documents={documents} />
-      ) : (
-        <DocumentsTable documents={documents} />
-      )}
+      <Text h3>{`Documents (${data.pages[0].totalDocs})`}</Text>
+      <DocumentsGrid data={data} />
     </Container>
   )
 }

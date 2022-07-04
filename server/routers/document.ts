@@ -56,6 +56,7 @@ export type EntityAnnotation = Annotation<AdditionalAnnotationProps>
 export type SectionAnnotation = Annotation;
 
 const baseURL = `${process.env.API_BASE_URI}/mongo`;
+// const baseURL = `${process.env.API_BASE_URI}`;
 
 const getDocumentById = async (id: number): Promise<Document> => {
   try {
@@ -73,19 +74,33 @@ const getDocumentById = async (id: number): Promise<Document> => {
   }
 }
 
-export type GetAllDocuments = {
-  id: string;
+export type GetDocumentsDoc = {
+  _id: string;
+  id: number;
   name: string;
   preview: string;
-}[]
+}
 
-const getDocuments = async (): Promise<GetAllDocuments> => {
-  const documents = await fetchJson<any, GetAllDocuments>(`${baseURL}/document`, {
+export type GetPaginatedDocuments = {
+  docs: GetDocumentsDoc[],
+  totalDocs: number,
+  limit: number,
+  totalPages: number,
+  page: number,
+  pagingCounter: number,
+  hasPrevPage: boolean,
+  hasNextPage: boolean,
+  prevPage: number | null,
+  nextPage: number | null
+}
+
+const getDocuments = async (cursor: number, limit: number, q?: string): Promise<GetPaginatedDocuments> => {
+  const res = await fetchJson<any, GetPaginatedDocuments>(`${baseURL}/document?q=${q}&page=${cursor}&limit=${limit}`, {
     headers: {
       Authorization: getAuthHeader()
     }
   });
-  return documents;
+  return res;
 }
 
 export const documents = createRouter()
@@ -99,9 +114,19 @@ export const documents = createRouter()
       return getDocumentById(id);
     },
   })
-  .query('getAllDocuments', {
-    resolve: () => {
-      return getDocuments();
+  .query('inifniteDocuments', {
+    input: z.object({
+      q: z.string().nullish(),
+      limit: z.number().min(1).max(100).nullish(),
+      cursor: z.number().nullish(),
+    }),
+    resolve: ({ input }) => {
+      const { q: qInput, cursor: cursorInput, limit: limitInput } = input;
+      const q = qInput || '';
+      const cursor = cursorInput || 1;
+      const limit = limitInput || 20;
+
+      return getDocuments(cursor, limit, q);
     },
   })
   .mutation('save', {

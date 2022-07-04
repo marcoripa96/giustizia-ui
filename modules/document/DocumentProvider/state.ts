@@ -46,6 +46,11 @@ export const baseTaxonomy: Taxonomy = [
     key: 'ORG',
     label: 'Organization',
     color: '#baf2e6'
+  },
+  {
+    key: 'UNK',
+    label: 'Unknown',
+    color: "#e2e2e2"
   }
 ];
 
