@@ -1,4 +1,4 @@
-import { Candidate, Document } from "@/server/routers/document";
+import { AnnotationSet, Candidate, Document, EntityAnnotation } from "@/server/routers/document";
 import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
 import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
 
@@ -7,11 +7,13 @@ export type Action =
   | { type: 'setCurrentEntityId', payload: { viewIndex: number, annotationId: number } }
   | { type: 'nextCurrentEntity' }
   | { type: 'createAnnotationSet', payload: { name: string, preset: string } }
+  | { type: 'deleteAnnotationSet', payload: { name: string } }
+  | { type: 'udpateAnnotationSets', payload: { annotationSets: AnnotationSet<EntityAnnotation>[] } }
   | { type: 'previousCurrentEntity' }
   | { type: 'changeAction', payload: { action: UIAction } }
   | { type: 'changeActionData', payload: { data: string } }
   | { type: 'addAnnotation', payload: { viewIndex: number, text: string; startOffset: number; endOffset: number; type: string } }
-  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate } }
+  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate | undefined } }
   | { type: 'deleteAnnotation', payload: { viewIndex: number, id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }

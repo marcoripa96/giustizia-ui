@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import { selectDocumentData, useDocumentState, useSelector } from "../DocumentProvider/selectors";
+import { selectDocumentData, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { HiArrowLeft } from '@react-icons/all-files/hi/HiArrowLeft';
 import { Text } from "@nextui-org/react";
 import { IconButton, Button } from "@/components";
 import Link from "next/link";
-import { useMutation, useQuery } from "@/utils/trpc";
+import { useMutation } from "@/utils/trpc";
 
 const Container = styled.div({
   flexGrow: 1,
@@ -18,11 +18,22 @@ const Container = styled.div({
 
 const ToolbarContent = () => {
   const document = useSelector(selectDocumentData);
-  const save = useMutation(['document.save'])
+  const save = useMutation(['document.save']);
+  const dispatch = useDocumentDispatch();
 
   const handleSave = () => {
     save.mutate({
-      entitiesAnnotations: document.annotation_sets.entities
+      docId: document._id,
+      annotationSets: document.annotation_sets
+    }, {
+      onSuccess: (data) => {
+        dispatch({
+          type: 'udpateAnnotationSets',
+          payload: {
+            annotationSets: data
+          }
+        })
+      }
     })
   }
 

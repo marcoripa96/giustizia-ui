@@ -42,6 +42,7 @@ export function useSelector<T>(cb: (state: State) => T) {
 }
 
 // input selectors just select part of the state
+export const selectDocumentId = (state: State) => state.data.id;
 export const selectDocumentData = (state: State) => state.data;
 export const selectDocumentText = (state: State) => state.data.text;
 export const selectDocumentAnnotationSets = (state: State) => state.data.annotation_sets;
@@ -115,7 +116,7 @@ export const selectCurrentEntityLinkingFeatures = createSelector(
     if (!annotation) {
       return undefined;
     }
-    const { candidates, top_candidate, ...rest } = annotation.features.linking;
+    const { candidates, top_candidate, ...rest } = annotation.features.linking || {};
 
     if (!candidates) {
       return undefined

@@ -20,7 +20,7 @@ type FormProps = {
 
 type FormState = {
   type: string;
-  linkCandidate: Candidate;
+  linkCandidate: Candidate | undefined;
 }
 
 const Form = styled.form({
@@ -40,7 +40,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
       linking: {
         candidates,
         top_candidate
-      }
+      } = {}
     }
   } = annotation;
   const { value, register, onSubmit } = useForm<FormState>({

@@ -1,14 +1,78 @@
 import { BaseSelect, Option } from "@/components/BaseSelect";
-import { useSelector, selectDocumentActiveAnnotationSet, selectAllEntityAnnotationSets, useDocumentDispatch } from "../DocumentProvider/selectors";
-import { MouseEvent } from "react";
+import { useSelector, selectDocumentActiveAnnotationSet, selectAllEntityAnnotationSets, useDocumentDispatch, selectDocumentId } from "../DocumentProvider/selectors";
+import { MouseEvent, useCallback, useMemo } from "react";
 import { useViewIndex } from "../ViewProvider/ViewProvider";
 import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
+import styled from "@emotion/styled";
+import { FiX } from "@react-icons/all-files/fi/FiX";
+import { useMutation } from "@/utils/trpc";
+import { AnnotationSet, EntityAnnotation } from "@/server/routers/document";
+import { ConfirmationDialog, useConfirmationDialog } from "@/components";
+
+const DeleteButton = styled.button({
+  height: '20px',
+  width: '20px',
+  padding: 0,
+  border: 'none',
+  outline: 'none',
+  borderRadius: '6px',
+  background: 'transparent',
+  visibility: 'hidden',
+  cursor: 'pointer',
+  '&:hover': {
+    background: 'rgba(0,0,0,0.1)',
+  },
+  '> svg': {
+    width: '100%',
+    height: '100%',
+    color: 'rgba(0,0,0,0.5)'
+  }
+})
+
+const OptionContainer = styled.div({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  '&:hover': {
+    '& > button': {
+      visibility: 'visible'
+    }
+  },
+})
+
+type ProcessedAnnotationSet = AnnotationSet<EntityAnnotation> & {
+  readableName: string;
+}
+
+const addReadableName = (annotationSets: AnnotationSet<EntityAnnotation>[]): ProcessedAnnotationSet[] => {
+  const processedAnnotationSets = annotationSets.map((item) => {
+    const [key, ...rest] = item.name.split('_')
+    const annotationName = rest.join('_');
+    return { ...item, readableName: annotationName };
+  }).sort((a, b) => a.readableName.toLowerCase() < b.readableName.toLowerCase() ? -1 : 1);
+  return processedAnnotationSets;
+}
+
+type DeleteModalProps = {
+  onConfirm: () => void;
+}
+
 
 const SelectAnnotationSet = () => {
   const viewIndex = useViewIndex();
+  const docId = useSelector(selectDocumentId);
   const activeAnnotationSet = useSelector((state) => selectDocumentActiveAnnotationSet(state, viewIndex));
   const annotationSets = useSelector(selectAllEntityAnnotationSets);
+  const deleteAnnotationSet = useMutation(['document.deleteAnnotationSet']);
   const dispatch = useDocumentDispatch();
+
+  const {
+    bindings: bindingsDeleteAnnSet,
+    props: propsDeleteAnnSet,
+    setVisible: setDeleteAnnSetVisible
+  } = useConfirmationDialog<DeleteModalProps>();
 
   const openNewDialog = () => {
     dispatch({
@@ -32,35 +96,70 @@ const SelectAnnotationSet = () => {
     })
   }
 
+  const handleDeleteAnnotationSet = (event: MouseEvent<HTMLButtonElement>, annSet: ProcessedAnnotationSet) => {
+    event.stopPropagation();
+
+    const onConfirm = () => {
+      if (annSet._id) {
+        deleteAnnotationSet.mutate({
+          docId,
+          annotationSetId: annSet._id
+        })
+      }
+      dispatch({
+        type: 'deleteAnnotationSet',
+        payload: {
+          name: annSet.name
+        }
+      })
+      setDeleteAnnSetVisible({ open: false })
+    }
+    setDeleteAnnSetVisible({ open: true, props: { onConfirm } })
+  }
+
   const renderItems = () => {
-    return annotationSets.map((item) => {
+    const processedAnnotationSets = addReadableName(annotationSets);
+
+    return processedAnnotationSets.map((item) => {
       const [key, ...rest] = item.name.split('_')
       const annotationName = rest.join('_')
 
       return (
         <Option key={item.name} value={item.name} label={annotationName}>
-          {annotationName}
+          <OptionContainer>
+            {annotationName}
+            <DeleteButton onClick={(event) => handleDeleteAnnotationSet(event, item)}>
+              <FiX />
+            </DeleteButton>
+          </OptionContainer>
         </Option>
       )
     })
   }
 
   return (
-    <BaseSelect
-      onChange={handleChange}
-      value={activeAnnotationSet}
-      nonOptionNode={
-        <Option key="new-ann-set" value="new-ann-set" label="new-ann-set" onClick={openNewDialog}>
-          <FiPlus />
-          New annotation set
-        </Option>
-      }
-      inputProps={{
-        labelLeft: 'Set:',
-        'aria-label': 'select annotation set'
-      }}>
-      {renderItems()}
-    </BaseSelect>
+    <>
+      <BaseSelect
+        onChange={handleChange}
+        value={activeAnnotationSet}
+        nonOptionNode={
+          <Option key="new-ann-set" value="new-ann-set" label="new-ann-set" onClick={openNewDialog}>
+            <FiPlus />
+            New annotation set
+          </Option>
+        }
+        inputProps={{
+          labelLeft: 'Set:',
+          'aria-label': 'select annotation set'
+        }}>
+        {renderItems()}
+      </BaseSelect>
+      <ConfirmationDialog
+        {...bindingsDeleteAnnSet}
+        {...propsDeleteAnnSet}
+        content="You are trying to delete an annotation set and all of its annotations. Are you sure?" />
+    </>
+
   )
 }
 

@@ -34,6 +34,20 @@ export const documentReducer = createImmerReducer<State, Action>({
 
     state.data.annotation_sets[keyAnnSet] = newAnnSet;
   },
+  deleteAnnotationSet: (state, payload) => {
+    const { name } = payload;
+    const { [name]: omit, ...rest } = state.data.annotation_sets;
+    state.data.annotation_sets = rest;
+  },
+  udpateAnnotationSets: (state, payload) => {
+    const { annotationSets } = payload;
+
+    annotationSets.forEach((set) => {
+      state.data.annotation_sets[set.name] = {
+        ...set
+      }
+    })
+  },
   setCurrentEntityId: (state, payload) => {
     const { viewIndex, annotationId } = payload;
     const { views } = state.ui;
@@ -125,7 +139,9 @@ export const documentReducer = createImmerReducer<State, Action>({
             ...ann.features,
             linking: {
               ...ann.features.linking,
-              top_candidate: topCandidate
+              ...(!!topCandidate && {
+                top_candidate: topCandidate
+              })
             }
           }
         }

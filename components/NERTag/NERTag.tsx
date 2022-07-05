@@ -64,7 +64,7 @@ function NERTag({
     features: {
       linking: {
         top_candidate
-      }
+      } = {}
     }
   } = annotation;
 

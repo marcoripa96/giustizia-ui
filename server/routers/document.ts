@@ -6,6 +6,7 @@ import fetchJson from "@/lib/fetchJson";
 import { getAuthHeader } from "../get-auth-header";
 
 export type Document = {
+  _id: string,
   id: number;
   name: string;
   preview: string;
@@ -19,6 +20,7 @@ export type Document = {
 };
 
 export type AnnotationSet<P = []> = {
+  _id?: string;
   name: string;
   next_annid: number;
   annotations: P[];
@@ -129,20 +131,38 @@ export const documents = createRouter()
       return getDocuments(cursor, limit, q);
     },
   })
+  .mutation('deleteAnnotationSet', {
+    input: z
+      .object({
+        docId: z.number(),
+        annotationSetId: z.string(),
+      }),
+    resolve: async ({ input }) => {
+      const { docId, annotationSetId } = input;
+      return fetchJson<any, AnnotationSet<EntityAnnotation>[]>(`${baseURL}/document/${docId}/annotation-set/${annotationSetId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: getAuthHeader()
+        }
+      });
+    },
+  })
   .mutation('save', {
     input: z
       .object({
-        entitiesAnnotations: z.any().optional(),
+        docId: z.string(),
+        annotationSets: z.any().optional(),
       }),
     resolve: async ({ input }) => {
-      const { entitiesAnnotations } = input;
-      return fetchJson<any, void>(`${baseURL}/save`, {
+      const { docId, annotationSets } = input;
+      return fetchJson<any, AnnotationSet<EntityAnnotation>[]>(`${baseURL}/save`, {
         method: 'POST',
         headers: {
           Authorization: getAuthHeader()
         },
         body: {
-          entitiesAnnotations
+          docId,
+          annotationSets
         }
       });
     },

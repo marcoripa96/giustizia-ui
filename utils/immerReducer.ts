@@ -24,6 +24,12 @@ export function createImmerReducer<S, A extends RequiredActionFields<A['payload'
     const nextState = produce(state, draft => {
       reducer(draft, action.payload);
     })
+
+    if (action.type === 'addAnnotation') {
+      console.log(nextState);
+    }
+
+
     return nextState;
   }
 }
