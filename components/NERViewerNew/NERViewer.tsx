@@ -1,4 +1,3 @@
-import { Annotation, useNER } from '@/hooks/use-ner';
 import styled from '@emotion/styled';
 import { Text, TooltipProps } from '@nextui-org/react';
 import { NERTag } from '../NERTag';
@@ -7,11 +6,12 @@ import { FlattenedTaxonomy } from '@/modules/document/DocumentProvider/types';
 import { getAllNodeData } from '@/modules/document/SidebarAddAnnotation/Tree';
 import { getNodeSelectionOffset, getOriginalOffset, getTextSelection } from './utils';
 import { AdditionalAnnotationProps, EntityAnnotation, SectionAnnotation } from '@/server/routers/document';
-import { SectionNode, useNewNER } from '@/hooks/use-ner-new';
+// import { SectionNode, useNewNER } from '@/hooks/use-ner-new';
 import { useWindowEventListener } from '@/hooks';
 import { useThrottle } from '@/hooks/use-throttle';
 import { beautifyString } from '@/utils/shared';
 import { FiLink } from '@react-icons/all-files/fi/FiLink';
+import useNER from './use-ner';
 
 
 type NERViewerProps = {
@@ -37,14 +37,14 @@ export type SelectionNode = {
 }
 
 type MouseUpSelectionEvent = {
-  sectionId: number;
-  nodeId: number;
+  sectionIndex: number;
+  entityIndex: number;
 }
 
-type SectionRefNode = {
-  node: HTMLElement | null;
-  section: SectionNode<AdditionalAnnotationProps>;
-}
+// type SectionRefNode = {
+//   node: HTMLElement | null;
+//   section: SectionNode<AdditionalAnnotationProps>;
+// }
 
 const TextNode = styled.span<{ selectionColor: string }>(({ selectionColor }) => ({
   ...(selectionColor && {
@@ -109,8 +109,9 @@ function NERViewer({
   onTextSelection = getDefaultProp,
   onSectionChange = getDefaultProp
 }: NERViewerProps) {
-  const nodes = useNewNER({ text, entityAnnotations, sectionAnnotations });
-  const sectionRefs = useRef<SectionRefNode[]>([]);
+  // const nodes = useNewNER({ text, entityAnnotations, sectionAnnotations });
+  const { entityNodes, sectionNodes } = useNER({ text, entities: entityAnnotations, sections: sectionAnnotations || [] });
+  // const sectionRefs = useRef<SectionRefNode[]>([]);
 
   // const handleScrollEvent = useCallback(() => {
   //   if (sectionRefs.current.length === 0) {
@@ -170,7 +171,7 @@ function NERViewer({
       return;
     }
     // get the offset to the original text
-    const offset = getOriginalOffset({ nodes, ...eventSelection, ...nodeSelectionOffset })
+    const offset = getOriginalOffset({ nodes: entityNodes, ...eventSelection, ...nodeSelectionOffset })
     if (!offset) {
       return;
     }
@@ -179,57 +180,98 @@ function NERViewer({
     onTextSelection(event, selectionNode);
   }
 
-  const setSectionRefs = (node: HTMLElement | null, section: SectionNode<AdditionalAnnotationProps>) => {
-    sectionRefs.current.unshift({
-      section,
-      node
-    })
-  }
+  // const setSectionRefs = (node: HTMLElement | null, section: SectionNode<AdditionalAnnotationProps>) => {
+  //   sectionRefs.current.unshift({
+  //     section,
+  //     node
+  //   })
+  // }
 
   return (
     <>
-      {nodes.map((section) => {
-        return (
-          <Section ref={(node) => setSectionRefs(node, section)} key={section.index}>
-            <SectionTitle id={section.type}>
-              {beautifyString(section.type)}
-              <IconLink href={`#${section.type}`}><FiLink /></IconLink>
-            </SectionTitle>
-            <SectionContent>
-              {section.nodes && section.nodes.map((node) => {
-                if (node.type === 'text') {
-                  return (
-                    <TextNode
-                      key={node.index}
-                      selectionColor={addSelectionColor}
-                      onMouseUp={(event) => handleMouseUp(event, {
-                        sectionId: section.index,
-                        nodeId: node.index
-                      })}>
-                      {node.text}
-                    </TextNode>
-                  )
-                }
+      {sectionNodes.map((section, sectionIndex) => (
+        <Section key={sectionIndex}>
+          <SectionTitle id={section.type}>
+            {beautifyString(section.type)}
+            <IconLink href={`#${section.type}`}><FiLink /></IconLink>
+          </SectionTitle>
+          <SectionContent>
+            {entityNodes[sectionIndex].map((entityNode, entityIndex) => {
+              if (entityNode.type === 'text') {
                 return (
-                  <NERTag
-                    key={node.index}
-                    annotation={node.props}
-                    disableLink={disableLink}
-                    tooltipPlacement={tooltipPlacement}
-                    disablePreview={disablePreview}
-                    onClick={onTagClick}
-                    onFocus={onTagFocus}
-                    getTaxonomyNode={getTaxonomyNode}
-                  >
-                    {node.text}
-                  </NERTag>
+                  <TextNode
+                    key={entityIndex}
+                    selectionColor={addSelectionColor}
+                    onMouseUp={(event) => handleMouseUp(event, {
+                      sectionIndex,
+                      entityIndex
+                    })}>
+                    {entityNode.text}
+                  </TextNode>
                 )
-              })}
-            </SectionContent>
-          </Section>
-        )
-      })}
+              }
+              return (
+                <NERTag
+                  key={entityIndex}
+                  annotation={entityNode.props}
+                  disableLink={disableLink}
+                  tooltipPlacement={tooltipPlacement}
+                  disablePreview={disablePreview}
+                  onClick={onTagClick}
+                  onFocus={onTagFocus}
+                  getTaxonomyNode={getTaxonomyNode}
+                >
+                  {entityNode.text}
+                </NERTag>
+              )
+            })}
+          </SectionContent>
+        </Section>
+      ))}
     </>
+    // <>
+    //   {nodes.map((section) => {
+    //     return (
+    //       <Section ref={(node) => setSectionRefs(node, section)} key={section.index}>
+    //         <SectionTitle id={section.type}>
+    //           {beautifyString(section.type)}
+    //           <IconLink href={`#${section.type}`}><FiLink /></IconLink>
+    //         </SectionTitle>
+    //         <SectionContent>
+    //           {section.nodes && section.nodes.map((node) => {
+    //             if (node.type === 'text') {
+    //               return (
+    //                 <TextNode
+    //                   key={node.index}
+    //                   selectionColor={addSelectionColor}
+    //                   onMouseUp={(event) => handleMouseUp(event, {
+    //                     sectionId: section.index,
+    //                     nodeId: node.index
+    //                   })}>
+    //                   {node.text}
+    //                 </TextNode>
+    //               )
+    //             }
+    //             return (
+    //               <NERTag
+    //                 key={node.index}
+    //                 annotation={node.props}
+    //                 disableLink={disableLink}
+    //                 tooltipPlacement={tooltipPlacement}
+    //                 disablePreview={disablePreview}
+    //                 onClick={onTagClick}
+    //                 onFocus={onTagFocus}
+    //                 getTaxonomyNode={getTaxonomyNode}
+    //               >
+    //                 {node.text}
+    //               </NERTag>
+    //             )
+    //           })}
+    //         </SectionContent>
+    //       </Section>
+    //     )
+    //   })}
+    // </>
   );
 }
 

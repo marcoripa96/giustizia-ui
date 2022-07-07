@@ -1,4 +1,5 @@
-import { NERViewer, SelectionNode } from "@/components";
+import { NERViewer } from "@/components";
+import { SelectionNode } from "@/components/NERViewerNew/NERViewer";
 import { useHashUrlId } from "@/hooks";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";

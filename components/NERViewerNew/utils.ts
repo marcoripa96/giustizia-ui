@@ -1,6 +1,7 @@
 import { NERNode } from "@/hooks/use-ner";
 import { SectionNode } from "@/hooks/use-ner-new";
 import { AdditionalAnnotationProps } from "@/server/routers/document";
+import { EntityNode } from "./core/types";
 
 /**
  * Get the text selection
@@ -30,24 +31,50 @@ export const getNodeSelectionOffset = (selection: Selection) => {
   }
 }
 
+// export const getOriginalOffset = ({
+//   nodes,
+//   sectionId,
+//   nodeId,
+//   startOffsetNode,
+//   endOffsetNode
+// }: {
+//   nodes: SectionNode<AdditionalAnnotationProps>[];
+//   sectionId: number;
+//   nodeId: number;
+//   startOffsetNode: number;
+//   endOffsetNode: number;
+// }) => {
+//   const sectioNodes = nodes[sectionId].nodes;
+//   if (!sectioNodes) {
+//     return null;
+//   }
+//   const selectionNode = sectioNodes[nodeId];
+//   const startOffset = selectionNode.startSection + startOffsetNode;
+//   const endOffset = startOffset + (endOffsetNode - startOffsetNode);
+//   return {
+//     startOffset,
+//     endOffset
+//   }
+// }
+
 export const getOriginalOffset = ({
   nodes,
-  sectionId,
-  nodeId,
+  sectionIndex,
+  entityIndex,
   startOffsetNode,
   endOffsetNode
 }: {
-  nodes: SectionNode<AdditionalAnnotationProps>[];
-  sectionId: number;
-  nodeId: number;
+  nodes: EntityNode<AdditionalAnnotationProps>[][];
+  sectionIndex: number;
+  entityIndex: number;
   startOffsetNode: number;
   endOffsetNode: number;
 }) => {
-  const sectioNodes = nodes[sectionId].nodes;
-  if (!sectioNodes) {
+  const sectionNodes = nodes[sectionIndex];
+  if (!sectionNodes) {
     return null;
   }
-  const selectionNode = sectioNodes[nodeId];
+  const selectionNode = sectionNodes[entityIndex];
   const startOffset = selectionNode.startSection + startOffsetNode;
   const endOffset = startOffset + (endOffsetNode - startOffsetNode);
   return {

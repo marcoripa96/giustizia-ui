@@ -12,6 +12,9 @@ export const addAnnotation = (annotation: EntityAnnotation[], newAnnotation: Ent
     return [newAnnotation]
   }
   const insIndex = annotation.findIndex((annotation) => newAnnotation.start < annotation.start);
+  if (insIndex === -1) {
+    return [...annotation, newAnnotation];
+  }
 
   return [
     ...annotation.slice(0, insIndex),

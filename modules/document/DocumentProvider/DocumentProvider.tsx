@@ -48,6 +48,7 @@ const initializeState = (data: Document): State => {
   let activeAnnotationSet = '';
 
   if (firstEntityAnnSetKey) {
+    console.log(data);
     data.annotation_sets[firstEntityAnnSetKey].annotations.forEach((ann) => {
       typeFilter.add(ann.type);
     })

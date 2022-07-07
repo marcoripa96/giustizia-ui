@@ -108,6 +108,7 @@ const QueryText = ({ contentExample, annotationsExample }: QueryTextProps) => {
   }
 
   const filteredAnnotations = useMemo(() => {
+    console.log(document);
     if (!document) {
       return [];
     }
@@ -117,6 +118,7 @@ const QueryText = ({ contentExample, annotationsExample }: QueryTextProps) => {
       return entityFilter.indexOf(ann.type) !== -1;
     })
   }, [document, entityFilter])
+
 
 
   const handleAnnotationTypeFilterChange = (types: string[]) => {
