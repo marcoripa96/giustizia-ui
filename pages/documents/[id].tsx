@@ -46,6 +46,6 @@ export const getServerSideProps = withLocale(() => {
   return {
     props: {}
   }
-}, 'ita')
+})
 
 export default Document;

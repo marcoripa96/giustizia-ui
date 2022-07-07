@@ -76,6 +76,6 @@ export const getStaticProps = withLocale(async (context) => {
       }
     }
   }
-}, 'ita')
+})
 
 export default Home

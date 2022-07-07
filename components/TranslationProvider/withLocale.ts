@@ -12,7 +12,9 @@ type StaticPropsWithLocale = StaticPropsResult & {
   }
 }
 
-const withLocale = (handler: GetStaticProps, locale: string) => {
+const withLocale = (handler: GetStaticProps) => {
+  const locale = process.env.LOCALE || 'ita';
+
   return async (context: GetStaticPropsContext) => {
     const localeObj = (await import(`@/translation/${locale}`)).default;
     const res = await handler(context) as StaticPropsResult;

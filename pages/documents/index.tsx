@@ -81,7 +81,7 @@ export const getStaticProps = withLocale(() => {
   return {
     props: {}
   }
-}, 'ita')
+})
 
 
 export default Documents
