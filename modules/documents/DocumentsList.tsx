@@ -7,6 +7,7 @@ import { FaTh } from "@react-icons/all-files/fa/FaTh"
 import { FaListUl } from "@react-icons/all-files/fa/FaListUl"
 import { InfiniteData } from "react-query";
 import { GetPaginatedDocuments } from "@/server/routers/document";
+import { useText } from "@/components";
 
 
 type DocumentsListProps = {
@@ -41,9 +42,10 @@ const Container = styled.div({
 
 
 const DocumentsList = ({ data }: DocumentsListProps) => {
+  const t = useText('documents');
   return (
     <Container>
-      <Text h3>{`Documents (${data.pages[0].totalDocs})`}</Text>
+      <Text h3>{t('title', { n: data.pages[0].totalDocs })}</Text>
       <DocumentsGrid data={data} />
     </Container>
   )

@@ -9,6 +9,7 @@ import { FiFile } from '@react-icons/all-files/fi/FiFile'
 import { FiArrowUpRight } from '@react-icons/all-files/fi/FiArrowUpRight'
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { useText } from "@/components";
 
 
 type SearchModalProps = {
@@ -127,6 +128,7 @@ const ResultList = ({ docs }: ResultListProps) => {
 }
 
 const ModalContent = () => {
+  const t = useText('documents');
   const { binds } = useInput();
   const debouncedFilter = useDebounce(binds.value, 500);
   const { data, isFetching } = useQuery(['document.inifniteDocuments', { q: debouncedFilter, limit: 10 }], { enabled: !!debouncedFilter });
@@ -152,7 +154,7 @@ const ModalContent = () => {
     if (data.docs.length === 0) {
       return (
         <LoadingEmptyBody>
-          <Text size={24} css={{ color: 'rgba(0,0,0,0.5)' }}>No results for your query</Text>
+          <Text size={24} css={{ color: 'rgba(0,0,0,0.5)' }}>{t('modals.noResults')}</Text>
         </LoadingEmptyBody>
       )
     }
@@ -163,7 +165,7 @@ const ModalContent = () => {
     <>
       <Toolbar>
         <FiSearch size={24} />
-        <SearchBar ref={refInput} placeholder="Search documents..." spellCheck="false" autoComplete="off" {...binds} />
+        <SearchBar ref={refInput} placeholder={t('modals.searchInput')} spellCheck="false" autoComplete="off" {...binds} />
       </Toolbar>
       <Body>
         {renderContent()}

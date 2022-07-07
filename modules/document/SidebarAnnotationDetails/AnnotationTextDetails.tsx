@@ -1,3 +1,4 @@
+import { useText } from "@/components";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
@@ -26,13 +27,14 @@ const TextAnnotationDetailsContainer = styled.button({
 
 
 const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
+  const t = useText('document');
   return (
     <>
-      <Text size={15} b>Enity context</Text>
+      <Text size={15} b>{t('rightSidebar.entityContext')}</Text>
       <TextAnnotationDetailsContainer onClick={() => scrollEntityIntoView(annotation.id)}>
         <EntityContext text={text} annotation={annotation} />
       </TextAnnotationDetailsContainer>
-      <Text size={15} b>Type hierarchy</Text>
+      <Text size={15} b>{t('rightSidebar.typeHierarchy')}</Text>
       <TypesHierarchy type={annotation.type} />
     </>
 

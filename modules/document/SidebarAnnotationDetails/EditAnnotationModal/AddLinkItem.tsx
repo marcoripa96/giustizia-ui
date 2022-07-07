@@ -1,4 +1,4 @@
-import { Flex } from "@/components";
+import { Flex, useText } from "@/components";
 import styled from "@emotion/styled";
 import { Button } from "@nextui-org/react";
 import { Dispatch, SetStateAction } from "react";
@@ -20,6 +20,7 @@ const Container = styled.div({
 })
 
 const AddLinkItem = ({ setAnnotation }: AddLinkItemProps) => {
+  const t = useText('document');
   const [formVisible, toggleFormVisibility] = useToggle(false);
 
   return (
@@ -29,7 +30,7 @@ const AddLinkItem = ({ setAnnotation }: AddLinkItemProps) => {
           auto
           icon={<FiPlus size="20px" />}
           onClick={() => toggleFormVisibility()}>
-          Add candidate
+          {t('modals.editAnnotation.addCandidate.btn')}
         </Button>
       </Container>
       {formVisible && <AddCandidateForm />}

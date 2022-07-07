@@ -42,22 +42,24 @@ const getTRPCUrl = () => {
 
 function MyApp({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: { session, locale, ...pageProps },
   router
 }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <SessionProvider session={session}>
-      <Global styles={GlobalStyles} />
-      <NextUIProvider>
-        {/* <TranslationProvider> */}
-        <Layout>
-          <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
-          {getLayout(<Component {...pageProps} />)}
-        </Layout>
-        {/* </TranslationProvider> */}
-      </NextUIProvider>
+      <TranslationProvider locale={locale}>
+        <Global styles={GlobalStyles} />
+        <NextUIProvider>
+          {/* <TranslationProvider> */}
+          <Layout>
+            <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
+            {getLayout(<Component {...pageProps} />)}
+          </Layout>
+          {/* </TranslationProvider> */}
+        </NextUIProvider>
+      </TranslationProvider>
     </SessionProvider>
   );
 }

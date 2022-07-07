@@ -1,4 +1,4 @@
-import { Flex } from "@/components";
+import { Flex, useText } from "@/components";
 import { useForm, useInput } from "@/hooks";
 import { Candidate, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
@@ -34,6 +34,7 @@ function matchTitleContains(items: Candidate[], value: string) {
 }
 
 const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps) => {
+  const t = useText('document');
   const {
     type,
     features: {
@@ -73,27 +74,27 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
       <Modal.Body css={{ padding: '0px 24px' }}>
         <Flex direction="column" gap="10px">
           <Flex direction="column">
-            <Text size={20}>Context</Text>
+            <Text size={20}>{t('modals.editAnnotation.context')}</Text>
             {text && <EntityContext text={text} annotation={{ ...annotation, type: value.type }} />}
           </Flex>
           <Flex direction="column">
-            <Text size={20}>Type</Text>
+            <Text size={20}>{t('modals.editAnnotation.type')}</Text>
             <Text size={16} css={{ color: 'rgba(0,0,0,0.5)' }}>
-              Edit the type of the entity by selecting it among the available ones.
+              {t('modals.editAnnotation.typeDescription')}
             </Text>
           </Flex>
           <SelectType {...register('type')} />
           <TypesHierarchy type={value.type} />
           <Flex direction="column">
-            <Text size={20}>Links</Text>
+            <Text size={20}>{t('modals.editAnnotation.links')}</Text>
             <Text size={16} css={{ color: 'rgba(0,0,0,0.5)' }}>
-              Edit links by selecting the true candidate for the entity.
+              {t('modals.editAnnotation.linksDescription')}
             </Text>
           </Flex>
 
           <Input
             aria-label="Search link"
-            placeholder="Search link..."
+            placeholder={t('modals.editAnnotation.searchLink')}
             shadow={false}
             {...searchBinds}
             contentLeft={<FiSearch />} />
@@ -109,10 +110,10 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
             background: 'rgba(0,0,0,0.15)'
           }
         }}>
-          Cancel
+          {t('modals.editAnnotation.btnCancel')}
         </Button>
         <Button type="submit" auto>
-          Confirm
+          {t('modals.editAnnotation.btnConfirm')}
         </Button>
       </Modal.Footer>
     </Form>

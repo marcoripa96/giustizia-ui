@@ -8,6 +8,7 @@ import { selectViews, useSelector } from "@/modules/document/DocumentProvider/se
 import ViewProvider from "@/modules/document/ViewProvider/ViewProvider";
 import { MultiPane } from "@/components/MultiPane";
 import dynamic from 'next/dynamic'
+import withLocale from "@/components/TranslationProvider/withLocale";
 
 const SidebarAnnotationDetails = dynamic(() => import('../../modules/document/SidebarAnnotationDetails/SidebarAnnotationDetails'));
 const NewAnnotationSetModal = dynamic(() => import('../../modules/document/NewAnnotationSetModal/NewAnnotationSetModal'));
@@ -40,5 +41,11 @@ Document.getLayout = function getLayout(page: ReactElement) {
     </DocumentProvider>
   )
 }
+
+export const getServerSideProps = withLocale(() => {
+  return {
+    props: {}
+  }
+}, 'ita')
 
 export default Document;

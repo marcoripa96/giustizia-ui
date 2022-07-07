@@ -8,7 +8,7 @@ import { countChildren } from "./utils";
 import { FiX } from '@react-icons/all-files/fi/FiX'
 import { FiInfo } from '@react-icons/all-files/fi/FiInfo'
 import { CONTAINER_ITEM_SIZE, PARENT_SQUARE_SIZE, PADDING, INDENTATION_OFFSET, CHILD_SQUARE_SIZE } from "./Branch";
-import { Flex } from "@/components";
+import { Flex, useText } from "@/components";
 
 type NodeProps = {
   item: TreeItem | ChildTreeItem;
@@ -207,6 +207,7 @@ const InfoIcon = styled.div({
 })
 
 function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: TopLevelNodeProps) {
+  const t = useText('document');
   return (
     <>
       <ColoredSquared color={item.color}>
@@ -223,10 +224,7 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: To
             <Tooltip color="invert" content={(
               <Flex direction="column">
                 <Text size={12} color="#FFF">
-                  This type is not automatically
-                </Text>
-                <Text size={12} color="#FFF">
-                  recognized by the algorithm.
+                  {t('leftSidebar.addContent.tooltipNotRecognized')}
                 </Text>
               </Flex>
             )}>
@@ -243,6 +241,7 @@ function TopLevelNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: To
 }
 
 function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: ChildNodeProps) {
+  const t = useText('document');
   return (
     <>
       {hasChildren && (
@@ -257,11 +256,14 @@ function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: Child
             <Tooltip color="invert" content={(
               <Flex direction="column">
                 <Text size={12} color="#FFF">
+                  {t('leftSidebar.addContent.tooltipNotRecognized')}
+                </Text>
+                {/* <Text size={12} color="#FFF">
                   This type is not automatically
                 </Text>
                 <Text size={12} color="#FFF">
                   recognized by the algorithm.
-                </Text>
+                </Text> */}
               </Flex>
             )}>
               <FiInfo />

@@ -1,4 +1,5 @@
 // import { Select } from "@/components";
+import { useText } from "@/components";
 import { BaseSelect, Option } from "@/components/BaseSelect";
 import { useForm } from "@/hooks";
 import styled from "@emotion/styled";
@@ -78,6 +79,7 @@ const ContainerSelectType = styled.div({
  * Select type form
  */
 const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
+  const t = useText('document');
   const [value, setValue] = useState(valueProp);
   const [checked, setChecked] = useState(false);
   const taxonomy = useSelector(selectDocumentTaxonomy);
@@ -105,7 +107,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
   return (
     <ContainerSelectType>
       <Checkbox aria-label="Enable sub-type" isSelected={checked} onChange={handleCheck} />
-      <Text css={{ margin: 0 }}>Subclass of</Text>
+      <Text css={{ margin: 0, flexShrink: 0 }}>{t('modals.addType.subClassOf')}</Text>
       <SelectContainer>
         <BaseSelect
           value={value}
@@ -113,7 +115,7 @@ const SelectType = ({ onChange, value: valueProp }: SelectTypeProps) => {
           onTop
           inputProps={{
             'aria-label': 'Type color',
-            placeholder: 'Type',
+            placeholder: t('modals.addType.parentTypeInput'),
             shadow: false,
             bordered: true,
             disabled: !checked
@@ -150,6 +152,7 @@ const FormContainer = styled.form({
  * Form to add an annotation type
  */
 const Form = ({ onClose }: FormProps) => {
+  const t = useText('document');
   const { value, register, onSubmit, setValue } = useForm<FormState>({
     label: '',
     key: '',
@@ -189,9 +192,9 @@ const Form = ({ onClose }: FormProps) => {
     <FormContainer onSubmit={onSubmit(handleForm)}>
       <Modal.Header>
         <Col css={{ textAlign: 'left' }}>
-          <Text b size={18}>Add entity type</Text>
+          <Text b size={18}>{t('modals.addType.title')}</Text>
           <Text color="rgba(0,0,0,0.5)" css={{ lineHeight: 1.1 }} >
-            Create a new type to be used to annotate entities in your documents.
+            {t('modals.addType.description')}
           </Text>
         </Col>
       </Modal.Header>
@@ -200,7 +203,7 @@ const Form = ({ onClose }: FormProps) => {
           <Input
             aria-label="Name of the type"
             bordered
-            placeholder="Name of new type"
+            placeholder={t('modals.addType.typeNameInput')}
             shadow={false}
             onBlur={handleOnBlurName}
             {...register('label')}
@@ -219,9 +222,9 @@ const Form = ({ onClose }: FormProps) => {
       </Modal.Body>
       <Modal.Footer>
         <Button auto flat onClick={onClose}>
-          Cancel
+          {t('modals.addType.btnCancel')}
         </Button>
-        <Button auto type="submit">Add</Button>
+        <Button auto type="submit">{t('modals.addType.btnConfirm')}</Button>
       </Modal.Footer>
     </FormContainer>
   )

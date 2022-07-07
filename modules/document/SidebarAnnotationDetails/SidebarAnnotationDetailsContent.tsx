@@ -7,7 +7,7 @@ import useModal from "@/hooks/use-modal";
 import { selectCurrentEntityLinkingFeatures, selectDocumentText, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { EntityAnnotation } from "@/server/routers/document";
 import { getCandidateId } from "../DocumentProvider/utils";
-import { Flex, IconButton } from "@/components";
+import { Flex, IconButton, useText } from "@/components";
 import { FiX } from '@react-icons/all-files/fi/FiX';
 import { useDocumentEventListener } from "@/hooks";
 
@@ -49,6 +49,7 @@ const ButtonContainer = styled.div({
 })
 
 const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
+  const t = useText('document');
   const text = useSelector(selectDocumentText);
   const linkingFeatures = useSelector(selectCurrentEntityLinkingFeatures);
   const { setVisible, bindings } = useModal();
@@ -85,14 +86,14 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
         <DetailsContainer>
           <Col>
             <Flex direction="row" alignItems="center" justifyContent="space-between">
-              <Text b size={18}>Annotation details</Text>
+              <Text b size={18}>{t('rightSidebar.title')}</Text>
               <IconButton onClick={handleCloseClick}>
                 <FiX size={16} />
               </IconButton>
             </Flex>
 
             <Text css={{ fontSize: '16px', lineHeight: '1', color: 'rgba(0,0,0,0.5)' }}>
-              Inspect the details for a selected annotation.
+              {t('rightSidebar.description')}
             </Text>
           </Col>
           <Divider />
@@ -100,7 +101,7 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
           <AnnotationLinkDetails selectedId={getCandidateId(linkingFeatures?.top_candidate)} candidates={linkingFeatures?.candidates} />
         </DetailsContainer>
         <ButtonContainer>
-          <Button onClick={() => setVisible(true)}>Edit</Button>
+          <Button onClick={() => setVisible(true)}>{t('rightSidebar.editBtn')}</Button>
         </ButtonContainer>
       </Container>
       <EditAnnotationModal setVisible={setVisible} {...bindings} />

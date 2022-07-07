@@ -1,4 +1,4 @@
-import { IconButton } from "@/components";
+import { IconButton, useText } from "@/components";
 import styled from "@emotion/styled";
 import { Tooltip } from "@nextui-org/react";
 import { MouseEvent, ReactNode, useEffect, useMemo, useState } from "react";
@@ -10,6 +10,8 @@ import { FiSettings } from '@react-icons/all-files/fi/FiSettings';
 import { selectDocumentAction, selectDocumentLeftSidebarOpen, useDocumentDispatch, useSelector } from "../../DocumentProvider/selectors";
 import { UIAction } from "../../DocumentProvider/types";
 import useMediaQuery from "@/hooks/use-media-query";
+import { Paths } from "@/components/TranslationProvider/types";
+import { Translation } from "@/translation/type";
 
 
 const Container = styled.div({
@@ -26,19 +28,20 @@ const Container = styled.div({
 type ActionItem = {
   Icon: ReactNode;
   action: UIAction;
-  label: string;
+  label: Paths<Translation['document']>;
   active?: boolean;
 }
 
 const actionItems: ActionItem[] = [
-  { Icon: <FiNavigation />, action: 'select', label: 'Select', },
-  { Icon: <FiPlus />, action: 'add', label: 'Add annotation' },
-  { Icon: <FiTrash2 />, action: 'delete', label: 'Delete annotation' },
-  { Icon: <FiFilter />, action: 'filter', label: 'Filter annotation' },
-  { Icon: <FiSettings />, action: 'settings', label: 'Settings' }
+  { Icon: <FiNavigation />, action: 'select', label: 'leftSidebar.actionsTooltips.select', },
+  { Icon: <FiPlus />, action: 'add', label: 'leftSidebar.actionsTooltips.add' },
+  { Icon: <FiTrash2 />, action: 'delete', label: 'leftSidebar.actionsTooltips.delete' },
+  { Icon: <FiFilter />, action: 'filter', label: 'leftSidebar.actionsTooltips.filter' },
+  { Icon: <FiSettings />, action: 'settings', label: 'leftSidebar.actionsTooltips.settings' }
 ]
 
 const ButtonGroup = () => {
+  const t = useText('document');
   const action = useSelector(selectDocumentAction);
   const dispatch = useDocumentDispatch();
   const [tooltipOpen, setTooltipOpen] = useState<number | null>(null);
@@ -65,7 +68,7 @@ const ButtonGroup = () => {
   return (
     <Container>
       {items.map((a, index) => (
-        <Tooltip key={index} content={a.label} placement="right" color="primary" visible={tooltipOpen === index}>
+        <Tooltip key={index} content={t(a.label)} placement="right" color="primary" visible={tooltipOpen === index}>
           <IconButton
             onMouseEnter={() => setTooltipOpen(index)}
             onMouseLeave={() => setTooltipOpen(null)}

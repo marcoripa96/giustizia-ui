@@ -5,6 +5,7 @@ import { Text } from '@nextui-org/react'
 import { NextPageWithLayout } from './_app'
 import { ReactElement } from 'react'
 import { Toolbar, useText } from '@/components'
+import withLocale from '@/components/TranslationProvider/withLocale'
 
 const Container = styled.div`
   display: flex;
@@ -42,11 +43,13 @@ type HomeProps = {
  * Homepage component
  */
 const Home: NextPageWithLayout<HomeProps> = ({ exampleInfer }) => {
+  const t = useText('infer');
+
   return (
     <Container>
       <Section>
         <Text h1>GiustiziaUI</Text>
-        <SubTitle h3>Here you can try out the pipeline.</SubTitle>
+        <SubTitle h3>{t('subTitle')}</SubTitle>
         <QueryText {...exampleInfer} />
       </Section>
     </Container>
@@ -62,7 +65,7 @@ Home.getLayout = function getLayout(page: ReactElement) {
   )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps = withLocale(async (context) => {
   const { annotationsExample, contentExample } = (await import('@/public/exampleInfer'));
 
   return {
@@ -73,6 +76,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
       }
     }
   }
-}
+}, 'ita')
 
 export default Home

@@ -1,4 +1,4 @@
-import { Flex } from "@/components";
+import { Flex, useText } from "@/components";
 import { BaseSelect, Option } from "@/components/BaseSelect";
 import { useForm } from "@/hooks";
 import styled from "@emotion/styled";
@@ -20,6 +20,7 @@ type FormProps = {
 }
 
 const Form = ({ onClose }: FormProps) => {
+  const t = useText('document');
   const annotationSets = useSelector(selectAllEntityAnnotationSets);
   const dispatch = useDocumentDispatch();
 
@@ -51,8 +52,8 @@ const Form = ({ onClose }: FormProps) => {
   return (
     <FormContainer onSubmit={onSubmit(handleSubmit)}>
       <Modal.Body css={{ paddingTop: 10, paddingBottom: 10 }}>
-        <Input {...register('name')} bordered label="Annotation Set name" />
-        <BaseSelect {...register('preset')} onTop inputProps={{ label: 'Preset' }}>
+        <Input {...register('name')} bordered label={t('modals.addAnnotationSet.nameInput')} />
+        <BaseSelect {...register('preset')} onTop inputProps={{ label: t('modals.addAnnotationSet.presetInput') }}>
           <Option value="" label="Empty (without pre-existing annotations)">
             Empty (without pre-existing annotations)
           </Option>
@@ -76,6 +77,7 @@ const Form = ({ onClose }: FormProps) => {
 }
 
 const NewAnnotationSetModal = () => {
+  const t = useText('document');
   const isOpen = useSelector(selectNewAnnotationModalOpen);
   const dispatch = useDocumentDispatch();
 
@@ -94,10 +96,10 @@ const NewAnnotationSetModal = () => {
       <Modal.Header>
         <Flex>
           <Text id="modal-title" size={18}>
-            Create a new Annotation Set
+            {t('modals.addAnnotationSet.title')}
           </Text>
           <Text id="modal-title" size={16} css={{ color: 'rgba(0,0,0,0.5)', textAlign: 'left', lineHeight: 1.2 }}>
-            Create a new annotation set. Select an empty preset or an existing set of annotations as starting point:
+            {t('modals.addAnnotationSet.description')}
           </Text>
         </Flex>
       </Modal.Header>

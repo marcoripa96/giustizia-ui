@@ -1,4 +1,4 @@
-import { ConfirmationDialog, useConfirmationDialog } from "@/components";
+import { ConfirmationDialog, useConfirmationDialog, useText } from "@/components";
 import useModal from "@/hooks/use-modal";
 import { isEmptyObject } from "@/utils/shared";
 import styled from "@emotion/styled";
@@ -66,6 +66,7 @@ const ContentTitle = styled.div({
 })
 
 const SidebarAddAnnotation = () => {
+  const t = useText('document');
   const dispatch = useDocumentDispatch();
   // get all types
   const taxonomyTree = useSelector(selectTaxonomyTree);
@@ -118,9 +119,9 @@ const SidebarAddAnnotation = () => {
     <>
       <Container>
         <ContentTitle>
-          <Text b>Add annotation</Text>
+          <Text b>{t('leftSidebar.addContent.title')}</Text>
           <Text css={{ fontSize: '14px', lineHeight: '1', color: 'rgba(0,0,0,0.5)' }}>
-            Add a new annotation by selecting a span of text
+            {t('leftSidebar.addContent.description')}
           </Text>
         </ContentTitle>
         <Divider css={{ background: '#F3F3F5' }} />
@@ -130,12 +131,12 @@ const SidebarAddAnnotation = () => {
         <Divider css={{ background: '#F3F3F5' }} />
         <ItemContainer onClick={() => setAddTypeVisible(true)}>
           <FiPlus />
-          <Text css={{ fontSize: '18px' }}>Add new type</Text>
+          <Text css={{ fontSize: '18px' }}>{t('leftSidebar.addContent.addType')}</Text>
         </ItemContainer>
         <Divider css={{ background: '#F3F3F5' }} />
         <ItemContainer>
           <FiUpload />
-          <Text css={{ fontSize: '18px' }}>Load taxonomy</Text>
+          <Text css={{ fontSize: '18px' }}>{t('leftSidebar.addContent.loadTaxonomy')}</Text>
         </ItemContainer>
         <Divider css={{ background: '#F3F3F5' }} />
       </Container>

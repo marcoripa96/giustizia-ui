@@ -6,6 +6,7 @@ import { Button } from '../Button';
 import { FaSignOutAlt } from '@react-icons/all-files/fa/FaSignOutAlt';
 import { useRouter } from 'next/router';
 import { LoginAvatar } from '../LoginAvatar';
+import { useText } from '../TranslationProvider';
 
 const Container = styled.div({
   position: 'sticky',
@@ -47,6 +48,8 @@ const LinkButton = styled.a({
 })
 
 const Toolbar = () => {
+  const t = useText('infer');
+
   return (
     <Container>
       <Nav>
@@ -57,7 +60,7 @@ const Toolbar = () => {
         </Link>
         <Grid.Container direction="row" css={{ width: 'auto', gap: '10px' }}>
           <Link href="/documents" passHref>
-            <LinkButton>Browse documents</LinkButton>
+            <LinkButton>{t('toolbar.browseDocs')}</LinkButton>
           </Link>
           <LoginAvatar />
         </Grid.Container>

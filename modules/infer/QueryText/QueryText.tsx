@@ -1,4 +1,4 @@
-import { AnnotationTypeFilter, Button, NERViewer } from "@/components";
+import { AnnotationTypeFilter, Button, NERViewer, useText } from "@/components";
 import { useQueryParam } from "@/hooks";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
@@ -47,6 +47,7 @@ const Column = styled.div`
 `
 
 const QueryText = ({ contentExample, annotationsExample }: QueryTextProps) => {
+  const t = useText('infer');
   const router = useRouter();
   // get query parameter if there is a query
   const query = useQueryParam('query');
@@ -134,7 +135,7 @@ const QueryText = ({ contentExample, annotationsExample }: QueryTextProps) => {
           autoComplete="off"
           spellCheck="false"
           aria-label="infer text" />
-        <Text color="rgb(75 85 99)" css={{ textAlign: 'end' }}>{content.split(' ').length} words</Text>
+        <Text color="rgb(75 85 99)" css={{ textAlign: 'end' }}>{t('nWords', { n: content.split(' ').length })}  </Text>
       </TextAreaWrapper>
       <Button onClick={onClick} loading={isFetching}>
         Compute

@@ -1,3 +1,4 @@
+import { useText } from "@/components";
 import { useDraftState } from "@/hooks";
 import { ModalProps, Modal, Text } from "@nextui-org/react";
 import { selectCurrentEntity } from "../../DocumentProvider/selectors";
@@ -9,6 +10,7 @@ type EditModalProps = ModalProps & {
 }
 
 const EditAnnotationModal = ({ setVisible, ...props }: EditModalProps) => {
+  const t = useText('document');
   const [annotation, setAnnotation] = useDraftState(selectCurrentEntity);
 
   if (!annotation) {
@@ -25,7 +27,7 @@ const EditAnnotationModal = ({ setVisible, ...props }: EditModalProps) => {
     >
       <Modal.Header>
         <Text size={24}>
-          Edit entity annotation
+          {t('modals.editAnnotation.title')}
         </Text>
       </Modal.Header>
       <EditAnnotationForm

@@ -10,6 +10,7 @@ import DocumentCard from '@/modules/documents/DocumentCard'
 import DocumentsList from '@/modules/documents/DocumentsList'
 import ToolbarContent from '@/modules/documents/ToolbarContent'
 import { useInView } from 'react-intersection-observer'
+import withLocale from '@/components/TranslationProvider/withLocale'
 
 const Container = styled.div`
   display: flex;
@@ -75,5 +76,12 @@ Documents.getLayout = function getLayout(page: ReactElement) {
     </ToolbarLayout>
   )
 }
+
+export const getStaticProps = withLocale(() => {
+  return {
+    props: {}
+  }
+}, 'ita')
+
 
 export default Documents

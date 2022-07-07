@@ -98,4 +98,3 @@ export const removeStopScroll = () => {
     elem.setAttribute('style', '');
   });
 }
-

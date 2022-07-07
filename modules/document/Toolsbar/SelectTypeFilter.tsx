@@ -4,8 +4,10 @@ import { MouseEvent, useMemo } from "react";
 import { Checkbox } from "@nextui-org/react";
 import { getAnnotationTypes } from "../DocumentProvider/utils";
 import { useViewIndex } from "../ViewProvider/ViewProvider";
+import { useText } from "@/components";
 
 const SelectTypeFilter = () => {
+  const t = useText('document');
   const viewIndex = useViewIndex();
   const annotations = useSelector((state) => selectActiveEntityAnnotations(state, viewIndex));
   const taxonomy = useSelector(selectDocumentTaxonomy);
@@ -38,7 +40,7 @@ const SelectTypeFilter = () => {
       value={typeFilters}
       multiple
       inputProps={{
-        labelLeft: 'Types:',
+        labelLeft: t('subToolbar.types.label'),
         'aria-label': 'Select type filter'
       }}>
       {items.map((item) => (

@@ -1,3 +1,4 @@
+import { useText } from "@/components";
 import styled from "@emotion/styled";
 import { Input, useModal } from "@nextui-org/react";
 import { FaSistrix } from '@react-icons/all-files/fa/FaSistrix';
@@ -11,6 +12,7 @@ const Container = styled.div({
 
 
 const ToolbarContent = () => {
+  const t = useText('documents');
   const { bindings, setVisible } = useModal();
 
   return (
@@ -23,7 +25,7 @@ const ToolbarContent = () => {
           aria-label="Search documents"
           shadow={false}
           contentLeft={<FaSistrix />}
-          placeholder="Search for a document"
+          placeholder={t('toolbar.searchInput')}
           status="default"
           onClick={() => setVisible(true)}
         />

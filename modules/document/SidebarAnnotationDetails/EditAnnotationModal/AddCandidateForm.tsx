@@ -1,4 +1,4 @@
-import { Flex } from "@/components";
+import { Flex, useText } from "@/components";
 import { useForm, useInput } from "@/hooks";
 import styled from "@emotion/styled";
 import { Button, Divider, FormElement, Input, Text, Textarea } from "@nextui-org/react";
@@ -47,6 +47,7 @@ const detectKB = (url: string) => {
 }
 
 const AddCandidateLink = () => {
+  const t = useText('document');
   const { binds, setValue } = useInput();
   const [label, setCurrentLabel] = useState<string>('https://');
 
@@ -65,12 +66,13 @@ const AddCandidateLink = () => {
         shadow={false}
         fullWidth
       />
-      <Button auto>Add</Button>
+      <Button auto>{t('modals.editAnnotation.addCandidate.add')}</Button>
     </Flex>
   )
 }
 
 const AddCandidateForm = () => {
+  const t = useText('document');
   const { register } = useForm({
     title: '',
     description: ''
@@ -79,9 +81,9 @@ const AddCandidateForm = () => {
   return (
     <Container>
       <Flex>
-        <Text size={18} css={{ lineHeight: 1.2 }}>Add a new candidate</Text>
+        <Text size={18} css={{ lineHeight: 1.2 }}>{t('modals.editAnnotation.addCandidate.title')}</Text>
         <Text size={16} css={{ color: 'rgba(0,0,0,0.5)' }}>
-          Add a new candidate by either inserting a link to a resource or by manually filling in the form below.
+          {t('modals.editAnnotation.addCandidate.description')}
         </Text>
       </Flex>
       <AddCandidateLink />
@@ -90,18 +92,18 @@ const AddCandidateForm = () => {
         <Input
           {...register('title')}
           aria-label="candidate-title"
-          placeholder="Candidate title"
+          placeholder={t('modals.editAnnotation.addCandidate.candidateTitle')}
           shadow={false}
           fullWidth
         />
         <Textarea
           aria-label="candidate-description"
           {...register('description')}
-          placeholder="Candidate description"
+          placeholder={t('modals.editAnnotation.addCandidate.candidateDescription')}
           shadow={false}
           fullWidth
         />
-        <Button auto>Add</Button>
+        <Button auto>{t('modals.editAnnotation.addCandidate.add')}</Button>
       </Form>
     </Container>
 

@@ -7,7 +7,7 @@ import styled from "@emotion/styled";
 import { FiX } from "@react-icons/all-files/fi/FiX";
 import { useMutation } from "@/utils/trpc";
 import { AnnotationSet, EntityAnnotation } from "@/server/routers/document";
-import { ConfirmationDialog, useConfirmationDialog } from "@/components";
+import { ConfirmationDialog, useConfirmationDialog, useText } from "@/components";
 
 const DeleteButton = styled.button({
   height: '20px',
@@ -61,6 +61,7 @@ type DeleteModalProps = {
 
 
 const SelectAnnotationSet = () => {
+  const t = useText('document');
   const viewIndex = useViewIndex();
   const docId = useSelector(selectDocumentId);
   const activeAnnotationSet = useSelector((state) => selectDocumentActiveAnnotationSet(state, viewIndex));
@@ -145,11 +146,11 @@ const SelectAnnotationSet = () => {
         nonOptionNode={
           <Option key="new-ann-set" value="new-ann-set" label="new-ann-set" onClick={openNewDialog}>
             <FiPlus />
-            New annotation set
+            {t('subToolbar.annotationSet.new')}
           </Option>
         }
         inputProps={{
-          labelLeft: 'Set:',
+          labelLeft: t('subToolbar.annotationSet.label'),
           'aria-label': 'select annotation set'
         }}>
         {renderItems()}

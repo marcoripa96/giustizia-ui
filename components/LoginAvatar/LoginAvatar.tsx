@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { useText } from "../TranslationProvider";
 
 
 const LinkButton = styled.a({
@@ -23,6 +24,7 @@ const LinkButton = styled.a({
 })
 
 const LoginAvatar = () => {
+  const t = useText('infer');
   const { data, status } = useSession();
 
   const handleAction = (key: string | number) => {
@@ -59,11 +61,11 @@ const LoginAvatar = () => {
       <Dropdown.Menu aria-label="Static Actions" onAction={handleAction}>
         <Dropdown.Item key="profile">
           <Text b color="inherit">
-            Signed in as @{data?.user?.name}
+            @{data?.user?.name}
           </Text>
         </Dropdown.Item>
         <Dropdown.Item key="logout" color="error" withDivider>
-          Log Out
+          {t('toolbar.logout')}
         </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
