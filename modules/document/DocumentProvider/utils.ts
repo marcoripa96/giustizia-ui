@@ -77,26 +77,6 @@ export const getAnnotationTypes = (taxonomy: FlattenedTaxonomy, annotations: Ent
   }
 
   return Object.values(map).sort((a, b) => b.n - a.n);
-
-  // const items = annotations.reduce((acc, ann) => {
-  //   const node = getNode(taxonomy, ann.type);
-
-  //   if (!acc[node.key]) {
-  //     acc[node.key] = 1;
-  //   } else {
-  //     acc[node.key] = acc[node.key] + 1;
-  //   }
-  //   return acc;
-  // }, {} as Record<string, number>);
-  // return Object.keys(items).map((key) => {
-  //   const node = getNode(taxonomy, key);
-
-  //   return {
-  //     key,
-  //     label: node.label,
-  //     n: items[key]
-  //   }
-  // }).sort((a, b) => b.n - a.n);
 }
 
 export const getTypeFilter = (annotations: EntityAnnotation[]) => {

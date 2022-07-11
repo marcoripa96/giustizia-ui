@@ -31,7 +31,8 @@ const Form = ({ onClose }: FormProps) => {
 
   const renderItems = () => {
     return annotationSets.map((item) => {
-      const annotationName = item.name.split('_')[1];
+      const [key, ...rest] = item.name.split('_')
+      const annotationName = rest.join('_')
 
       return (
         <Option key={item.name} value={item.name} label={annotationName}>
