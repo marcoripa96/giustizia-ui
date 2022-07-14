@@ -12,7 +12,7 @@ export type Action =
   | { type: 'previousCurrentEntity' }
   | { type: 'changeAction', payload: { action: UIAction } }
   | { type: 'changeActionData', payload: { data: string } }
-  | { type: 'addAnnotation', payload: { viewIndex: number, text: string; startOffset: number; endOffset: number; type: string } }
+  | { type: 'addAnnotation', payload: { viewIndex: number, text: string; start: number; end: number; type: string } }
   | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate | undefined } }
   | { type: 'deleteAnnotation', payload: { viewIndex: number, id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }

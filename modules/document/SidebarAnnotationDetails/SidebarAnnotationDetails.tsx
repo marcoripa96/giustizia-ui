@@ -3,7 +3,7 @@ import { useSelector, selectCurrentEntity, useDocumentDispatch } from "../Docume
 import AnnotationDetailsContent from "./SidebarAnnotationDetailsContent";
 import { CSSTransition } from 'react-transition-group';
 import { Portal } from "@/components/Portal";
-import { MouseEvent } from "react";
+import { MouseEvent, useRef } from "react";
 import { FiChevronRight } from '@react-icons/all-files/fi/FiChevronRight';
 import { FiChevronLeft } from '@react-icons/all-files/fi/FiChevronLeft';
 import { useDocumentEventListener } from "@/hooks";
@@ -14,14 +14,7 @@ const Container = styled.div({
   position: 'fixed',
   right: 0,
   top: 0,
-  // display: 'flex',
-  // flexDirection: 'column',
   height: '100%',
-  // width: '420px',
-  // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-  // borderRadius: '4px',
-  // background: '#FFF',
-  // marginLeft: 'auto',
   zIndex: 101
 })
 
@@ -91,6 +84,7 @@ const Backdrop = styled.div({
 const AnnotationDetails = () => {
   const annotation = useSelector(selectCurrentEntity);
   const dispatch = useDocumentDispatch();
+  const nodeRef = useRef<any | null>(null);
 
   const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) {
@@ -119,12 +113,13 @@ const AnnotationDetails = () => {
   return (
     <Portal elementSelector="sidebar-portal">
       <CSSTransition
+        ref={nodeRef}
         in={!!annotation}
         timeout={200}
         classNames="backdrop"
         unmountOnExit
       >
-        <Backdrop onClick={handleBackdropClick}>
+        <Backdrop onClick={handleBackdropClick} ref={nodeRef}>
           <Container>
             <ActionsContainer>
               <ActionButton onClick={selectPreviousEntity}>

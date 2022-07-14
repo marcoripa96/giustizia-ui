@@ -22,7 +22,8 @@ const ToolbarContent = styled.div({
   alignItems: 'center',
   padding: '6px 12px',
   flexGrow: 1,
-  justifyContent: 'space-between'
+  justifyContent: 'space-between',
+  minWidth: 0
 })
 
 const Logo = styled.a({

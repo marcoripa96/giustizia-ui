@@ -1,8 +1,7 @@
 import { Translation } from "@/translation/type";
 import { PropsWithChildren, useContext, useEffect, useState } from "react";
 import { TranslationContext } from "./TranslationContext";
-import { BaseTranslation } from "./translations/base";
-import { Paths } from "./types";
+import { Leaves } from "./types";
 import get from 'lodash.get';
 
 type tParam = Record<string, any>;
@@ -14,7 +13,7 @@ export const useText = <NS extends keyof Translation>(namespace: NS) => {
     throw new Error('useText must be used within a TranslationProvider')
   }
 
-  const t = <K extends Paths<Translation[NS]>>(key: K, param?: tParam) => {
+  const t = <K extends Leaves<Translation[NS]>>(key: K, param?: tParam) => {
     const a = context.locale[namespace];
 
     let translation = get(a, key, '') as string;

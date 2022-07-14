@@ -93,7 +93,7 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   addAnnotation: (state, payload) => {
     const { views } = state.ui
-    const { viewIndex, type, startOffset, endOffset, text } = payload;
+    const { viewIndex, type, start, end, text } = payload;
     const { activeAnnotationSet, typeFilter } = views[viewIndex];
 
     const {
@@ -103,8 +103,8 @@ export const documentReducer = createImmerReducer<State, Action>({
 
     const newAnnotation: any = {
       id: next_annid,
-      start: startOffset,
-      end: endOffset,
+      start,
+      end,
       type: type,
       features: {
         mention: text,

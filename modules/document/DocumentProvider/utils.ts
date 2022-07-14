@@ -11,13 +11,32 @@ export const addAnnotation = (annotation: EntityAnnotation[], newAnnotation: Ent
   if (annotation.length === 0) {
     return [newAnnotation]
   }
+
   const insIndex = annotation.findIndex((annotation) => newAnnotation.start < annotation.start);
+  if (insIndex === -1) {
+    return [...annotation, newAnnotation];
+  }
 
   return [
     ...annotation.slice(0, insIndex),
     newAnnotation,
     ...annotation.slice(insIndex, annotation.length)
   ]
+}
+
+export const getAnnotations = (annotations: EntityAnnotation[], index: number) => {
+  const mainAnnotation = annotations[index];
+
+  const multiTypeIndex = annotations
+    .slice(index + 1, annotations.length)
+    .findIndex((ann) => ann.start !== mainAnnotation.start || ann.end !== mainAnnotation.end);
+
+  const multiTypeAnnotations = annotations.slice(index + 1, multiTypeIndex);
+
+  return {
+    main: mainAnnotation,
+    multi: multiTypeAnnotations
+  }
 }
 
 /**

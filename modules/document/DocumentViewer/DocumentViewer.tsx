@@ -1,5 +1,8 @@
-import { NERViewer, SelectionNode } from "@/components";
+import { NERViewer } from "@/components";
+import NER from "@/components/NER/NER";
+import { SelectionNode } from "@/components/NER/TextNode";
 import { useHashUrlId } from "@/hooks";
+import useNER from "@/lib/ner/core/use-ner";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
@@ -42,6 +45,12 @@ const DocumentViewer = () => {
   const sectionUrlHashId = useHashUrlId();
   const dispatch = useDocumentDispatch();
 
+  const { getSections } = useNER({ text, entities: filteredAnnotations, sections: sectionAnnotations });
+
+  useEffect(() => {
+    console.log(getSections());
+  }, [getSections]);
+
   useEffect(() => {
     const element = document.querySelector(`#${sectionUrlHashId}`);
     if (element) {
@@ -50,6 +59,7 @@ const DocumentViewer = () => {
   }, [sectionUrlHashId]);
 
   const handleTagClick = (event: MouseEvent, annotation: EntityAnnotation) => {
+    console.log(annotation);
     switch (action.value) {
       case 'select': {
         dispatch({
@@ -88,19 +98,19 @@ const DocumentViewer = () => {
     })
   }
 
-  const onSectionChange = (sectionId: string) => {
-    // dispatch({
-    //   type: 'setUI',
-    //   payload: {
-    //     activeSection: sectionId
-    //   }
-    // })
-  }
-
   return (
     <Container>
       <DocumentContainer>
-        <NERViewer
+        <NER
+          taxonomy={taxonomy}
+          text={text}
+          entityAnnotations={filteredAnnotations}
+          sectionAnnotations={sectionAnnotations}
+          isAddMode={action.value === 'add'}
+          onTagClick={handleTagClick}
+          onTextSelection={onTextSelection}
+        />
+        {/* <NERViewer
           disableLink
           disablePreview
           addMode={action.value === 'add'}
@@ -112,7 +122,7 @@ const DocumentViewer = () => {
           onTagClick={handleTagClick}
           onTextSelection={onTextSelection}
           onSectionChange={onSectionChange}
-        />
+        /> */}
       </DocumentContainer>
     </Container>
   )

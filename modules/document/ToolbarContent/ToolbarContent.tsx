@@ -12,7 +12,8 @@ const Container = styled.div({
   flexDirection: 'row',
   alignItems: 'center',
   gap: '20px',
-  paddingRight: '15px'
+  paddingRight: '15px',
+  minWidth: 0
 });
 
 
@@ -43,7 +44,7 @@ const ToolbarContent = () => {
       <Link href="/documents" passHref>
         <IconButton as="a"><HiArrowLeft /></IconButton>
       </Link>
-      <Text h4>{document.name}</Text>
+      <Text h4 css={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '500px' }}>{document.name}</Text>
       <Button
         auto
         size="sm"
