@@ -77,6 +77,13 @@ export const flattenTree = (items: TreeItem[]): FlatTreeObj => {
   }, {} as FlatTreeObj);
 };
 
+export const insertNodeFlat = (obj: FlatTreeObj, node: FlatTreeNode) => {
+  return {
+    ...obj,
+    [node.key]: node
+  }
+}
+
 export const getNode = (obj: FlatTreeObj, key: string): FlatTreeNode => {
   const node = obj[key];
   if (!node) {

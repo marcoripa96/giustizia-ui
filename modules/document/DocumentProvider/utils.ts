@@ -1,8 +1,8 @@
-import { Candidate, EntityAnnotation } from "@/server/routers/document";
+import { AnnotationSet, Candidate, EntityAnnotation } from "@/server/routers/document";
 import { deepEqual } from "@/utils/shared";
 import { Draft } from "immer";
-import { getNode } from "../SidebarAddAnnotation/Tree";
-import { Action, FlattenedTaxonomy, State } from "./types";
+import { ChildNode, flattenTree, FlatTreeNode, getNode } from "../SidebarAddAnnotation/Tree";
+import { Action, FlattenedTaxonomy, State, Taxonomy } from "./types";
 
 /**
  * Add a new annotation
@@ -91,3 +91,29 @@ export const getEntityIndex = (id: string) => {
   const [viewIndex, index] = id.split('/');
   return [parseInt(viewIndex), parseInt(index)] as const;
 }
+
+export const createTaxonomy = (taxonomy: Taxonomy, annotationSets: AnnotationSet<EntityAnnotation>[]) => {
+  const flatTaxonomy = flattenTree(taxonomy);
+  const unknownNodes: Record<string, FlatTreeNode> = {};
+
+  annotationSets.forEach((annSet) => {
+    annSet.annotations.forEach((ann) => {
+      if (!unknownNodes[ann.type] && !flatTaxonomy[ann.type]) {
+        const node: ChildNode = {
+          key: ann.type,
+          label: `${ann.type[0].toUpperCase()}${ann.type.slice(1).toLowerCase()}`,
+          parent: 'UNK',
+          recognizable: false
+        }
+        unknownNodes[ann.type] = node;
+      }
+    })
+  })
+
+  console.log(unknownNodes);
+
+  return {
+    ...flatTaxonomy,
+    ...unknownNodes
+  }
+};

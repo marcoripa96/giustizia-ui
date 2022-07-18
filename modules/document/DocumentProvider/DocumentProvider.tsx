@@ -5,8 +5,10 @@ import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext
 import { Document } from "@/server/routers/document";
 import { documentReducer } from "./reducer";
 import { State } from "./types";
-import { initialUIState } from "./state";
+import { baseTaxonomy, initialUIState } from "./state";
 import { SkeletonLayout } from "../SkeletonLayout";
+import { flattenTree } from "../SidebarAddAnnotation/Tree";
+import { createTaxonomy } from "./utils";
 
 /**
  * Fetches a document and provides it to the context consumer globally for the page.
@@ -43,20 +45,26 @@ const DocumentStateProvider = ({ data, children }: PropsWithChildren<DocumentSta
  * Lazy initializer for the reducer
  */
 const initializeState = (data: Document): State => {
-  const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities_'));
+  const entityAnnotationSets = Object.values(data.annotation_sets).filter((annSet) => annSet.name.startsWith('entities_'));
+
+  // const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities_'));
+  const firstEntityAnnSet = entityAnnotationSets[0];
   let typeFilter = new Set<string>();
   let activeAnnotationSet = '';
 
-  if (firstEntityAnnSetKey) {
-    data.annotation_sets[firstEntityAnnSetKey].annotations.forEach((ann) => {
+  if (firstEntityAnnSet) {
+    firstEntityAnnSet.annotations.forEach((ann) => {
       typeFilter.add(ann.type);
     })
-    activeAnnotationSet = firstEntityAnnSetKey;
+    activeAnnotationSet = firstEntityAnnSet.name;
   }
+
+  const taxonomy = createTaxonomy(baseTaxonomy, entityAnnotationSets);
 
   return {
     data,
     ...initialUIState,
+    taxonomy,
     ui: {
       ...initialUIState.ui,
       views: [

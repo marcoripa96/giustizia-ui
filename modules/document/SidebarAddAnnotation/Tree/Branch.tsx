@@ -26,9 +26,12 @@ const getPaddingLeftChildrenArch = (level: number) => {
   return PADDING + INDENTATION_OFFSET * (level - 1) + CHILD_SQUARE_SIZE / 2 - 1;
 }
 
-const Container = styled.div<{ level: number, hasChildren: boolean }>(({ level, hasChildren }) => ({
+const Container = styled.div<{
+  level: number, hasChildren: boolean,
+  expanded: boolean
+}>(({ level, hasChildren, expanded }) => ({
   position: 'relative',
-  ...(level > 0 && {
+  ...(expanded && hasChildren && {
     '&:before': {
       position: 'absolute',
       top: 34,
@@ -39,7 +42,7 @@ const Container = styled.div<{ level: number, hasChildren: boolean }>(({ level, 
       borderLeft: '1px solid rgba(0,0,0,0.2)',
       content: "''"
     }
-  })
+  }),
 }));
 
 function Branch({ item, level }: BranchProps) {
@@ -47,7 +50,8 @@ function Branch({ item, level }: BranchProps) {
 
   const { children } = item;
 
-  const hasChildren = !!children && children.length > 0;
+  const nChildren = children ? children.length : 0;
+  const hasChildren = !!children && nChildren > 0;
 
   const renderBranches = () => {
     if (!hasChildren) return null;
@@ -59,7 +63,7 @@ function Branch({ item, level }: BranchProps) {
   };
 
   return (
-    <Container level={level} hasChildren={hasChildren}>
+    <Container level={level} hasChildren={hasChildren} expanded={expanded} >
       <Node
         item={item}
         hasChildren={hasChildren}

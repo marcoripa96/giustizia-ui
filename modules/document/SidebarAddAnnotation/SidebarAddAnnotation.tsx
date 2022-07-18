@@ -70,6 +70,7 @@ const SidebarAddAnnotation = () => {
   const dispatch = useDocumentDispatch();
   // get all types
   const taxonomyTree = useSelector(selectTaxonomyTree);
+  console.log(taxonomyTree);
   // const taxonomyTree = useDocumentTaxonomyTree();
   // get currently active type
   const activeType = useSelector(selectDocumentActiveType);

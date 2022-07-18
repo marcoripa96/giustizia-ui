@@ -24,6 +24,16 @@ export const baseTaxonomy: Taxonomy = [
             recognizable: false,
           }
         ]
+      },
+      {
+        key: 'TEST',
+        label: 'Tttt',
+        recognizable: false
+      },
+      {
+        key: 'LOL',
+        label: 'lol',
+        recognizable: false
       }
     ]
   },
@@ -57,12 +67,12 @@ export const baseTaxonomy: Taxonomy = [
 /**
  * Initial state
  */
-export const initialUIState: UIState = {
+export const initialUIState: Omit<UIState, 'taxonomy'> = {
   // data: undefined,
   /**
    * The idea is to let the user provide the taxonomy as a tree structure, then it is converted to an internal representation (a "flattened tree").
    */
-  taxonomy: flattenTree(baseTaxonomy),
+  // taxonomy: flattenTree(baseTaxonomy),
   ui: {
     action: {
       value: 'select'

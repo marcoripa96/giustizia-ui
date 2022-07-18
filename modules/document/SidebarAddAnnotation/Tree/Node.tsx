@@ -69,7 +69,7 @@ const InnerContainer = styled.div<{
   hasChildren: boolean,
   isExpanded: boolean
 }>(
-  ({ level, hasChildren, isExpanded }) => ({
+  ({ level }) => ({
     display: "flex",
     flexDirection: "row",
     height: '100%',
@@ -84,17 +84,6 @@ const InnerContainer = styled.div<{
         top: '50%',
         height: '1px',
         width: '5px',
-        background: 'rgba(0,0,0,0.2)'
-      }
-    }),
-    ...(isExpanded && hasChildren && level === 0 && {
-      '&:after': {
-        content: "''",
-        position: 'absolute',
-        left: PARENT_SQUARE_SIZE / 2 + PADDING,
-        top: '100%',
-        height: CONTAINER_ITEM_SIZE / 2,
-        width: '1px',
         background: 'rgba(0,0,0,0.2)'
       }
     })
