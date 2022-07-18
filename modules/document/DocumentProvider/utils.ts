@@ -110,8 +110,6 @@ export const createTaxonomy = (taxonomy: Taxonomy, annotationSets: AnnotationSet
     })
   })
 
-  console.log(unknownNodes);
-
   return {
     ...flatTaxonomy,
     ...unknownNodes

@@ -47,7 +47,6 @@ const DocumentStateProvider = ({ data, children }: PropsWithChildren<DocumentSta
 const initializeState = (data: Document): State => {
   const entityAnnotationSets = Object.values(data.annotation_sets).filter((annSet) => annSet.name.startsWith('entities_'));
 
-  // const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities_'));
   const firstEntityAnnSet = entityAnnotationSets[0];
   let typeFilter = new Set<string>();
   let activeAnnotationSet = '';
