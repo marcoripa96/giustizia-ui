@@ -1,5 +1,4 @@
-import { NERTag } from "@/components"
-import { Annotation } from "@/hooks/use-ner";
+import { Annotation } from "@/lib/ner/core/types";
 import { AdditionalAnnotationProps, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react"
@@ -49,10 +48,7 @@ const EntityContext = ({ text, annotation }: EntityContextProps) => {
     }
   }, [text, annotation])
 
-  // const getTaxonomyNode = useCallback((key: string) => {
-  //   const node = getAllNodeData(taxonomy, key);
-  //   return node;
-  // }, [taxonomy]);
+
   const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
     const types = [ann.type, ...ann.features.types || []]
     const nMoreTypes = types.length - 1;
@@ -77,14 +73,6 @@ const EntityContext = ({ text, annotation }: EntityContextProps) => {
           {getTypesText(annotation)}
         </TagLabel>
       </Tag>
-      {/* <NERTag
-        annotation={annotation}
-        disableLink
-        disablePreview
-        getTaxonomyNode={getTaxonomyNode}
-      >
-        {annotation.features.mention}
-      </NERTag> */}
       <span>{context.contextRight === '' ? `${context.contextRight}` : `${context.contextRight}..."`}</span>
     </Text>
   )

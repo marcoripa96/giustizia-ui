@@ -1,11 +1,9 @@
-import { NERViewer } from "@/components";
 import NER from "@/components/NER/NER";
 import { SelectionNode } from "@/components/NER/TextNode";
 import { useHashUrlId } from "@/hooks";
 import useNER from "@/lib/ner/core/use-ner";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
 import { MouseEvent, useEffect } from "react";
 import {
   selectAddSelectionColor,
@@ -41,7 +39,6 @@ const DocumentViewer = () => {
   const sectionAnnotations = useSelector(selectDocumentSectionAnnotations);
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const filteredAnnotations = useSelector((state) => selectFilteredEntityAnnotations(state, viewIndex));
-  const addSelectionColor = useSelector(selectAddSelectionColor);
   const sectionUrlHashId = useHashUrlId();
   const dispatch = useDocumentDispatch();
 
@@ -110,19 +107,6 @@ const DocumentViewer = () => {
           onTagClick={handleTagClick}
           onTextSelection={onTextSelection}
         />
-        {/* <NERViewer
-          disableLink
-          disablePreview
-          addMode={action.value === 'add'}
-          addSelectionColor={addSelectionColor}
-          taxonomy={taxonomy}
-          text={text}
-          entityAnnotations={filteredAnnotations}
-          sectionAnnotations={sectionAnnotations}
-          onTagClick={handleTagClick}
-          onTextSelection={onTextSelection}
-          onSectionChange={onSectionChange}
-        /> */}
       </DocumentContainer>
     </Container>
   )

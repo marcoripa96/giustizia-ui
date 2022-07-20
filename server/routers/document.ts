@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { createRouter } from "../context";
 import { TRPCError } from "@trpc/server";
-import { Annotation } from "@/hooks/use-ner";
 import fetchJson from "@/lib/fetchJson";
 import { getAuthHeader } from "../get-auth-header";
+import { Annotation } from "@/lib/ner/core/types";
 
 export type Document = {
   _id: string,

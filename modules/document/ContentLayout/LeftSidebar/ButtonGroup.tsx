@@ -1,16 +1,15 @@
 import { IconButton, useText } from "@/components";
 import styled from "@emotion/styled";
 import { Tooltip } from "@nextui-org/react";
-import { MouseEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { MouseEvent, ReactNode, useMemo, useState } from "react";
 import { FiNavigation } from '@react-icons/all-files/fi/FiNavigation';
 import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
 import { FiTrash2 } from '@react-icons/all-files/fi/FiTrash2';
 import { FiFilter } from '@react-icons/all-files/fi/FiFilter';
 import { FiSettings } from '@react-icons/all-files/fi/FiSettings';
-import { selectDocumentAction, selectDocumentLeftSidebarOpen, useDocumentDispatch, useSelector } from "../../DocumentProvider/selectors";
+import { selectDocumentAction, useDocumentDispatch, useSelector } from "../../DocumentProvider/selectors";
 import { UIAction } from "../../DocumentProvider/types";
-import useMediaQuery from "@/hooks/use-media-query";
-import { Paths } from "@/components/TranslationProvider/types";
+import { Leaves } from "@/components/TranslationProvider/types";
 import { Translation } from "@/translation/type";
 
 
@@ -28,7 +27,7 @@ const Container = styled.div({
 type ActionItem = {
   Icon: ReactNode;
   action: UIAction;
-  label: Paths<Translation['document']>;
+  label: Leaves<Translation['document']>;
   active?: boolean;
 }
 
