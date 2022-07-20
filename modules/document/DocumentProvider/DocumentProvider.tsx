@@ -53,14 +53,16 @@ const initializeState = (data: Document): State => {
   let activeAnnotationSet = '';
 
   if (firstEntityAnnSet) {
+    // set filter for the initial annotation set
     firstEntityAnnSet.annotations.forEach((ann) => {
       typeFilter.add(ann.type);
     })
     activeAnnotationSet = firstEntityAnnSet.name;
   }
-
+  // create taxonomy from the base one and by adding additional sub types of unknown
   const taxonomy = createTaxonomy(baseTaxonomy, entityAnnotationSets);
 
+  // order the annotations once for each annotation set
   Object.values(data.annotation_sets).forEach((annSet) => {
     annSet.annotations = orderAnnotations(annSet.annotations);
   })

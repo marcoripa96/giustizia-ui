@@ -1,6 +1,4 @@
-import { flattenTree } from "../SidebarAddAnnotation/Tree";
-import { State, Taxonomy, UIState } from "./types";
-import { scrollEntityIntoView } from "./utils";
+import { Taxonomy, UIState } from "./types";
 
 export const baseTaxonomy: Taxonomy = [
   {
@@ -24,16 +22,6 @@ export const baseTaxonomy: Taxonomy = [
             recognizable: false,
           }
         ]
-      },
-      {
-        key: 'TEST',
-        label: 'Tttt',
-        recognizable: false
-      },
-      {
-        key: 'LOL',
-        label: 'lol',
-        recognizable: false
       }
     ]
   },
