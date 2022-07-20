@@ -8,7 +8,8 @@ const t: Translation = {
     toolbar: {
       browseDocs: 'Browse documents',
       logout: 'Logout'
-    }
+    },
+    selectAnnotationSet: 'Set'
   },
   documents: {
     toolbar: {

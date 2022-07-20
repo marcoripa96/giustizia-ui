@@ -30,7 +30,7 @@ const inferText = async (value: string, options: InferOptions) => {
 };
 
 export const infer = createRouter()
-  .query('getPipelineResults', {
+  .mutation('getResults', {
     input: z.object({
       value: z.string(),
       save: z.boolean().optional()

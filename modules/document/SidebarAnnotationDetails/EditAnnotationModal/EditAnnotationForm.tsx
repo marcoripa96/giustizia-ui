@@ -19,7 +19,7 @@ type FormProps = {
 }
 
 type FormState = {
-  type: string;
+  types: string[];
   linkCandidate: Candidate | undefined;
 }
 
@@ -38,6 +38,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
   const {
     type,
     features: {
+      types,
       linking: {
         candidates,
         top_candidate
@@ -45,7 +46,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
     }
   } = annotation;
   const { value, register, onSubmit } = useForm<FormState>({
-    type: type,
+    types: [type, ...types || []],
     linkCandidate: top_candidate
   });
   const { binds: searchBinds } = useInput('');
@@ -58,7 +59,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
       payload: {
         annotationId: annotation.id,
         topCandidate: data.linkCandidate,
-        type: data.type
+        types: data.types
       }
     })
     setVisible(false);
@@ -69,13 +70,22 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
     return matchTitleContains(candidates, searchBinds.value)
   }, [candidates, searchBinds.value]);
 
+  const tempAnn = {
+    ...annotation,
+    type: value.types[0],
+    features: {
+      ...annotation.features,
+      types: value.types.slice(1)
+    }
+  }
+
   return (
     <Form onSubmit={onSubmit(handleSubmit)}>
       <Modal.Body css={{ padding: '0px 24px' }}>
         <Flex direction="column" gap="10px">
           <Flex direction="column">
             <Text size={20}>{t('modals.editAnnotation.context')}</Text>
-            {text && <EntityContext text={text} annotation={{ ...annotation, type: value.type }} />}
+            {text && <EntityContext text={text} annotation={tempAnn} />}
           </Flex>
           <Flex direction="column">
             <Text size={20}>{t('modals.editAnnotation.type')}</Text>
@@ -83,8 +93,13 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
               {t('modals.editAnnotation.typeDescription')}
             </Text>
           </Flex>
-          <SelectType {...register('type')} />
-          <TypesHierarchy type={value.type} />
+          <SelectType {...register('types')} />
+          {value.types.map((type, index) => (
+            <Flex key={type} direction="row" alignItems="center" gap="5px">
+              <Text size={11} b>{index + 1}.</Text>
+              <TypesHierarchy type={type} />
+            </Flex>
+          ))}
           <Flex direction="column">
             <Text size={20}>{t('modals.editAnnotation.links')}</Text>
             <Text size={16} css={{ color: 'rgba(0,0,0,0.5)' }}>

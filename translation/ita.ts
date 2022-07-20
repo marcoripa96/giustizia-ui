@@ -8,7 +8,8 @@ const t: Translation = {
     toolbar: {
       browseDocs: 'Esplora documenti',
       logout: 'Esci'
-    }
+    },
+    selectAnnotationSet: 'Set'
   },
   documents: {
     toolbar: {
@@ -59,7 +60,7 @@ const t: Translation = {
       title: 'Dettagli annotazione',
       description: 'Ispeziona i dettagli per l\'annotazione selezionata.',
       entityContext: 'Contesto entità',
-      typeHierarchy: 'Gerarchia del tipo',
+      typeHierarchy: 'Gerarchia tipi',
       links: 'Link',
       editBtn: 'Modifica',
       emptyLinks: 'Questa annotazione non presenta alcun link.'

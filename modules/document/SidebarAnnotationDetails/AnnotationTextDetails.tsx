@@ -1,4 +1,4 @@
-import { useText } from "@/components";
+import { Flex, useText } from "@/components";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
@@ -28,6 +28,9 @@ const TextAnnotationDetailsContainer = styled.button({
 
 const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
   const t = useText('document');
+
+  const types = [annotation.type, ...annotation.features.types || []]
+
   return (
     <>
       <Text size={15} b>{t('rightSidebar.entityContext')}</Text>
@@ -35,7 +38,13 @@ const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
         <EntityContext text={text} annotation={annotation} />
       </TextAnnotationDetailsContainer>
       <Text size={15} b>{t('rightSidebar.typeHierarchy')}</Text>
-      <TypesHierarchy type={annotation.type} />
+      {types.map((type, index) => (
+        <Flex key={type} direction="row" alignItems="center" gap="5px">
+          <Text size={11} b>{index + 1}.</Text>
+          <TypesHierarchy type={type} />
+        </Flex>
+      ))}
+
     </>
 
   )

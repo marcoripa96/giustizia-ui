@@ -3,13 +3,14 @@ import { EntityAnnotation } from "@/server/routers/document";
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Grid, Image, Text } from "@nextui-org/react";
+import { useMemo } from "react";
 import { Button } from "../Button";
 import { Tag } from "../Tag";
 import EntityCardSkeleton from "./EntityCardSkeleton";
 
 export type EntityCardProps = {
   annotation: EntityAnnotation;
-  node: ChildNodeWithColor;
+  getTaxonomyNode: (key: string) => ChildNodeWithColor;
 }
 
 const Container = styled.div({
@@ -27,12 +28,14 @@ const ContainerImgTitle = styled.div({
   width: '70%'
 })
 
-const EntityCard = ({ annotation, node }: EntityCardProps) => {
+const EntityCard = ({ annotation, getTaxonomyNode }: EntityCardProps) => {
   const { top_candidate } = annotation.features.linking;
 
   const { data, isFetching } = useQuery(
     ['annotation.getAnnotationDetails', { id: top_candidate.id, indexer: top_candidate.indexer }],
     { staleTime: Infinity, enabled: !!top_candidate });
+
+  const node = useMemo(() => getTaxonomyNode(annotation.type), [annotation]);
 
   if (isFetching) {
     return <EntityCardSkeleton />;

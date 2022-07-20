@@ -13,7 +13,7 @@ export type Action =
   | { type: 'changeAction', payload: { action: UIAction } }
   | { type: 'changeActionData', payload: { data: string } }
   | { type: 'addAnnotation', payload: { viewIndex: number, text: string; start: number; end: number; type: string } }
-  | { type: 'editAnnotation', payload: { annotationId: number; type: string; topCandidate: Candidate | undefined } }
+  | { type: 'editAnnotation', payload: { annotationId: number; types: string[]; topCandidate: Candidate | undefined } }
   | { type: 'deleteAnnotation', payload: { viewIndex: number, id: number } }
   | { type: 'deleteTaxonomyType', payload: { key: string } }
   | { type: 'addTaxonomyType', payload: { type: FlatTreeNode } }

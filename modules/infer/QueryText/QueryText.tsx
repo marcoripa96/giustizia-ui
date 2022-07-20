@@ -1,17 +1,17 @@
-import { AnnotationTypeFilter, Button, NERViewer, useText } from "@/components";
-import { useQueryParam } from "@/hooks";
+import { AnnotationTypeFilter, Button, EntityCard, Flex, useText } from "@/components";
+import { useInput, useOnceEffect } from "@/hooks";
 import styled from "@emotion/styled";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "@/utils/trpc";
-import { fixedEncodeURIComponent } from "@/utils/shared";
-import { Textarea, Text, Loading } from "@nextui-org/react";
-import { flattenTree } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMutation } from "@/utils/trpc";
+import { Textarea, Text } from "@nextui-org/react";
+import { flattenTree, getAllNodeData } from "@/modules/document/SidebarAddAnnotation/Tree";
 import { baseTaxonomy } from "@/modules/document/DocumentProvider/state";
+import NER from "@/components/NER/NER";
+import AnnotationSetFilter from "./AnnotationSetFilter";
+import { Document } from "@/server/routers/document";
 
 type QueryTextProps = {
   contentExample: string;
-  annotationsExample: any;
 }
 
 const TextAreaWrapper = styled.div`
@@ -46,110 +46,126 @@ const Column = styled.div`
   margin-top: 15px;
 `
 
-const QueryText = ({ contentExample, annotationsExample }: QueryTextProps) => {
+const QueryText = ({ contentExample }: QueryTextProps) => {
   const t = useText('infer');
-  const router = useRouter();
-  // get query parameter if there is a query
-  const query = useQueryParam('query');
-  const result = useQueryParam('result');
 
-  // set content to example if there is no query otherwise set it empty
-  // the content is only set when an annotation result is computed
-  const [content, setContent] = useState<string>(query ? '' : contentExample);
-
-  const { data: document, isFetching, error, refetch } = useQuery(
-    ['infer.getPipelineResults', { value: query }],
-    { enabled: false, initialData: query ? undefined : annotationsExample, retry: false })
-
+  const inferMutation = useMutation(['infer.getResults'], { ssr: false })
+  // binds for the text area
+  const { binds } = useInput(contentExample);
+  // states
+  const [currentAnnotationSet, setCurrentAnnotationSet] = useState<string>('');
   const [entityFilter, setEntityFilter] = useState<string[]>([]);
-
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
   // for now use base taxonomy
   const taxonomy = useMemo(() => flattenTree(baseTaxonomy), []);
 
-  useEffect(() => {
-    if (!textAreaRef.current) return;
-
-    if (!query) {
-      // when navigating back and forth the query could is set to undefined and the example would break
-      textAreaRef.current.value = contentExample;
-      setContent(contentExample);
-      return;
-    }
-
-    if ((query && !result) || (query && !content)) {
-      refetch().then(() => {
-        setContent(query);
-        // append result=true to the end of the url so that I can query again when initiating a new request on button press
-        router.push(`/infer?query=${fixedEncodeURIComponent(query)}&result=true`, undefined, { shallow: true })
-      });
-      textAreaRef.current.value = query;
-    }
-  }, [query, result, content])
+  const document = inferMutation.data;
 
   useEffect(() => {
-    if (!document) {
-      return;
-    }
-    let typeFilter = new Set<string>();
-    document.annotation_sets.entities.annotations.forEach((ann) => {
-      typeFilter.add(ann.type);
-    })
-    setEntityFilter(Array.from(typeFilter));
-  }, [document])
+    // trigger pipeline when page first loads
+    onClick();
+  }, [])
 
   const onClick = () => {
-    if (textAreaRef.current) {
-      const { value } = textAreaRef.current;
-      // change the query parameter by shallow routing (page is not reloaded, query param are just updated)
-      // this will trigger the useEffect to run and fetch the annotations
-      router.push(`/infer?query=${fixedEncodeURIComponent(value)}`, undefined, { shallow: true })
-    }
+    inferMutation.mutate({
+      value: binds.value
+    }, {
+      onSuccess: (data) => {
+        const firstEntityAnnSetKey = Object.keys((data.annotation_sets)).find((key) => key.startsWith('entities_'));
+        if (!firstEntityAnnSetKey) {
+          return;
+        }
+
+        setEntityFilter(getTypes(data, firstEntityAnnSetKey));
+        setCurrentAnnotationSet(firstEntityAnnSetKey);
+      }
+    })
   }
 
-  const filteredAnnotations = useMemo(() => {
-    if (!document) {
-      return [];
+  const handleAnnotationSetChange = (annSet: string) => {
+    if (!inferMutation.data) {
+      return;
     }
-    const { annotations } = document.annotation_sets.entities;
-
-    return annotations.filter((ann) => {
-      return entityFilter.indexOf(ann.type) !== -1;
-    })
-  }, [document, entityFilter])
-
+    setEntityFilter(getTypes(inferMutation.data, annSet));
+    setCurrentAnnotationSet(annSet)
+  }
 
   const handleAnnotationTypeFilterChange = (types: string[]) => {
     setEntityFilter(types);
   }
 
+  // get the types for the current annotation set
+  const getTypes = (document: Document, annSet: string) => {
+    let typeFilter = new Set<string>();
+    document.annotation_sets[annSet].annotations.forEach((ann) => {
+      typeFilter.add(ann.type);
+    })
+    return Array.from(typeFilter);
+  }
+
+  const getTaxonomyNode = useCallback((key: string) => {
+    const node = getAllNodeData(taxonomy, key);
+    return node;
+  }, [taxonomy]);
+
+  // get all entities annotation sets
+  const entityAnnotationSets = useMemo(() => {
+    if (!document) {
+      return [];
+    }
+    return Object.values(document.annotation_sets).filter((annSet) => annSet.name.startsWith('entities_'));
+  }, [document]);
+
+
+  // filter annotations based on the current type filter and current annotation set
+  const filteredAnnotations = useMemo(() => {
+    if (!document) {
+      return [];
+    }
+    const { annotations } = document.annotation_sets[currentAnnotationSet];
+
+    return annotations.filter((ann) => {
+      return entityFilter.indexOf(ann.type) !== -1;
+    })
+  }, [document, entityFilter, currentAnnotationSet])
+
+
   return (
     <>
       <TextAreaWrapper>
         <StyledTextarea
-          ref={textAreaRef}
+          {...binds}
           size="lg"
           rows={10}
-          defaultValue={content}
           autoComplete="off"
           spellCheck="false"
           aria-label="infer text" />
-        <Text color="rgb(75 85 99)" css={{ textAlign: 'end' }}>{t('nWords', { n: content.split(' ').length })}  </Text>
+        <Text color="rgb(75 85 99)" css={{ textAlign: 'end' }}>{t('nWords', { n: binds.value.split(' ').length })}  </Text>
       </TextAreaWrapper>
-      <Button onClick={onClick} loading={isFetching}>
+      <Button onClick={onClick} loading={inferMutation.isLoading}>
         Compute
       </Button>
-      {error && <Text color="error">Something went wrong :(</Text>}
-      {document ? (
+      {inferMutation.isError && <Text color="error">Something went wrong :(</Text>}
+      {document && !inferMutation.isLoading ? (
         <Column>
-          <AnnotationTypeFilter
+          <Flex direction="row" gap="20px">
+            <AnnotationSetFilter
+              annotationSets={entityAnnotationSets}
+              value={currentAnnotationSet}
+              onChange={handleAnnotationSetChange} />
+            <AnnotationTypeFilter
+              taxonomy={taxonomy}
+              annotations={document.annotation_sets[currentAnnotationSet].annotations}
+              value={entityFilter}
+              onChange={handleAnnotationTypeFilterChange}
+            />
+          </Flex>
+
+          <NER
             taxonomy={taxonomy}
-            annotations={document.annotation_sets.entities.annotations}
-            value={entityFilter}
-            onChange={handleAnnotationTypeFilterChange}
+            text={binds.value}
+            entityAnnotations={filteredAnnotations}
+            renderContentHover={(ann) => <EntityCard annotation={ann} getTaxonomyNode={getTaxonomyNode} />}
           />
-          <NERViewer taxonomy={taxonomy} text={content} entityAnnotations={filteredAnnotations} />
         </Column>
       ) : null}
     </>

@@ -51,7 +51,8 @@ export type AdditionalAnnotationProps = {
     nil_score: number;
     top_candidate: Candidate;
     candidates: Candidate[];
-  }
+  },
+  types?: string[];
 };
 
 export type EntityAnnotation = Annotation<AdditionalAnnotationProps>

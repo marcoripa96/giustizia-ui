@@ -6,7 +6,7 @@ import { Annotation } from "./types";
 type USENERProps<T, U> = {
   text: string;
   entities: Annotation<T>[];
-  sections: Annotation<U>[];
+  sections?: Annotation<U>[];
 }
 
 const useNER = <T = {}, U = {}>(props: USENERProps<T, U>) => {
@@ -16,9 +16,8 @@ const useNER = <T = {}, U = {}>(props: USENERProps<T, U>) => {
     sections
   } = props;
   const document = useMemo(() => {
-    // const sortedEntities = orderAnnotations(entities);
     const contentNodes = createNodes(text, entities);
-    const getSections = getSectionNodesFactory(text, sections, contentNodes);
+    const getSections = getSectionNodesFactory(text, sections || [], contentNodes);
     return {
       contentNodes,
       getSections

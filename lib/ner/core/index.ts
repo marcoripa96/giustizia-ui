@@ -55,7 +55,7 @@ export const createEntityNode = <T>(text: string, annotation: Annotation<T>, key
     annotations: {
       [key]: annotation
     },
-    nesting: [nestedEntity]
+    nesting: [key]
   }
 }
 
@@ -73,6 +73,10 @@ export const isNestedAnnotation = <T>(prev: Annotation<T>, ann: Annotation<T>) =
   return (ann.start >= prev.start && ann.end < prev.end) || (ann.start > prev.start && ann.end <= prev.end);
 }
 
+export const hasSameOffset = <T>(prev: Annotation<T>, ann: Annotation<T>) => {
+  return ann.start == prev.start && ann.end === prev.end;
+}
+
 /**
  * Check if the next annotation is overlapping with the last annotation
  */
@@ -80,34 +84,9 @@ export const isOverlappingAnnotation = <T>(prev: Annotation<T>, ann: Annotation<
   return ann.start >= prev.start && ann.start <= prev.end && ann.end > prev.end;
 }
 
-/**
- * Check if the next annotation has the same offset of the last node, therefore the last node has multiple types
- */
-export const isMultiType = <T>(prev: Annotation<T>, ann: Annotation<T>) => {
-  return ann.start == prev.start && ann.end === prev.end;
-}
-
-export const addType = <T>(node: EntityNode<T>, type: string, key: number) => {
-  const nested = node.nesting[0];
-  nested.typesMap[type] = key;
-  nested.types.push(type);
-}
-
-export const hasType = <T>(node: EntityNode<T>, type: string) => {
-  const nested = node.nesting[0];
-  return type in nested.typesMap;
-}
-
-export const getAnnotationOfType = <T>(node: EntityNode<T>, type: string) => {
-  const nested = node.nesting[0];
-  const lastNestedEntityAnnId = nested.typesMap[type];
-  return node.annotations[lastNestedEntityAnnId];
-}
-
 export const getLastAnnotation = <T>(node: EntityNode<T>) => {
-  const nested = node.nesting[0];
-  const lastNestedEntityAnnId = nested.typesMap[nested.types[0]];
-  return node.annotations[lastNestedEntityAnnId];
+  const nestedEntityId = node.nesting[0];
+  return node.annotations[nestedEntityId];
 }
 
 /**
@@ -134,24 +113,13 @@ export const createNodes = <T>(text: string, annotations: Annotation<T>[]) => {
 
       if (isNestedAnnotation(prevAnn, ann)) {
         lastNode.annotations[index] = ann;
-        lastNode.nesting.unshift({
-          typesMap: {
-            [ann.type]: index
-          },
-          types: [ann.type]
-        });
+        lastNode.nesting.unshift(index);
         index += 1;
-      } else if (isMultiType(prevAnn, ann)) {
-        if (hasType(lastNode, ann.type)) {
-          console.warn(`Encountered multiple annotations with the same offset and same type. One of them is discarded`,
-            prevAnn,
-            ann
-          );
-        } else {
-          lastNode.annotations[index] = ann;
-          addType(lastNode, ann.type, index);
-        }
-        index += 1;
+      } else if (hasSameOffset(prevAnn, ann)) {
+        console.warn(`Encountered multiple annotations with the same offset. One of them is discarded`,
+          prevAnn,
+          ann
+        );
       } else {
         // overlapping annotations
         console.warn(`Encountered an overlapping annotation. Overlapping annotations are not supported and they are discarded`,

@@ -3,6 +3,7 @@ import { Annotation, EntityNode, NestedEntity } from "@/lib/ner/core/types";
 import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
 import { AdditionalAnnotationProps, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
+import { Tooltip } from "@nextui-org/react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useMemo, MouseEvent } from "react";
 import { useNERContext } from "./nerContext";
@@ -11,11 +12,12 @@ type EntityNodeProps = EntityNode<AdditionalAnnotationProps>
 
 const Tag = styled.span<{ color: string, level: number }>(({ color, level }) => ({
   position: 'relative',
-  padding: `${level * 3}px 5px`,
+  padding: `${level * 2}px 5px`,
   borderRadius: '6px',
   background: color,
   color: darken(0.70, color),
   cursor: 'pointer',
+  border: `1px solid ${darken(0.05, color)}`
 }));
 
 const TagLabel = styled.span<{ color: string }>(({ color }) => ({
@@ -55,29 +57,18 @@ const getRightText = (
   return span;
 }
 
-const getTypesText = (entity: NestedEntity) => {
-  const nMoreTypes = entity.types.length - 1;
+const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
+  const types = [ann.type, ...ann.features.types || []]
+  const nMoreTypes = types.length - 1;
   if (nMoreTypes === 0) {
-    return entity.types[0];
+    return types[0];
   }
-  return `${entity.types[0]} +${nMoreTypes}`
+  return `${types[0]} +${nMoreTypes}`
 }
 
-const getNestedAnnotation = (annotations: Record<number, Annotation<AdditionalAnnotationProps>>, entity: NestedEntity) => {
-  const { typesMap, types } = entity;
-  const annotationId = typesMap[types[0]];
-  return annotations[annotationId];
-}
-
-
-const getNestedEntity = (nesting: NestedEntity[], index: number) => {
-  return nesting[index];
-}
-
-const getPreviousNestedAnnotation = (annotations: Record<number, Annotation<AdditionalAnnotationProps>>, nesting: NestedEntity[], index: number) => {
-  const prevNestedEntity = getNestedEntity(nesting, index - 1);
-  const prevAnnotationId = prevNestedEntity.typesMap[prevNestedEntity.types[0]];
-  return annotations[prevAnnotationId];
+const getPreviousNestedAnnotation = (annotations: Record<number, Annotation<AdditionalAnnotationProps>>, nesting: number[], index: number) => {
+  const entityId = nesting[index - 1];
+  return annotations[entityId]
 }
 
 
@@ -89,31 +80,28 @@ function EntityNode(props: EntityNodeProps) {
     nesting
   } = props;
 
-  const { onTagClick, onTagEnter, onTagLeave, getTaxonomyNode } = useNERContext();
+  const { onTagClick, onTagEnter, onTagLeave, getTaxonomyNode, renderContentHover } = useNERContext();
 
-  const handleTagClick = (entity: NestedEntity) => (event: MouseEvent) => {
+  const handleTagClick = (ann: Annotation<AdditionalAnnotationProps>) => (event: MouseEvent) => {
     event.stopPropagation();
 
     if (onTagClick) {
-      const ann = getNestedAnnotation(annotations, entity);
       onTagClick(event, ann);
     }
   }
 
-  const handleOnTagEnter = (entity: NestedEntity) => (event: MouseEvent) => {
+  const handleOnTagEnter = (ann: Annotation<AdditionalAnnotationProps>) => (event: MouseEvent) => {
     event.stopPropagation();
 
     if (onTagEnter) {
-      const ann = getNestedAnnotation(annotations, entity);
       onTagEnter(event, ann);
     }
   }
 
-  const handleOnTagLeave = (entity: NestedEntity) => (event: MouseEvent) => {
-    event.stopPropagation();
+  const handleOnTagLeave = (ann: Annotation<AdditionalAnnotationProps>) => (event: MouseEvent) => {
+    // event.stopPropagation();
 
     if (onTagLeave) {
-      const ann = getNestedAnnotation(annotations, entity);
       onTagLeave(event, ann);
     }
   }
@@ -125,26 +113,37 @@ function EntityNode(props: EntityNodeProps) {
     index,
     color,
     children,
-    entity
+    annotation
   }: {
     index: number
     color: string;
     children: ReactNode;
-    entity: NestedEntity;
+    annotation: Annotation<AdditionalAnnotationProps>;
   }) => {
-    return (
+    const tagElement = (
       <Tag
         color={color}
         level={index}
-        onClick={handleTagClick(entity)}
-        onMouseEnter={handleOnTagEnter(entity)}
-        onMouseLeave={handleOnTagLeave(entity)}>
+        onClick={handleTagClick(annotation)}
+        onMouseEnter={handleOnTagEnter(annotation)}
+        onMouseLeave={handleOnTagLeave(annotation)}>
         {children}
         <TagLabel color={color}>
-          {getTypesText(entity)}
+          {getTypesText(annotation)}
         </TagLabel>
       </Tag>
     )
+
+    if (renderContentHover) {
+      return (
+        <Tooltip css={{ display: 'inline-block' }}
+          placement="top" content={renderContentHover(annotation)}>
+          {tagElement}
+        </Tooltip>
+      )
+    }
+
+    return tagElement;
   }
 
   /**
@@ -153,8 +152,8 @@ function EntityNode(props: EntityNodeProps) {
   const recurseTag = useCallback((): ReactNode => {
     let children: ReactNode = null;
 
-    nesting.forEach((entity, index) => {
-      const curr = getNestedAnnotation(annotations, entity);
+    nesting.forEach((entityId, index) => {
+      const curr = annotations[entityId];
       const { color } = getTaxonomyNode(curr.type);
 
       if (index === 0) {
@@ -164,8 +163,8 @@ function EntityNode(props: EntityNodeProps) {
         children = getTag({
           index,
           color,
-          entity,
-          children: span
+          children: span,
+          annotation: curr
         })
       } else {
         const prev = getPreviousNestedAnnotation(annotations, nesting, index);
@@ -174,7 +173,7 @@ function EntityNode(props: EntityNodeProps) {
         children = getTag({
           index,
           color,
-          entity,
+          annotation: curr,
           children: (
             <>
               {leftSpan}{children}{rightSpan}

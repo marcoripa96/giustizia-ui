@@ -35,7 +35,6 @@ const SubTitle = styled(Text)`
 type HomeProps = {
   exampleInfer: {
     contentExample: string;
-    annotationsExample: any;
   }
 }
 
@@ -66,12 +65,11 @@ Home.getLayout = function getLayout(page: ReactElement) {
 }
 
 export const getStaticProps = withLocale(async (context) => {
-  const { annotationsExample, contentExample } = (await import('@/public/exampleInfer'));
+  const { contentExample } = (await import('@/public/exampleInfer'));
 
   return {
     props: {
       exampleInfer: {
-        annotationsExample,
         contentExample
       }
     }

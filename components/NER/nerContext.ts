@@ -1,12 +1,13 @@
 import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
 import { EntityAnnotation } from "@/server/routers/document";
-import { createContext, MouseEvent, useContext } from "react";
+import { createContext, MouseEvent, ReactNode, useContext } from "react";
 import { SelectionNode } from "./TextNode";
 
 type NERContextProps = {
   getTaxonomyNode: (key: string) => ChildNodeWithColor;
   isAddMode?: boolean;
   addSelectionColor?: string;
+  renderContentHover?: (annotation: EntityAnnotation) => ReactNode;
   onTextSelection?: (event: MouseEvent, node: SelectionNode) => void;
   onTagClick?: (event: MouseEvent, annotation: EntityAnnotation) => void;
   onTagEnter?: (event: MouseEvent, annotation: EntityAnnotation) => void;

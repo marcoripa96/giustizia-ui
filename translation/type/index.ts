@@ -6,6 +6,7 @@ export type Translation = {
     },
     subTitle: string;
     nWords: string;
+    selectAnnotationSet: string;
     computeBtn: string;
   },
   documents: {

@@ -122,13 +122,13 @@ const SelectAnnotationSet = () => {
     const processedAnnotationSets = addReadableName(annotationSets);
 
     return processedAnnotationSets.map((item) => {
-      const [key, ...rest] = item.name.split('_')
-      const annotationName = rest.join('_')
+      // const [key, ...rest] = item.name.split('_')
+      // const annotationName = rest.join('_')
 
       return (
-        <Option key={item.name} value={item.name} label={annotationName}>
+        <Option key={item.name} value={item.name} label={item.readableName}>
           <OptionContainer>
-            {annotationName}
+            {item.readableName}
             <DeleteButton onClick={(event) => handleDeleteAnnotationSet(event, item)}>
               <FiX />
             </DeleteButton>

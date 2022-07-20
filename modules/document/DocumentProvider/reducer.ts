@@ -125,7 +125,7 @@ export const documentReducer = createImmerReducer<State, Action>({
       return state;
     }
 
-    const { annotationId, type, topCandidate } = payload;
+    const { annotationId, types, topCandidate } = payload;
     const { viewIndex } = selectedEntity;
 
     const { activeAnnotationSet } = views[viewIndex];
@@ -134,9 +134,10 @@ export const documentReducer = createImmerReducer<State, Action>({
       if (ann.id === annotationId) {
         return {
           ...ann,
-          type,
+          type: types[0],
           features: {
             ...ann.features,
+            types: types.slice(1),
             linking: {
               ...ann.features.linking,
               ...(!!topCandidate && {
@@ -149,6 +150,7 @@ export const documentReducer = createImmerReducer<State, Action>({
       return ann;
     });
     state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
+    console.log(state.data.annotation_sets[activeAnnotationSet].annotations);
     state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
   },
   deleteAnnotation: (state, payload) => {

@@ -11,8 +11,12 @@ export type Annotation<T = {}> = {
   // the type of the annotation
   type: string;
   // additional features for this annotation
-  features: T;
+  features: AnnotationFeatures<T>;
 };
+
+export type AnnotationFeatures<T> = T & {
+  types?: string[];
+}
 
 export type ContentNode<T> = EntityNode<T> | TextNode;
 
@@ -54,7 +58,7 @@ export type EntityNode<T> = {
   // annotations contained in this node as a map
   annotations: Record<number, Annotation<T>>;
   // annotation ids
-  nesting: NestedEntity[];
+  nesting: number[];
   // types for the nodes (multi type annotations)
   // types: EntityNodeType
 }
