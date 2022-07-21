@@ -79,9 +79,7 @@ const TextNode = (props: TextNodeProps) => {
   const { text, start, end } = props;
 
   const handleMouseUp = (event: MouseEvent) => {
-    console.log(!isAddMode);
     if (!isAddMode || !onTextSelection) return;
-
 
     // get user text selection
     const selection = getTextSelection();

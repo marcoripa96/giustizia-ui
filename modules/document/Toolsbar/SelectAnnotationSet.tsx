@@ -122,9 +122,6 @@ const SelectAnnotationSet = () => {
     const processedAnnotationSets = addReadableName(annotationSets);
 
     return processedAnnotationSets.map((item) => {
-      // const [key, ...rest] = item.name.split('_')
-      // const annotationName = rest.join('_')
-
       return (
         <Option key={item.name} value={item.name} label={item.readableName}>
           <OptionContainer>

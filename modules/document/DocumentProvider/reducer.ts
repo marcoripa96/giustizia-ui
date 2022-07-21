@@ -150,7 +150,6 @@ export const documentReducer = createImmerReducer<State, Action>({
       return ann;
     });
     state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
-    console.log(state.data.annotation_sets[activeAnnotationSet].annotations);
     state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
   },
   deleteAnnotation: (state, payload) => {

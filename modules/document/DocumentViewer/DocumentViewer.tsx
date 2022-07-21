@@ -42,12 +42,6 @@ const DocumentViewer = () => {
   const sectionUrlHashId = useHashUrlId();
   const dispatch = useDocumentDispatch();
 
-  const { getSections } = useNER({ text, entities: filteredAnnotations, sections: sectionAnnotations });
-
-  useEffect(() => {
-    console.log(getSections());
-  }, [getSections]);
-
   useEffect(() => {
     const element = document.querySelector(`#${sectionUrlHashId}`);
     if (element) {
@@ -56,7 +50,6 @@ const DocumentViewer = () => {
   }, [sectionUrlHashId]);
 
   const handleTagClick = (event: MouseEvent, annotation: EntityAnnotation) => {
-    console.log(annotation);
     switch (action.value) {
       case 'select': {
         dispatch({

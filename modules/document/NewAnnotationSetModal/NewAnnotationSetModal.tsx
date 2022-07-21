@@ -24,7 +24,7 @@ const Form = ({ onClose }: FormProps) => {
   const annotationSets = useSelector(selectAllEntityAnnotationSets);
   const dispatch = useDocumentDispatch();
 
-  const { register, onSubmit } = useForm<FormState>({
+  const { value, register, onSubmit } = useForm<FormState>({
     name: '',
     preset: ''
   })
@@ -71,7 +71,7 @@ const Form = ({ onClose }: FormProps) => {
         }}>
           Cancel
         </Button>
-        <Button type="submit" auto size="sm">Create</Button>
+        <Button type="submit" auto size="sm" disabled={value.name === ''}>Create</Button>
       </Modal.Footer>
     </FormContainer>
   )
