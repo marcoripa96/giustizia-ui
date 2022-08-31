@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export default NextAuth({
   pages: {
-    signIn: '/sign-in',
+    signIn: `${process.env.NEXT_PUBLIC_BASE_PATH}/sign-in`,
   },
   providers: [
     CredentialsProvider({
