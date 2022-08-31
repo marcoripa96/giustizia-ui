@@ -60,10 +60,10 @@ const QueryText = ({ contentExample }: QueryTextProps) => {
 
   const document = inferMutation.data;
 
-  useEffect(() => {
-    // trigger pipeline when page first loads
-    onClick();
-  }, [])
+  // useEffect(() => {
+  //   // trigger pipeline when page first loads
+  //   onClick();
+  // }, [])
 
   const onClick = () => {
     inferMutation.mutate({
