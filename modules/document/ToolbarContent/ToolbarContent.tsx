@@ -25,7 +25,7 @@ const ToolbarContent = () => {
 
   const handleSave = () => {
     save.mutate({
-      docId: document._id,
+      docId: document.id,
       annotationSets: document.annotation_sets
     }, {
       onSuccess: (data) => {

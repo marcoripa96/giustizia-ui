@@ -151,7 +151,7 @@ export const documents = createRouter()
   .mutation('save', {
     input: z
       .object({
-        docId: z.string(),
+        docId: z.number(),
         annotationSets: z.any().optional(),
       }),
     resolve: async ({ input }) => {
