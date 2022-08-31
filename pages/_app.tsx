@@ -30,12 +30,12 @@ const getTRPCUrl = () => {
   //   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/trpc`
   //   : 'http://localhost:3000/api/trpc';
   if (typeof window !== 'undefined') {
-    return '/api/trpc'
+    return `${process.env.NEXT_PUBLIC_BASE_PATH}/api/trpc`
   }
 
   const url = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}/api/trpc`
-    : 'http://localhost:3000/api/trpc';
+    : `${process.env.NEXT_PUBLIC_FULL_PATH}/api/trpc`;
 
   return url;
 };
@@ -48,7 +48,7 @@ function MyApp({
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} basePath={`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth`}>
       <TranslationProvider locale={locale}>
         <Global styles={GlobalStyles} />
         <NextUIProvider>
