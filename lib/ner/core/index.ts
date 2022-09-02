@@ -150,22 +150,36 @@ export const getSectionNodesFactory = <T, U>(text: string, sectionAnnotations: A
   ], (text, sections, nodes) => {
     return sections.map((ann, index) => {
       // look where to slice the array of entities
-      const startIndex = nodes.findIndex((node) => node.start >= ann.start && node.start <= ann.end);
+      // const startIndex = nodes.findIndex((node) => node.start >= ann.start && node.start <= ann.end);
+      const startIndex = nodes.findIndex((node) => ann.start >= node.start && ann.start <= node.end || node.start >= ann.start && node.start <= ann.end)
       let endIndex = nodes.findIndex((node) => node.start > ann.end);
       // it's possible that all annotations are included in the section offset
       endIndex = endIndex === -1 ? nodes.length : endIndex;
 
+      let firstNodeSection = nodes[startIndex];
       let lastNodeSection = nodes[endIndex - 1];
+
+      if (index > 0 && firstNodeSection.type === 'text') {
+        firstNodeSection = {
+          ...firstNodeSection,
+          start: ann.start,
+          end: ann.start + firstNodeSection.text.length,
+          text: firstNodeSection.text.slice(ann.start - firstNodeSection.start, firstNodeSection.text.length)
+        }
+      }
+
       // if the last node of a section is a text node, slice to the end of the section
       if (lastNodeSection.type === 'text') {
         lastNodeSection = {
           ...lastNodeSection,
+          end: ann.end,
           text: lastNodeSection.text.slice(0, ann.end - lastNodeSection.start)
         }
       }
 
       const sectionText = text.slice(ann.start, ann.end);
-      const sectionContentNodes = [...nodes.slice(startIndex, endIndex - 1), lastNodeSection];
+      const sectionContentNodes = [firstNodeSection, ...nodes.slice(startIndex + 1, endIndex - 1), lastNodeSection];
+
       return {
         key: index,
         text: sectionText,
