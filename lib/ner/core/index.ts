@@ -63,7 +63,7 @@ export const createEntityNode = <T>(text: string, annotation: Annotation<T>, key
  * Check if the last node and the next annotation are disjointed
  */
 export const isDisjointedAnnotation = <T>(node: EntityNode<T>, ann: Annotation<T>) => {
-  return ann.start > node.end;
+  return ann.start >= node.end;
 }
 
 /**
