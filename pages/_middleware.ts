@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 
 export default function handler(req: NextRequest) {
-  const token = process.env.NODE_ENV === 'development'
-    ? req.cookies['next-auth.session-token']
-    : req.cookies['__Secure-next-auth.session-token'];
-
+  const token = req.cookies['next-auth.session-token'] || req.cookies['__Secure-next-auth.session-token'];
 
   const authorized = !!token;
 
