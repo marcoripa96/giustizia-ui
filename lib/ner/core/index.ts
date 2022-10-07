@@ -156,29 +156,45 @@ export const getSectionNodesFactory = <T, U>(text: string, sectionAnnotations: A
       // it's possible that all annotations are included in the section offset
       endIndex = endIndex === -1 ? nodes.length : endIndex;
 
-      let firstNodeSection = nodes[startIndex];
-      let lastNodeSection = nodes[endIndex - 1];
-
-      if (index > 0 && firstNodeSection.type === 'text') {
-        firstNodeSection = {
-          ...firstNodeSection,
-          start: ann.start,
-          end: ann.start + firstNodeSection.text.length,
-          text: firstNodeSection.text.slice(ann.start - firstNodeSection.start, firstNodeSection.text.length)
-        }
-      }
-
-      // if the last node of a section is a text node, slice to the end of the section
-      if (lastNodeSection.type === 'text') {
-        lastNodeSection = {
-          ...lastNodeSection,
-          end: ann.end,
-          text: lastNodeSection.text.slice(0, ann.end - lastNodeSection.start)
-        }
-      }
-
       const sectionText = text.slice(ann.start, ann.end);
-      const sectionContentNodes = [firstNodeSection, ...nodes.slice(startIndex + 1, endIndex - 1), lastNodeSection];
+      let sectionNodes = nodes.slice(startIndex, endIndex);
+
+      // only one node in the section
+      if (sectionNodes.length === 1) {
+        const n = sectionNodes[0];
+
+        if (n.type === 'text') {
+          sectionNodes = [{
+            ...n,
+            start: ann.start,
+            end: ann.start + n.text.length,
+            text: n.text.slice(ann.start - n.start, n.text.length)
+          }]
+        }
+      } else {
+        let firstNodeSection = sectionNodes[0];
+        let lastNodeSection = sectionNodes[sectionNodes.length - 1];
+
+        if (index > 0 && firstNodeSection.type === 'text') {
+          firstNodeSection = {
+            ...firstNodeSection,
+            start: ann.start,
+            end: ann.start + firstNodeSection.text.length,
+            text: firstNodeSection.text.slice(ann.start - firstNodeSection.start, firstNodeSection.text.length)
+          }
+        }
+
+        // if the last node of a section is a text node, slice to the end of the section
+        if (lastNodeSection.type === 'text') {
+          lastNodeSection = {
+            ...lastNodeSection,
+            end: ann.end,
+            text: lastNodeSection.text.slice(0, ann.end - lastNodeSection.start)
+          }
+        }
+
+        sectionNodes = [firstNodeSection, ...nodes.slice(startIndex + 1, endIndex - 1), lastNodeSection];
+      }
 
       return {
         key: index,
@@ -186,7 +202,7 @@ export const getSectionNodesFactory = <T, U>(text: string, sectionAnnotations: A
         start: ann.start,
         end: ann.end,
         annotation: ann,
-        contentNodes: sectionContentNodes
+        contentNodes: sectionNodes
       }
     }) as SectionNode<T, U>[];
   }, {
