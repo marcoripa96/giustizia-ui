@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { Card, Checkbox, FormElement, Input, InputProps } from "@nextui-org/react";
 import { FiChevronDown } from "@react-icons/all-files/fi/FiChevronDown";
 import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
-import { ChangeEvent, Children, cloneElement, CSSProperties, isValidElement, MouseEvent, PropsWithChildren, ReactElement, ReactNode, useMemo, useRef, useState } from "react";
+import { ChangeEvent, Children, cloneElement, CSSProperties, isValidElement, MouseEvent, PropsWithChildren, ReactElement, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Portal } from "../Portal";
 import Option, { OptionProps } from "./Option";
 
@@ -262,6 +262,7 @@ const BaseSelect = ({
             <PopoverContent>
               <ContainerSearch>
                 <Input
+                  autoFocus
                   aria-label="Filter select items"
                   bordered
                   placeholder="Filter items"
