@@ -2,9 +2,10 @@ import styled from "@emotion/styled";
 
 type IconButtonProps = {
   active?: boolean;
+  rounded?: boolean;
 }
 
-const IconButton = styled.button<IconButtonProps>(({ active }) => ({
+const IconButton = styled.button<IconButtonProps>(({ active, rounded }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -27,6 +28,9 @@ const IconButton = styled.button<IconButtonProps>(({ active }) => ({
   '&:active': {
     background: '#cecece'
   },
+  ...(rounded && {
+    borderRadius: '50%'
+  }),
   ...(active && {
     color: '#0070F3',
     background: '#bfd8fc',
