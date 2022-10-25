@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 export default function handler(req: NextRequest) {
   if (process.env.NO_LOGIN === 'true') {
-    if (process.env.MODE === 'statale') {
+    if (process.env.STATALE_MODE === 'true') {
       if (!(req.nextUrl.pathname.match(/\/documents\/\d+/)) && !req.nextUrl.pathname.includes('api')) {
         const url = req.nextUrl.clone();
 

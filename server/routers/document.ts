@@ -134,9 +134,10 @@ const getDocuments = async (
 
 export const documents = createRouter()
   .query('getDocument', {
-    input: z.object({
-      id: z.number(),
-    }),
+    input: z
+      .object({
+        id: z.any(),
+      }),
     resolve: ({ input }) => {
       const { id } = input;
       return getDocumentById(id);
