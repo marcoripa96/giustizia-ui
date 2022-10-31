@@ -28,7 +28,8 @@ type NERProps = {
 
 const NodesContainer = styled.div({
   whiteSpace: 'pre-wrap',
-  wordWrap: 'break-word',
+  overflowWrap: 'break-word',
+  wordBreak: 'break-word',
   lineHeight: 1.7,
 })
 
