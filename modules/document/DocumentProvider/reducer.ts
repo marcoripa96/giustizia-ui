@@ -33,6 +33,7 @@ export const documentReducer = createImmerReducer<State, Action>({
 
     if (preset !== '') {
       newAnnSet.annotations = state.data.annotation_sets[preset].annotations
+      newAnnSet.next_annid = state.data.annotation_sets[preset].next_annid
     }
 
     state.data.annotation_sets[keyAnnSet] = newAnnSet;
