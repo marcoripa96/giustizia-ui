@@ -1,6 +1,6 @@
 import { AnnotationSet, Candidate, Document, EntityAnnotation } from "@/server/routers/document";
-import { FlatTreeNode, TreeItem } from "../SidebarAddAnnotation/Tree";
-import { FlatTreeObj } from "../SidebarAddAnnotation/Tree";
+import { FlatTreeNode, TreeItem } from "../../../components/Tree";
+import { FlatTreeObj } from "../../../components/Tree";
 
 export type Action =
   | { type: 'setData', payload: { data: Document } }
@@ -10,6 +10,7 @@ export type Action =
   | { type: 'deleteAnnotationSet', payload: { name: string } }
   | { type: 'udpateAnnotationSets', payload: { annotationSets: AnnotationSet<EntityAnnotation>[] } }
   | { type: 'previousCurrentEntity' }
+  | { type: 'highlightAnnotation', payload: { annotationId: number | null } }
   | { type: 'changeAction', payload: { action: UIAction } }
   | { type: 'changeActionData', payload: { data: string } }
   | { type: 'addAnnotation', payload: { viewIndex: number, text: string; start: number; end: number; type: string } }
@@ -34,7 +35,7 @@ export type AnnotationType = {
 };
 export type AnnotationTypeMap = Record<string, AnnotationType>;
 
-export type UIAction = 'select' | 'add' | 'delete' | 'filter' | 'settings';
+export type UIAction = 'select' | 'add' | 'delete' | 'clusters' | 'settings';
 
 export type Taxonomy = TreeItem[];
 export type FlattenedTaxonomy = FlatTreeObj
@@ -62,6 +63,9 @@ export type UIState = {
       viewIndex: number;
       entityIndex: number;
     } | null;
+    highlightAnnotation: {
+      entityId: number | null
+    },
     views: View[];
   }
 }

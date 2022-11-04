@@ -19,7 +19,9 @@ const content: Record<UIAction, ComponentType> = {
   }),
   select: () => null,
   delete: () => null,
-  filter: () => null,
+  clusters: dynamic(() => import('../../SidebarClusters/SidebarClusters'), {
+    suspense: true
+  }),
   settings: () => null
 }
 

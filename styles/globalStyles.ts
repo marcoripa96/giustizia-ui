@@ -6,8 +6,7 @@ const GlobalStyles = css`
     min-height: 100vh;
     padding: 0;
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-      Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    font-family: 'Inter', sans-serif;
     background: #FFF;
   }
 

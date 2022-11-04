@@ -8,7 +8,7 @@ import { FiUpload } from "@react-icons/all-files/fi/FiUpload";
 import { useEffect, useState } from "react";
 import { selectDocumentActiveType, selectTaxonomyTree, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import AddAnnotationModal from "./AddAnnotationModal";
-import { Tree } from "./Tree";
+import { Tree } from "../../../components/Tree";
 
 type DeleteModalProps = {
   onConfirm: () => void;

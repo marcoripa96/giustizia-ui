@@ -1,7 +1,8 @@
+import { Cluster } from "@/server/routers/document";
 import { beautifyString, isEmptyObject } from "@/utils/shared";
 import { useContext, useMemo } from "react";
 import { createSelector } from "reselect";
-import { buildTreeFromFlattenedObject, getAllNodeData } from "../SidebarAddAnnotation/Tree";
+import { buildTreeFromFlattenedObject, FlatTreeNode, FlatTreeObj, getAllNodeData } from "../../../components/Tree";
 import SelectAnnotationSet from "../Toolsbar/SelectAnnotationSet";
 import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
 import { State } from "./types";
@@ -54,6 +55,7 @@ export const selectDocumentCurrentEntity = (state: State) => state.ui.selectedEn
 export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
 export const selectNewAnnotationModalOpen = (state: State) => state.ui.newAnnotationModalOpen;
 export const selectViews = (state: State) => state.ui.views;
+export const selectHighlightAnnotationId = (state: State) => state.ui.highlightAnnotation.entityId;
 
 // selector which receives an input
 const selectViewIndex = (state: State, viewIndex: number) => viewIndex;
@@ -106,6 +108,49 @@ export const selectCurrentEntity = createSelector(
     return annotations[entityIndex];
   }
 );
+
+export const selectDocumentClusters = createSelector(
+  selectDocumentData,
+  selectViews,
+  // current annotation set
+  (doc, views) => {
+    if (views.length > 1) {
+      return [] as Cluster[];
+    }
+
+    const { activeAnnotationSet } = views[0];
+
+    const { text, annotation_sets } = doc;
+
+    const annSet = annotation_sets[activeAnnotationSet];
+    // get clusters from doc.features.clusters[activeAnnotationSet]
+    const clusters: Cluster[] = [
+      { id: 1, title: 'Cluster title', type: 'JDG', mentions: [{ id: 1, mention: 'something' }, { id: 4, mention: 'something' }, { id: 5, mention: 'something' }, { id: 6, mention: 'something' }] },
+      { id: 2, title: 'Cluster title', type: 'ORG', mentions: [{ id: 2, mention: 'something' }] },
+      { id: 3, title: 'Cluster title', type: 'LOC', mentions: [{ id: 3, mention: 'something' }] }
+    ]
+
+    return clusters.map((cluster) => {
+      return {
+        ...cluster,
+        mentions: cluster.mentions.map((mention) => {
+          const ann = annSet.annotations.find((ann) => ann.id === mention.id);
+          if (!ann) {
+            return mention;
+          }
+
+          const startOffset = ann.start - 10 < 0 ? 0 : ann.start - 10;
+          const endOffset = ann.end + 50 > text.length ? text.length - ann.end : ann.end + 50;
+
+          return {
+            ...mention,
+            mention: `...${text.slice(startOffset, endOffset)}...`
+          }
+        })
+      }
+    })
+  }
+)
 
 /**
  * Select linking features for the current entity

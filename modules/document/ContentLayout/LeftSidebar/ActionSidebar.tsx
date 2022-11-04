@@ -8,7 +8,7 @@ const Container = styled.div({
   flexShrink: 0,
   width: '70px',
   height: '100%',
-  padding: '16px 12px',
+  // padding: '16px 12px',
   borderRight: '1px solid #F3F3F5',
 });
 

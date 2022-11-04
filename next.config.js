@@ -13,6 +13,12 @@ const nextConfig = {
     return [
       {
         source: '/',
+        destination: process.env.NEXT_PUBLIC_BASE_PATH,
+        permanent: true,
+        basePath: false
+      },
+      {
+        source: '/',
         destination: '/infer',
         permanent: true,
       },

@@ -1,13 +1,16 @@
 import { AnnotationSet, EntityAnnotation } from "@/server/routers/document";
 import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
-import { FlatTreeNode, getNodeAndChildren } from "../SidebarAddAnnotation/Tree";
+import { FlatTreeNode, getNodeAndChildren } from "../../../components/Tree";
 import { State, Action } from "./types";
 import { addAnnotation, getAnnotationTypes, getEntityIndex, getTypeFilter, isSameAction, toggleLeftSidebar } from "./utils";
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
     state.data = payload.data;
+  },
+  highlightAnnotation: (state, payload) => {
+    state.ui.highlightAnnotation.entityId = payload.annotationId;
   },
   changeAction: (state, payload) => {
     toggleLeftSidebar(state, payload);

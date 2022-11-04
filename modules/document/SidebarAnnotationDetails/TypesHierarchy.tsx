@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { FiArrowRight } from "@react-icons/all-files/fi/FiArrowRight";
 import { useMemo } from "react";
 import { selectDocumentTaxonomy, useSelector } from "../DocumentProvider/selectors";
-import { getNodesPath, isParentNode } from "../SidebarAddAnnotation/Tree";
+import { getNodesPath, isParentNode } from "../../../components/Tree";
 
 const ContainerTypesHierarchy = styled.div({
   display: 'flex',

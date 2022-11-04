@@ -5,7 +5,7 @@ import { Text } from "@nextui-org/react"
 import { darken } from "polished";
 import { useMemo, useCallback } from "react";
 import { selectDocumentTaxonomy, useSelector } from "../DocumentProvider/selectors";
-import { getAllNodeData } from "../SidebarAddAnnotation/Tree";
+import { getAllNodeData } from "../../../components/Tree";
 
 type EntityContextProps = {
   text: string;

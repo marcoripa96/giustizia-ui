@@ -1,4 +1,4 @@
-import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { ChildNodeWithColor } from "@/components/Tree";
 import { EntityAnnotation } from "@/server/routers/document";
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";

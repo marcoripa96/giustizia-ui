@@ -19,6 +19,13 @@ export type Document = {
   }
 };
 
+export type Cluster = {
+  id: number;
+  title: string;
+  type: string;
+  mentions: { id: number; mention: string }[]
+}
+
 export type AnnotationSet<P = []> = {
   _id?: string;
   name: string;

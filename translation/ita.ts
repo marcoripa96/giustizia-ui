@@ -45,8 +45,14 @@ const t: Translation = {
         select: 'Seleziona',
         add: 'Aggiungi annotazione',
         delete: 'Elimina annotazione',
+        clusters: 'Cluster entità',
         filter: 'Filtra annotazioni',
         settings: 'Impostazioni'
+      },
+      clustersContent: {
+        title: 'Cluster entità',
+        description: 'Visualizza i cluster delle entità con le loro menzioni',
+        mentions: '{n} menzioni'
       },
       addContent: {
         title: 'Aggiungi annotazione',

@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useMutation } from "@/utils/trpc";
 import { Textarea, Text } from "@nextui-org/react";
-import { flattenTree, getAllNodeData } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { flattenTree, getAllNodeData } from "@/components/Tree";
 import { baseTaxonomy } from "@/modules/document/DocumentProvider/state";
 import NER from "@/components/NER/NER";
 import AnnotationSetFilter from "./AnnotationSetFilter";

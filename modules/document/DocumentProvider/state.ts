@@ -68,6 +68,9 @@ export const initialUIState: Omit<UIState, 'taxonomy'> = {
     leftActionBarOpen: true,
     newAnnotationModalOpen: false,
     selectedEntity: null,
+    highlightAnnotation: {
+      entityId: null
+    },
     views: [
       {
         typeFilter: [],

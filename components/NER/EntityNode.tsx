@@ -1,6 +1,6 @@
 import { getSpan } from "@/lib/ner/core";
 import { Annotation, EntityNode, NestedEntity } from "@/lib/ner/core/types";
-import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { ChildNodeWithColor } from "@/components/Tree";
 import { AdditionalAnnotationProps, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Tooltip } from "@nextui-org/react";
@@ -80,7 +80,7 @@ function EntityNode(props: EntityNodeProps) {
     nesting
   } = props;
 
-  const { onTagClick, onTagEnter, onTagLeave, getTaxonomyNode, renderContentHover } = useNERContext();
+  const { onTagClick, onTagEnter, onTagLeave, getTaxonomyNode, renderContentHover, highlightAnnotation } = useNERContext();
 
   const handleTagClick = (ann: Annotation<AdditionalAnnotationProps>) => (event: MouseEvent) => {
     event.stopPropagation();
@@ -122,6 +122,7 @@ function EntityNode(props: EntityNodeProps) {
   }) => {
     const tagElement = (
       <Tag
+        id={`entity-tag-${annotation.id}`}
         color={color}
         level={index}
         onClick={handleTagClick(annotation)}

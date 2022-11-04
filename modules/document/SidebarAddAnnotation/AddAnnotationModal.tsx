@@ -6,7 +6,7 @@ import styled from "@emotion/styled";
 import { Button, Checkbox, Col, FormElement, Input, Modal, Text } from "@nextui-org/react"
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useState } from "react";
 import { selectDocumentTaxonomy, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
-import { ascend, ParentNode } from "./Tree";
+import { ascend, ParentNode } from "../../../components/Tree";
 
 type SelectColorProps = {
   value: string;

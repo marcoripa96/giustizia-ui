@@ -1,6 +1,6 @@
 import useNER from "@/lib/ner/core/use-ner";
 import { FlattenedTaxonomy } from "@/modules/document/DocumentProvider/types";
-import { getAllNodeData } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { getAllNodeData } from "@/components/Tree";
 import { EntityAnnotation, SectionAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { useCallback, useMemo, MouseEvent, ReactNode } from "react";
@@ -14,6 +14,7 @@ type NERProps = {
   entityAnnotations: EntityAnnotation[];
   sectionAnnotations?: SectionAnnotation[];
   taxonomy: FlattenedTaxonomy;
+  highlightAnnotation?: number | null;
   isAddMode?: boolean;
   addSelectionColor?: string;
   renderContentHover?: (annotation: EntityAnnotation) => ReactNode;

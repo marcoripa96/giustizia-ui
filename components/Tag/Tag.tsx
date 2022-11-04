@@ -1,4 +1,4 @@
-import { ChildNodeWithColor } from "@/modules/document/SidebarAddAnnotation/Tree";
+import { ChildNodeWithColor } from "@/components/Tree";
 import styled from "@emotion/styled";
 import { CSS } from "@nextui-org/react";
 import { darken } from "polished";

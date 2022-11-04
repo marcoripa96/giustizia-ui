@@ -1,7 +1,7 @@
 import { AnnotationSet, Candidate, EntityAnnotation } from "@/server/routers/document";
 import { deepEqual } from "@/utils/shared";
 import { Draft } from "immer";
-import { ChildNode, flattenTree, FlatTreeNode, getNode } from "../SidebarAddAnnotation/Tree";
+import { ChildNode, flattenTree, FlatTreeNode, getNode } from "../../../components/Tree";
 import { Action, FlattenedTaxonomy, State, Taxonomy } from "./types";
 
 /**
@@ -44,10 +44,14 @@ export const getAnnotations = (annotations: EntityAnnotation[], index: number) =
  */
 export const scrollEntityIntoView = (id: number) => {
   const element = document.getElementById(`entity-tag-${id}`);
+  console.log(element);
   if (!element) return;
 
-  const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
-  window.scrollTo({ top: y, behavior: 'smooth' });
+  element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // const y = element.getBoundingClientRect().top + window.pageYOffset - 100;
+  // console.log(y);
+
+  // window.scrollTo({ top: y, behavior: 'smooth' });
 }
 
 /**

@@ -12,6 +12,7 @@ import {
   selectDocumentTaxonomy,
   selectDocumentText,
   selectFilteredEntityAnnotations,
+  selectHighlightAnnotationId,
   useDocumentDispatch,
   useSelector
 } from "../DocumentProvider/selectors";
@@ -40,6 +41,7 @@ const DocumentViewer = () => {
   const taxonomy = useSelector(selectDocumentTaxonomy);
   const filteredAnnotations = useSelector((state) => selectFilteredEntityAnnotations(state, viewIndex));
   const sectionUrlHashId = useHashUrlId();
+  const highlightAnnotationId = useSelector(selectHighlightAnnotationId);
   const dispatch = useDocumentDispatch();
 
   useEffect(() => {
@@ -96,6 +98,7 @@ const DocumentViewer = () => {
           text={text}
           entityAnnotations={filteredAnnotations}
           sectionAnnotations={sectionAnnotations}
+          highlightAnnotation={highlightAnnotationId}
           isAddMode={action.value === 'add'}
           onTagClick={handleTagClick}
           onTextSelection={onTextSelection}

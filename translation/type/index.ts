@@ -43,6 +43,7 @@ export type Translation = {
         select: string;
         add: string;
         delete: string;
+        clusters: string;
         filter: string;
         settings: string;
       };
@@ -52,6 +53,11 @@ export type Translation = {
         addType: string;
         loadTaxonomy: string;
         tooltipNotRecognized: string;
+      },
+      clustersContent: {
+        title: string;
+        description: string;
+        mentions: string
       }
     },
     rightSidebar: {
