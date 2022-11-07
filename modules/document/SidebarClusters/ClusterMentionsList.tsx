@@ -65,7 +65,7 @@ const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
     const element = document.getElementById(`entity-tag-${id}`);
     if (!element) return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
     const observer = new IntersectionObserver((entries) => {
       const [entry] = entries;

@@ -31,7 +31,7 @@ const NodesContainer = styled.div({
 })
 
 const NER = ({ text, entityAnnotations, sectionAnnotations, taxonomy, ...props }: NERProps) => {
-  const { contentNodes, getSections } = useNER({
+  const nodes = useNER({
     text,
     entities: entityAnnotations,
     sections: sectionAnnotations
@@ -49,27 +49,25 @@ const NER = ({ text, entityAnnotations, sectionAnnotations, taxonomy, ...props }
 
   return (
     <NERContext.Provider value={contextValue}>
-      {sectionAnnotations
-        ? getSections().map(({ contentNodes, key, ...sectionProps }) => (
-          <Section key={key} {...sectionProps}>
-            {contentNodes.map(({ key, ...nodeProps }) => {
-              if (nodeProps.type === 'text') {
-                return <TextNode key={key} {...nodeProps} />
-              }
-              return <EntityNode key={key} {...nodeProps} />
-            })}
-          </Section>
-        ))
-        : (
-          <NodesContainer>
-            {contentNodes.map(({ key, ...nodeProps }) => {
-              if (nodeProps.type === 'text') {
-                return <TextNode key={key} {...nodeProps} />
-              }
-              return <EntityNode key={key} {...nodeProps} />
-            })}
-          </NodesContainer>
-        )}
+      {nodes.map((node) => {
+        if (node.type === 'section') {
+          return (
+            <Section {...node}>
+              {node.contentNodes.map(({ key, ...nodeProps }) => {
+                if (nodeProps.type === 'text') {
+                  return <TextNode key={key} {...nodeProps} />
+                }
+                return <EntityNode key={key} {...nodeProps} />
+              })}
+            </Section>
+          )
+        }
+        if (node.type === 'text') {
+          return <TextNode {...node} />
+        }
+        const { key, ...props } = node;
+        return <EntityNode key={key} {...props} />
+      })}
     </NERContext.Provider>
   )
 };

@@ -1,5 +1,5 @@
 import { memo } from "@/utils/shared";
-import { Annotation, ContentNode, EntityNode, NestedEntity, SectionNode, TextNode } from "./types";
+import { Annotation, ContentNode, EntityNode, SectionNode, TextNode } from "./types";
 
 /**
  * Order annotations by their start offset
@@ -41,21 +41,12 @@ export const createTextNode = <T>(text: string, annotation: Annotation<T>, textC
  * Create an entity node
  */
 export const createEntityNode = <T>(text: string, annotation: Annotation<T>, key: number): EntityNode<T> => {
-  const nestedEntity = {
-    typesMap: {
-      [annotation.type]: key
-    },
-    types: [annotation.type]
-  }
 
   return {
     type: 'entity',
     key,
     ...getSpan(text, annotation.start, annotation.end),
-    annotations: {
-      [key]: annotation
-    },
-    nesting: [key]
+    annotation
   }
 }
 
@@ -84,19 +75,15 @@ export const isOverlappingAnnotation = <T>(prev: Annotation<T>, ann: Annotation<
   return ann.start >= prev.start && ann.start <= prev.end && ann.end > prev.end;
 }
 
-export const getLastAnnotation = <T>(node: EntityNode<T>) => {
-  const nestedEntityId = node.nesting[0];
-  return node.annotations[nestedEntityId];
-}
+
 
 /**
  * Create content nodes (entity and next nodes)
  * It currently supports disjointed, nested and multi type annotations
  */
-export const createNodes = <T>(text: string, annotations: Annotation<T>[]) => {
+export const createNodes = <T>(text: string, annotations: Annotation<T>[], textCursor = 0, textEndCursor = -1) => {
   let nodes = [] as ContentNode<T>[];
   let index = 0;
-  let textCursor = 0;
 
   for (const ann of annotations) {
     // last node can only be undefined or be of type EnityNode
@@ -109,12 +96,13 @@ export const createNodes = <T>(text: string, annotations: Annotation<T>[]) => {
       index += 1;
       textCursor = ann.end;
     } else {
-      const prevAnn = getLastAnnotation(lastNode)
+      const { annotation: prevAnn } = lastNode;
 
       if (isNestedAnnotation(prevAnn, ann)) {
-        lastNode.annotations[index] = ann;
-        lastNode.nesting.unshift(index);
-        index += 1;
+        console.warn(`Encountered a nested annotation (currently not supported and discarded)`,
+          prevAnn,
+          ann
+        );
       } else if (hasSameOffset(prevAnn, ann)) {
         console.warn(`Encountered multiple annotations with the same offset. One of them is discarded`,
           prevAnn,
@@ -130,13 +118,40 @@ export const createNodes = <T>(text: string, annotations: Annotation<T>[]) => {
     }
   }
   // add last piece of text
+  const end = textEndCursor === -1 ? text.length : textEndCursor;
   nodes.push({
     type: 'text',
     key: index,
-    ...getSpan(text, textCursor, text.length)
+    ...getSpan(text, textCursor, end)
   });
 
   return nodes;
+}
+
+export const createSectionNodes = <T, U>(text: string, sectionAnnotations: Annotation<U>[], entityAnnotations: Annotation<T>[]): SectionNode<T, U>[] => {
+  return sectionAnnotations.map((section, index) => {
+    const sectionText = text.slice(section.start, section.end);
+
+    // look where to slice the array of entities
+    const startIndex = entityAnnotations.findIndex((node) => section.start >= node.start && section.start <= node.end || node.start >= section.start && node.start <= section.end)
+    let endIndex = entityAnnotations.findIndex((node) => node.start > section.end);
+    // it's possible that all annotations are included in the section offset
+    endIndex = endIndex === -1 ? entityAnnotations.length : endIndex;
+
+    let sectionEntities = entityAnnotations.slice(startIndex, endIndex);
+
+    const contentNodes = createNodes(text, sectionEntities, section.start, section.end);
+
+    return {
+      type: 'section',
+      key: index,
+      text: sectionText,
+      start: section.start,
+      end: section.end,
+      annotation: section,
+      contentNodes
+    }
+  })
 }
 
 /**

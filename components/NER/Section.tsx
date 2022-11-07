@@ -19,7 +19,7 @@ const SectionTitle = styled.div({
   gap: '10px',
   margin: '15px 0px',
   fontSize: '22px',
-  fontWeight: 500,
+  fontWeight: 600,
   '> a': {
     display: 'none'
   },
