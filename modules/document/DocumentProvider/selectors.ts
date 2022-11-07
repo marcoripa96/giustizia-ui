@@ -1,12 +1,20 @@
-import { Cluster } from "@/server/routers/document";
-import { beautifyString, isEmptyObject } from "@/utils/shared";
-import { useContext, useMemo } from "react";
-import { createSelector } from "reselect";
-import { buildTreeFromFlattenedObject, FlatTreeNode, FlatTreeObj, getAllNodeData } from "../../../components/Tree";
-import SelectAnnotationSet from "../Toolsbar/SelectAnnotationSet";
-import { DocumentStateContext, DocumentDispatchContext } from "./DocumentContext";
-import { State } from "./types";
-import { getAnnotationTypes, getCandidateId, getEntityIndex } from "./utils";
+import { Cluster } from '@/server/routers/document';
+import { beautifyString, groupBy, isEmptyObject } from '@/utils/shared';
+import { useContext, useMemo } from 'react';
+import { createSelector } from 'reselect';
+import {
+  buildTreeFromFlattenedObject,
+  FlatTreeNode,
+  FlatTreeObj,
+  getAllNodeData,
+} from '../../../components/Tree';
+import SelectAnnotationSet from '../Toolsbar/SelectAnnotationSet';
+import {
+  DocumentStateContext,
+  DocumentDispatchContext,
+} from './DocumentContext';
+import { State } from './types';
+import { getAnnotationTypes, getCandidateId, getEntityIndex } from './utils';
 
 /**
  * Access the document state within the DocumentProvider.
@@ -15,7 +23,7 @@ export const useDocumentState = () => {
   const context = useContext(DocumentStateContext);
 
   if (context === undefined) {
-    throw new Error('useDocumentState must be used within a DocumentProvider')
+    throw new Error('useDocumentState must be used within a DocumentProvider');
   }
 
   return context;
@@ -28,7 +36,9 @@ export const useDocumentDispatch = () => {
   const context = useContext(DocumentDispatchContext);
 
   if (context === undefined) {
-    throw new Error('useDocumentDispatch must be used within a DocumentProvider')
+    throw new Error(
+      'useDocumentDispatch must be used within a DocumentProvider'
+    );
   }
 
   return context;
@@ -46,33 +56,33 @@ export function useSelector<T>(cb: (state: State) => T) {
 export const selectDocumentId = (state: State) => state.data.id;
 export const selectDocumentData = (state: State) => state.data;
 export const selectDocumentText = (state: State) => state.data.text;
-export const selectDocumentAnnotationSets = (state: State) => state.data.annotation_sets;
-export const selectDocumentSectionAnnotations = (state: State) => state.data.annotation_sets.Sections?.annotations;
+export const selectDocumentAnnotationSets = (state: State) =>
+  state.data.annotation_sets;
+export const selectDocumentSectionAnnotations = (state: State) =>
+  state.data.annotation_sets.Sections?.annotations;
 export const selectDocumentTaxonomy = (state: State) => state.taxonomy;
 export const selectDocumentAction = (state: State) => state.ui.action;
 export const selectDocumentActiveType = (state: State) => state.ui.action.data;
-export const selectDocumentCurrentEntity = (state: State) => state.ui.selectedEntity;
-export const selectDocumentLeftSidebarOpen = (state: State) => state.ui.leftActionBarOpen;
-export const selectNewAnnotationModalOpen = (state: State) => state.ui.newAnnotationModalOpen;
+export const selectDocumentCurrentEntity = (state: State) =>
+  state.ui.selectedEntity;
+export const selectDocumentLeftSidebarOpen = (state: State) =>
+  state.ui.leftActionBarOpen;
+export const selectNewAnnotationModalOpen = (state: State) =>
+  state.ui.newAnnotationModalOpen;
 export const selectViews = (state: State) => state.ui.views;
-export const selectHighlightAnnotationId = (state: State) => state.ui.highlightAnnotation.entityId;
+export const selectHighlightAnnotationId = (state: State) =>
+  state.ui.highlightAnnotation.entityId;
 
 // selector which receives an input
 const selectViewIndex = (state: State, viewIndex: number) => viewIndex;
 
 export const selectDocumentTagTypeFilter = createSelector(
-  [
-    selectViews,
-    selectViewIndex
-  ],
+  [selectViews, selectViewIndex],
   (views, viewIndex) => views[viewIndex].typeFilter
 );
 
 export const selectDocumentActiveAnnotationSet = createSelector(
-  [
-    selectViews,
-    selectViewIndex
-  ],
+  [selectViews, selectViewIndex],
   (views, viewIndex) => views[viewIndex].activeAnnotationSet
 );
 
@@ -81,7 +91,7 @@ export const selectActiveEntityAnnotations = createSelector(
   selectDocumentAnnotationSets,
   (activeAnnotationSet, annotationSets) => {
     if (annotationSets[activeAnnotationSet]) {
-      return annotationSets[activeAnnotationSet].annotations
+      return annotationSets[activeAnnotationSet].annotations;
     }
     return [];
   }
@@ -89,11 +99,17 @@ export const selectActiveEntityAnnotations = createSelector(
 
 export const selectAllEntityAnnotationSets = createSelector(
   selectDocumentAnnotationSets,
-  (annotationSets) => Object.values(annotationSets).filter((set) => set.name.startsWith('entities'))
-)
+  (annotationSets) =>
+    Object.values(annotationSets).filter((set) =>
+      set.name.startsWith('entities')
+    )
+);
 
 // For expensive selectors memoize them with createSelector (e.g. array operations)
-export const selectTaxonomyTree = createSelector(selectDocumentTaxonomy, (taxonomy) => buildTreeFromFlattenedObject(taxonomy));
+export const selectTaxonomyTree = createSelector(
+  selectDocumentTaxonomy,
+  (taxonomy) => buildTreeFromFlattenedObject(taxonomy)
+);
 export const selectCurrentEntity = createSelector(
   selectViews,
   selectDocumentAnnotationSets,
@@ -120,15 +136,22 @@ export const selectDocumentClusters = createSelector(
 
     const { activeAnnotationSet } = views[0];
 
-    const { text, annotation_sets } = doc;
+    const { text, annotation_sets, features } = doc;
 
     const annSet = annotation_sets[activeAnnotationSet];
     // get clusters from doc.features.clusters[activeAnnotationSet]
-    const clusters: Cluster[] = [
-      { id: 1, title: 'Cluster title', type: 'JDG', mentions: [{ id: 1, mention: 'something' }, { id: 4, mention: 'something' }, { id: 5, mention: 'something' }, { id: 6, mention: 'something' }] },
-      { id: 2, title: 'Cluster title', type: 'ORG', mentions: [{ id: 2, mention: 'something' }] },
-      { id: 3, title: 'Cluster title', type: 'LOC', mentions: [{ id: 3, mention: 'something' }] }
-    ]
+    const clusters = features.clusters[activeAnnotationSet];
+
+    const clusterGroups = groupBy(
+      features.clusters[activeAnnotationSet],
+      'type'
+    );
+    console.log(clusterGroups);
+    // const clusters: Cluster[] = [
+    //   { id: 1, title: 'Cluster title', type: 'JDG', mentions: [{ id: 1, mention: 'something' }, { id: 4, mention: 'something' }, { id: 5, mention: 'something' }, { id: 6, mention: 'something' }] },
+    //   { id: 2, title: 'Cluster title', type: 'ORG', mentions: [{ id: 2, mention: 'something' }] },
+    //   { id: 3, title: 'Cluster title', type: 'LOC', mentions: [{ id: 3, mention: 'something' }] }
+    // ]
 
     return clusters.map((cluster) => {
       return {
@@ -140,17 +163,18 @@ export const selectDocumentClusters = createSelector(
           }
 
           const startOffset = ann.start - 10 < 0 ? 0 : ann.start - 10;
-          const endOffset = ann.end + 50 > text.length ? text.length - ann.end : ann.end + 50;
+          const endOffset =
+            ann.end + 50 > text.length ? text.length - ann.end : ann.end + 50;
 
           return {
             ...mention,
-            mention: `...${text.slice(startOffset, endOffset)}...`
-          }
-        })
-      }
-    })
+            mention: `...${text.slice(startOffset, endOffset)}...`,
+          };
+        }),
+      };
+    });
   }
-)
+);
 
 /**
  * Select linking features for the current entity
@@ -161,10 +185,11 @@ export const selectCurrentEntityLinkingFeatures = createSelector(
     if (!annotation) {
       return undefined;
     }
-    const { candidates, top_candidate, ...rest } = annotation.features.linking || {};
+    const { candidates, top_candidate, ...rest } =
+      annotation.features.linking || {};
 
     if (!candidates) {
-      return undefined
+      return undefined;
     }
     // order candidates
     const orderedCandidates = candidates.sort((a, b) => {
@@ -175,14 +200,14 @@ export const selectCurrentEntityLinkingFeatures = createSelector(
         return 1;
       }
       return b.score - a.score;
-    })
+    });
     return {
       candidates: orderedCandidates,
       top_candidate,
-      ...rest
-    }
+      ...rest,
+    };
   }
-)
+);
 
 /**
  * Get entities filtered by the current type filter
@@ -193,9 +218,9 @@ export const selectFilteredEntityAnnotations = createSelector(
   (annotations, typeFilter) => {
     return annotations.filter((ann) => {
       return typeFilter.indexOf(ann.type) !== -1;
-    })
+    });
   }
-)
+);
 
 /**
  * Get add selection color based on the taxonomy type selected
@@ -205,16 +230,16 @@ export const selectAddSelectionColor = createSelector(
   selectDocumentAction,
   (taxonomy, action) => {
     if (!action.data) {
-      return ''
+      return '';
     }
     try {
-      return getAllNodeData(taxonomy, action.data).color
+      return getAllNodeData(taxonomy, action.data).color;
     } catch (err) {
       // trying to access a node that doesn't exist
-      return ''
+      return '';
     }
   }
-)
+);
 
 export const selectSectionsSidebar = createSelector(
   selectDocumentSectionAnnotations,
@@ -224,7 +249,7 @@ export const selectSectionsSidebar = createSelector(
     }
     return sectionAnnotations.map((section) => ({
       id: section.type,
-      label: beautifyString(section.type)
+      label: beautifyString(section.type),
     }));
   }
-)
+);

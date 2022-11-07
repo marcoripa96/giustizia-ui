@@ -1,21 +1,21 @@
-import { Cluster } from "@/server/routers/document";
-import styled from "@emotion/styled";
-import { Text } from "@nextui-org/react";
-import { MouseEvent, useState } from "react";
-import { scrollEntityIntoView } from "../DocumentProvider/utils";
+import { Cluster } from '@/server/routers/document';
+import styled from '@emotion/styled';
+import { Text } from '@nextui-org/react';
+import { MouseEvent, useState } from 'react';
+import { scrollEntityIntoView } from '../DocumentProvider/utils';
 import { FiArrowRight } from '@react-icons/all-files/fi/FiArrowRight';
-import { useDocumentDispatch } from "../DocumentProvider/selectors";
+import { useDocumentDispatch } from '../DocumentProvider/selectors';
 
 type ClusterMentionsListProps = {
-  mentions: Cluster['mentions']
-}
+  mentions: Cluster['mentions'];
+};
 
 const ListContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '5px',
-  width: '100%'
-})
+  width: '100%',
+});
 
 const MentionButton = styled.button({
   position: 'relative',
@@ -30,18 +30,17 @@ const MentionButton = styled.button({
   transition: 'background 250ms ease-out, transform 150ms ease-out',
   '&:active': {
     background: '#ececec',
-    transform: 'scale(0.95)'
+    transform: 'scale(0.95)',
   },
   '&:hover': {
     paddingRight: '20px',
     background: '#fcfcfc',
     '> div': {
       visibility: 'visible',
-      transform: 'translateY(-50%) translateX(10%)'
-    }
-  }
-
-})
+      transform: 'translateY(-50%) translateX(10%)',
+    },
+  },
+});
 
 const IconButtonContainer = styled.div({
   display: 'flex',
@@ -52,11 +51,10 @@ const IconButtonContainer = styled.div({
   right: '5px',
   transform: 'translateY(-50%)',
   transition: 'transform 150ms ease-out',
-  visibility: 'hidden'
-})
+  visibility: 'hidden',
+});
 
 const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
-
   const dispatch = useDocumentDispatch();
 
   const handleOnClick = (id: number) => (event: MouseEvent) => {
@@ -65,29 +63,36 @@ const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
     const element = document.getElementById(`entity-tag-${id}`);
     if (!element) return;
 
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    const observer = new IntersectionObserver((entries) => {
-      const [entry] = entries;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
 
-      if (entry.isIntersecting) {
-        observer.unobserve(element);
-        dispatch({
-          type: 'highlightAnnotation',
-          payload: {
-            annotationId: id
-          }
-        })
-      }
-    }, { root: null, rootMargin: "0px", threshold: 1 })
+        if (entry.isIntersecting) {
+          observer.unobserve(element);
+          dispatch({
+            type: 'highlightAnnotation',
+            payload: {
+              annotationId: id,
+            },
+          });
+        }
+      },
+      { root: null, rootMargin: '0px', threshold: 1 }
+    );
 
     observer.observe(element);
-  }
+  };
 
   return (
     <ListContainer>
       {mentions.map((m) => (
-        <MentionButton onClick={handleOnClick(m.id)} key={m.id}>
+        <MentionButton
+          title={m.mention}
+          onClick={handleOnClick(m.id)}
+          key={m.id}
+        >
           {m.mention}
           <IconButtonContainer>
             <FiArrowRight />
@@ -95,7 +100,7 @@ const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
         </MentionButton>
       ))}
     </ListContainer>
-  )
+  );
 };
 
 export default ClusterMentionsList;

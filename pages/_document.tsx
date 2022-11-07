@@ -1,4 +1,10 @@
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+} from 'next/document';
 import { CssBaseline } from '@nextui-org/react';
 
 class MyDocument extends Document {
@@ -6,7 +12,7 @@ class MyDocument extends Document {
     const initialProps = await Document.getInitialProps(ctx);
     return {
       ...initialProps,
-      styles: <>{initialProps.styles}</>
+      styles: <>{initialProps.styles}</>,
     };
   }
 
@@ -17,7 +23,10 @@ class MyDocument extends Document {
           {CssBaseline.flush()}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
-          <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter&display=swap"
+            rel="stylesheet"
+          />
         </Head>
         <body>
           <Main />
