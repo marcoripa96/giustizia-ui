@@ -70,22 +70,11 @@ const ClusterCard = ({
   onClick,
 }: ClusterCardProps) => {
   const t = useText('document');
-  const taxonomy = useSelector(selectDocumentTaxonomy);
 
-  const taxonomyNode = useMemo(() => {
-    const node = getAllNodeData(taxonomy, type);
-    return node;
-  }, [taxonomy]);
-
-  const typesPath = useMemo(() => {
-    const nodes = getNodesPath(taxonomy, type);
-    return nodes.map((n) => n.label).join(' / ');
-  }, [type]);
 
   return (
     <>
       <ClusterContainer selected={selected} onClick={onClick}>
-        <Tag color={taxonomyNode.color}>{typesPath}</Tag>
         <Text
           title={title}
           b

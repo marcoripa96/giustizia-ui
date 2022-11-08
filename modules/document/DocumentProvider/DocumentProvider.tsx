@@ -23,6 +23,8 @@ const DocumentProvider = ({ children }: PropsWithChildren<{}>) => {
     { staleTime: Infinity }
   );
 
+  console.log(data);
+
   if (isFetching || !data) {
     return <SkeletonLayout />;
   }

@@ -1,10 +1,8 @@
 import { useText } from "@/components";
-import { Tree } from "@/components/Tree";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
 import { selectDocumentClusters, useSelector } from "../DocumentProvider/selectors";
-import ClusterCard from "./ClusterCard";
-import ClusterList from "./ClusterList";
+import ClusterList from "./ClusterGroupsList";
 
 const Container = styled.div({
   display: 'flex',
@@ -12,7 +10,6 @@ const Container = styled.div({
   gap: '10px',
   height: '100%',
   overflowY: 'auto',
-  padding: '10px',
   '::-webkit-scrollbar': {
     height: '4px',
     width: '2px'
@@ -26,21 +23,15 @@ const Container = styled.div({
 const ContentTitle = styled.div({
   display: 'flex',
   flexDirection: 'column',
+  padding: '10px'
 })
-
-// export const clusters = [
-//   { id: 1, title: 'Cluster title', type: 'JDG', mentions: [{ id: 1, mention: 'something' }] },
-//   { id: 2, title: 'Cluster title', type: 'ORG', mentions: [{ id: 2, mention: 'something' }] },
-//   { id: 3, title: 'Cluster title', type: 'LOC', mentions: [{ id: 3, mention: 'something' }] }
-// ]
-
 
 const SidebarClusters = () => {
   const t = useText('document');
 
-  const clusters = useSelector(selectDocumentClusters);
+  const clusterGroups = useSelector(selectDocumentClusters);
 
-  return (
+  return clusterGroups ? (
     <Container>
       <ContentTitle>
         <Text b>{t('leftSidebar.clustersContent.title')}</Text>
@@ -48,9 +39,9 @@ const SidebarClusters = () => {
           {t('leftSidebar.clustersContent.description')}
         </Text>
       </ContentTitle>
-      <ClusterList clusters={clusters} />
+      <ClusterList clusterGroups={clusterGroups} />
     </Container>
-  )
+  ) : null
 };
 
 export default SidebarClusters;

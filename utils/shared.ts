@@ -156,9 +156,9 @@ export function memo<TDeps extends readonly any[], TResult>(
             font-size: .6rem;
             font-weight: bold;
             color: hsl(${Math.max(
-              0,
-              Math.min(120 - 120 * resultFpsPercentage, 120)
-            )}deg 100% 31%);`,
+            0,
+            Math.min(120 - 120 * resultFpsPercentage, 120)
+          )}deg 100% 31%);`,
           opts?.key
         );
       }
@@ -182,12 +182,8 @@ export const removeStopScroll = () => {
   });
 };
 
-export const groupBy = <T, K extends keyof T>(items: T[], key: K) => {
-  return items.reduce(
-    (acc, item) => ({
-      ...acc,
-      [item[key]]: [...(acc[key] || []), item],
-    }),
-    {} as Record<K, T[]>
-  );
-};
+export const groupBy = <T>(array: T[], predicate: (value: T, index: number, array: T[]) => string) =>
+  array.reduce((acc, value, index, array) => {
+    (acc[predicate(value, index, array)] ||= []).push(value);
+    return acc;
+  }, {} as { [key: string]: T[] });

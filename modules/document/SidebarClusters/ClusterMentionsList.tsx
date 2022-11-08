@@ -27,6 +27,7 @@ const MentionButton = styled.button({
   border: '1px solid #F3F3F5',
   borderRadius: '6px',
   cursor: 'pointer',
+  textAlign: 'start',
   transition: 'background 250ms ease-out, transform 150ms ease-out',
   '&:active': {
     background: '#ececec',

@@ -21,7 +21,7 @@ const Tag = styled.span<{ color: string; highlight: boolean }>(({ color, highlig
   ...(highlight && {
     background: darken(0.1, color)
   }),
-  transition: 'background 250ms ease-out, transform 250ms ease-out'
+  transition: 'background 500ms ease-out'
 }));
 
 const TagLabel = styled.span<{ color: string }>(({ color }) => ({

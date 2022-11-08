@@ -131,7 +131,7 @@ export const selectDocumentClusters = createSelector(
   // current annotation set
   (doc, views) => {
     if (views.length > 1) {
-      return [] as Cluster[];
+      return null;
     }
 
     const { activeAnnotationSet } = views[0];
@@ -140,20 +140,7 @@ export const selectDocumentClusters = createSelector(
 
     const annSet = annotation_sets[activeAnnotationSet];
     // get clusters from doc.features.clusters[activeAnnotationSet]
-    const clusters = features.clusters[activeAnnotationSet];
-
-    const clusterGroups = groupBy(
-      features.clusters[activeAnnotationSet],
-      'type'
-    );
-    console.log(clusterGroups);
-    // const clusters: Cluster[] = [
-    //   { id: 1, title: 'Cluster title', type: 'JDG', mentions: [{ id: 1, mention: 'something' }, { id: 4, mention: 'something' }, { id: 5, mention: 'something' }, { id: 6, mention: 'something' }] },
-    //   { id: 2, title: 'Cluster title', type: 'ORG', mentions: [{ id: 2, mention: 'something' }] },
-    //   { id: 3, title: 'Cluster title', type: 'LOC', mentions: [{ id: 3, mention: 'something' }] }
-    // ]
-
-    return clusters.map((cluster) => {
+    const clusters = features.clusters[activeAnnotationSet].map((cluster) => {
       return {
         ...cluster,
         mentions: cluster.mentions.map((mention) => {
@@ -164,7 +151,7 @@ export const selectDocumentClusters = createSelector(
 
           const startOffset = ann.start - 10 < 0 ? 0 : ann.start - 10;
           const endOffset =
-            ann.end + 50 > text.length ? text.length - ann.end : ann.end + 50;
+            ann.end + 50 > text.length ? text.length : ann.end + 50;
 
           return {
             ...mention,
@@ -172,7 +159,14 @@ export const selectDocumentClusters = createSelector(
           };
         }),
       };
-    });
+    });;
+
+    const clusterGroups = groupBy(
+      clusters,
+      (cluster) => cluster.type
+    );
+
+    return clusterGroups;
   }
 );
 

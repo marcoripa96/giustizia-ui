@@ -2,8 +2,10 @@ import { Cluster } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { useState } from "react";
 import ClusterCard from "./ClusterCard";
+import ClusterGroup from "./ClusterGroup";
 
-type ClusterListProps = {
+
+type ClustersListProps = {
   clusters: Cluster[];
 }
 
@@ -11,18 +13,19 @@ const ListContainer = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '10px',
-  width: '100%'
+  width: '100%',
+  padding: '10px'
 })
 
-const ClusterList = ({ clusters }: ClusterListProps) => {
+const ClustersList = ({ clusters }: ClustersListProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const handleClusterCardClick = (id: number) => {
-    setSelectedIndex((oldId) => {
-      if (oldId === id) {
+  const handleClusterCardClick = (index: number) => {
+    setSelectedIndex((oldIndex) => {
+      if (oldIndex === index) {
         return null;
       }
-      return id;
+      return index;
     })
   }
 
@@ -40,4 +43,4 @@ const ClusterList = ({ clusters }: ClusterListProps) => {
   )
 };
 
-export default ClusterList;
+export default ClustersList;
