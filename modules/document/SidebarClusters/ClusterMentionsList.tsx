@@ -1,13 +1,13 @@
 import { Cluster } from '@/server/routers/document';
 import styled from '@emotion/styled';
 import { Text } from '@nextui-org/react';
-import { MouseEvent, useState } from 'react';
+import { Fragment, MouseEvent, useState } from 'react';
 import { scrollEntityIntoView } from '../DocumentProvider/utils';
 import { FiArrowRight } from '@react-icons/all-files/fi/FiArrowRight';
 import { useDocumentDispatch } from '../DocumentProvider/selectors';
 
 type ClusterMentionsListProps = {
-  mentions: Cluster['mentions'];
+  mentions: (Cluster['mentions'][number] & { mentionText: string })[];
 };
 
 const ListContainer = styled.div({
@@ -55,6 +55,26 @@ const IconButtonContainer = styled.div({
   visibility: 'hidden',
 });
 
+const Mark = styled.mark({
+  background: '#f7f7a2'
+})
+
+const highlightMatchingText = (text: string, matchingText: string) => {
+  const matchRegex = RegExp(matchingText, 'ig');
+
+  // Matches array needed to maintain the correct letter casing
+  const matches = [...Array.from(text.matchAll(matchRegex))];
+
+  return text
+    .split(matchRegex)
+    .map((nonBoldText, index, arr) => (
+      <Fragment key={index}>
+        {nonBoldText}
+        {index + 1 !== arr.length && <Mark>{matches[index]}</Mark>}
+      </Fragment>
+    ));
+};
+
 const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
   const dispatch = useDocumentDispatch();
 
@@ -94,7 +114,7 @@ const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
           onClick={handleOnClick(m.id)}
           key={m.id}
         >
-          {m.mention}
+          {highlightMatchingText(m.mentionText, m.mention)}
           <IconButtonContainer>
             <FiArrowRight />
           </IconButtonContainer>

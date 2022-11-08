@@ -139,7 +139,7 @@ export const selectDocumentClusters = createSelector(
     const { text, annotation_sets, features } = doc;
 
     const annSet = annotation_sets[activeAnnotationSet];
-    // get clusters from doc.features.clusters[activeAnnotationSet]
+
     const clusters = features.clusters[activeAnnotationSet].map((cluster) => {
       return {
         ...cluster,
@@ -155,7 +155,7 @@ export const selectDocumentClusters = createSelector(
 
           return {
             ...mention,
-            mention: `...${text.slice(startOffset, endOffset)}...`,
+            mentionText: `...${text.slice(startOffset, endOffset)}...`,
           };
         }),
       };
