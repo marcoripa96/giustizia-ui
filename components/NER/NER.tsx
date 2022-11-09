@@ -17,11 +17,13 @@ type NERProps = {
   highlightAnnotation?: number | null;
   isAddMode?: boolean;
   addSelectionColor?: string;
+  showAnnotationDelete?: boolean;
   renderContentHover?: (annotation: EntityAnnotation) => ReactNode;
   onTextSelection?: (event: MouseEvent, node: SelectionNode) => void;
   onTagClick?: (event: MouseEvent, annotation: EntityAnnotation) => void;
   onTagEnter?: (event: MouseEvent, annotation: EntityAnnotation) => void;
   onTagLeave?: (event: MouseEvent, annotation: EntityAnnotation) => void;
+  onTagDelete?: (event: MouseEvent, annotation: EntityAnnotation) => void;
 }
 
 const NodesContainer = styled.div({
@@ -49,25 +51,28 @@ const NER = ({ text, entityAnnotations, sectionAnnotations, taxonomy, ...props }
 
   return (
     <NERContext.Provider value={contextValue}>
-      {nodes.map((node) => {
-        if (node.type === 'section') {
-          return (
-            <Section {...node}>
-              {node.contentNodes.map(({ key, ...nodeProps }) => {
-                if (nodeProps.type === 'text') {
-                  return <TextNode key={key} {...nodeProps} />
-                }
-                return <EntityNode key={key} {...nodeProps} />
-              })}
-            </Section>
-          )
-        }
-        if (node.type === 'text') {
-          return <TextNode {...node} />
-        }
-        const { key, ...props } = node;
-        return <EntityNode key={key} {...props} />
-      })}
+      <NodesContainer>
+        {nodes.map((node) => {
+          if (node.type === 'section') {
+            return (
+              <Section {...node}>
+                {node.contentNodes.map(({ key, ...nodeProps }) => {
+                  if (nodeProps.type === 'text') {
+                    return <TextNode key={key} {...nodeProps} />
+                  }
+                  return <EntityNode key={key} {...nodeProps} />
+                })}
+              </Section>
+            )
+          }
+          if (node.type === 'text') {
+            return <TextNode {...node} />
+          }
+          const { key, ...props } = node;
+          return <EntityNode key={key} {...props} />
+        })}
+      </NodesContainer>
+
     </NERContext.Provider>
   )
 };

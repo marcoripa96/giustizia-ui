@@ -1,4 +1,4 @@
-import { AnnotationSet, EntityAnnotation } from "@/server/routers/document";
+import { AnnotationSet, Cluster, EntityAnnotation } from "@/server/routers/document";
 import { createImmerReducer } from "@/utils/immerReducer";
 import { removeProps } from "@/utils/shared";
 import { FlatTreeNode, getNodeAndChildren } from "../../../components/Tree";
@@ -160,9 +160,34 @@ export const documentReducer = createImmerReducer<State, Action>({
     const { viewIndex, id } = payload;
     const { activeAnnotationSet } = views[viewIndex];
     const { annotations } = state.data.annotation_sets[activeAnnotationSet];
-    const newAnnotations = annotations.filter((ann) => ann.id !== id);
-    state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
-    state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
+    // delete annotation
+    const indexToDelete = annotations.findIndex((ann) => ann.id === id);
+
+    if (indexToDelete !== -1) {
+      const annToDelete = annotations[indexToDelete];
+      const newAnnotations = [...annotations.slice(0, indexToDelete), ...annotations.slice(indexToDelete + 1, annotations.length)];
+      state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
+      state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
+
+      state.data.features.clusters[activeAnnotationSet] = state.data.features.clusters[activeAnnotationSet].map((cluster) => {
+        if (cluster.id === annToDelete.features.cluster) {
+          return {
+            ...cluster,
+            mentions: cluster.mentions.filter((mention) => mention.id === annToDelete.id)
+          }
+        }
+        return cluster
+      })
+
+      state.data.features.clusters[activeAnnotationSet] = state.data.features.clusters[activeAnnotationSet].filter((cluster) => cluster.mentions.length > 0);
+
+    }
+
+    // const newAnnotations = annotations.filter((ann) => ann.id !== id);
+    // state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
+    // state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
+    // // delete mention from cluster
+    // state.data.features.clusters[activeAnnotationSet].
   },
   addTaxonomyType: (state, payload) => {
     const { type } = payload;

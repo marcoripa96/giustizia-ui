@@ -79,6 +79,16 @@ const DocumentViewer = () => {
     }
   }
 
+  const handleTagDelete = (event: MouseEvent, annotation: EntityAnnotation) => {
+    dispatch({
+      type: 'deleteAnnotation',
+      payload: {
+        viewIndex,
+        id: annotation.id
+      }
+    })
+  }
+
   const onTextSelection = (event: MouseEvent, selectionNode: SelectionNode) => {
     dispatch({
       type: 'addAnnotation',
@@ -99,9 +109,11 @@ const DocumentViewer = () => {
           entityAnnotations={filteredAnnotations}
           sectionAnnotations={sectionAnnotations}
           highlightAnnotation={highlightAnnotationId}
+          showAnnotationDelete
           isAddMode={action.value === 'add'}
           onTagClick={handleTagClick}
           onTextSelection={onTextSelection}
+          onTagDelete={handleTagDelete}
         />
       </DocumentContainer>
     </Container>

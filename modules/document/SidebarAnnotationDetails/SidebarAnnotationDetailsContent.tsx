@@ -98,6 +98,7 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
           </Col>
           <Divider />
           <TextAnnotationDetails text={text} annotation={annotation} />
+          {`NIL: ${linkingFeatures?.is_nil}`}
           <AnnotationLinkDetails selectedId={getCandidateId(linkingFeatures?.top_candidate)} candidates={linkingFeatures?.candidates} />
         </DetailsContainer>
         <ButtonContainer>

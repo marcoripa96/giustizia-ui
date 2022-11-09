@@ -7,28 +7,40 @@ import { Tooltip } from "@nextui-org/react";
 import { darken } from "polished";
 import { ReactNode, useCallback, useMemo, MouseEvent, useEffect, useState } from "react";
 import { useNERContext } from "./nerContext";
+import { FiX } from '@react-icons/all-files/fi/FiX';
 
 type EntityNodeProps = EntityNode<AdditionalAnnotationProps>
 
 const Tag = styled.span<{ color: string; highlight: boolean }>(({ color, highlight }) => ({
+  display: 'inline-flex',
+  gap: '5px',
+  alignItems: 'center',
   position: 'relative',
   padding: '0px 5px',
   borderRadius: '6px',
   background: color,
   color: darken(0.70, color),
   cursor: 'pointer',
+  whiteSpace: 'nowrap',
+  lineHeight: 1.3,
   border: `1px solid ${darken(0.05, color)}`,
   ...(highlight && {
-    background: darken(0.1, color)
+    background: darken(0.1, color),
+    transform: 'scale(1.1)'
   }),
-  transition: 'background 500ms ease-out'
+  '& > button': {
+    background: darken(0.1, color),
+    '&:hover': {
+      background: darken(0.2, color),
+    }
+  },
+  transition: 'background 500ms ease-out, transform 500ms ease-out'
 }));
 
 const TagLabel = styled.span<{ color: string }>(({ color }) => ({
   fontSize: '11px',
   fontWeight: 600,
   textTransform: 'uppercase',
-  marginLeft: '6px',
   padding: '0 3px',
   borderRadius: '4px',
   pointerEvents: 'none',
@@ -37,29 +49,17 @@ const TagLabel = styled.span<{ color: string }>(({ color }) => ({
   verticalAlign: 'middle'
 }));
 
-const getLeftText = (
-  text: string,
-  prev: Annotation<AdditionalAnnotationProps>,
-  curr: Annotation<AdditionalAnnotationProps>,
-  start: number
-) => {
-  const textStart = curr.start - start;
-  const textEnd = prev.start - curr.start;
-  const { text: span } = getSpan(text, textStart, textEnd);
-  return span;
-}
-
-const getRightText = (
-  text: string,
-  prev: Annotation<AdditionalAnnotationProps>,
-  curr: Annotation<AdditionalAnnotationProps>,
-  start: number
-) => {
-  const textStart = prev.end - start;
-  const textEnd = textStart + (curr.end - prev.end);
-  const { text: span } = getSpan(text, textStart, textEnd);
-  return span;
-}
+const DeleteButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  border: 'none',
+  fontSize: '12px',
+  margin: 0,
+  padding: '2px',
+  borderRadius: '50%',
+  cursor: 'pointer'
+})
 
 const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
   const types = [ann.type, ...ann.features.types || []]
@@ -70,11 +70,6 @@ const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
   return `${types[0]} +${nMoreTypes}`
 }
 
-const getPreviousNestedAnnotation = (annotations: Record<number, Annotation<AdditionalAnnotationProps>>, nesting: number[], index: number) => {
-  const entityId = nesting[index - 1];
-  return annotations[entityId]
-}
-
 
 function EntityNode(props: EntityNodeProps) {
   const {
@@ -83,7 +78,7 @@ function EntityNode(props: EntityNodeProps) {
     annotation
   } = props;
   const [highlight, setHighlight] = useState(false);
-  const { onTagClick, onTagEnter, onTagLeave, getTaxonomyNode, renderContentHover, highlightAnnotation } = useNERContext();
+  const { onTagClick, onTagEnter, onTagLeave, onTagDelete, getTaxonomyNode, renderContentHover, highlightAnnotation, showAnnotationDelete } = useNERContext();
 
   useEffect(() => {
     if (highlightAnnotation === annotation.id) {
@@ -118,6 +113,14 @@ function EntityNode(props: EntityNodeProps) {
     }
   }
 
+  const handleOnTagDelete = (ann: Annotation<AdditionalAnnotationProps>) => (event: MouseEvent) => {
+    event.stopPropagation();
+
+    if (onTagDelete) {
+      onTagDelete(event, ann);
+    }
+  }
+
   const { color } = useMemo(() => getTaxonomyNode(annotation.type), [annotation]);
 
   /**
@@ -144,6 +147,7 @@ function EntityNode(props: EntityNodeProps) {
         <TagLabel color={color}>
           {getTypesText(annotation)}
         </TagLabel>
+        {showAnnotationDelete && <DeleteButton onClick={handleOnTagDelete(annotation)}><FiX /></DeleteButton>}
       </Tag>
     )
 
