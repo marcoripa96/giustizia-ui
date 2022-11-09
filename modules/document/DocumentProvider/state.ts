@@ -8,20 +8,13 @@ export const baseTaxonomy: Taxonomy = [
     children: [
       {
         key: 'JDG',
-        label: 'Judge',
+        label: 'Giudice',
         recognizable: false,
-        children: [
-          {
-            key: 'JDGCIVIL',
-            label: 'Civil Judge',
-            recognizable: false
-          },
-          {
-            key: 'JDGCRIM',
-            label: 'Criminal Judge',
-            recognizable: false,
-          }
-        ]
+      },
+      {
+        key: 'AVT',
+        label: 'Avvocato',
+        recognizable: false,
       }
     ]
   },
@@ -38,12 +31,34 @@ export const baseTaxonomy: Taxonomy = [
   {
     key: 'LOC',
     label: 'Location',
-    color: '#FAE8FF'
+    color: '#FAE8FF',
+    children: [
+      {
+        key: 'TRIBUNALE',
+        label: 'Tribunale',
+        recognizable: true,
+      }
+    ]
   },
   {
     key: 'ORG',
     label: 'Organization',
     color: '#baf2e6'
+  },
+  {
+    key: 'PARTE',
+    label: 'Parte',
+    color: '#e03ba2'
+  },
+  {
+    key: 'CONTROPARTE',
+    label: 'Controparte',
+    color: '#ee2b6c'
+  },
+  {
+    key: 'MONEY',
+    label: 'Money',
+    color: '#a05c72'
   },
   {
     key: 'UNK',
