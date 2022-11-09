@@ -110,7 +110,7 @@ const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
     <ListContainer>
       {mentions.map((m) => (
         <MentionButton
-          title={m.mention}
+          title={m.mentionText}
           onClick={handleOnClick(m.id)}
           key={m.id}
         >
