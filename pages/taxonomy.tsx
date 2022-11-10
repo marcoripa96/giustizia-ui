@@ -18,7 +18,8 @@ const Sidebar = styled.div({
 
 const RightContent = styled.div({
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  flexGrow: 1
 })
 
 // Page component
