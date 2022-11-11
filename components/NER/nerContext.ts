@@ -10,7 +10,7 @@ type NERContextProps = {
   highlightAnnotation?: number | null;
   showAnnotationDelete?: boolean;
   renderContentHover?: (annotation: EntityAnnotation) => ReactNode;
-  onTextSelection?: (event: MouseEvent, node: SelectionNode) => void;
+  onTextSelection?: (event: MouseEvent, selection: Selection) => void;
   onTagClick?: (event: MouseEvent, annotation: EntityAnnotation) => void;
   onTagEnter?: (event: MouseEvent, annotation: EntityAnnotation) => void;
   onTagLeave?: (event: MouseEvent, annotation: EntityAnnotation) => void;

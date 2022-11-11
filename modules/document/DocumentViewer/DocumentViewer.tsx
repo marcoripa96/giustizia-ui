@@ -1,10 +1,11 @@
 import NER from "@/components/NER/NER";
 import { SelectionNode } from "@/components/NER/TextNode";
+import Popup from "@/components/Popup/Popup";
 import { useHashUrlId } from "@/hooks";
 import useNER from "@/lib/ner/core/use-ner";
 import { EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
-import { MouseEvent, useEffect } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import {
   selectAddSelectionColor,
   selectDocumentAction,
@@ -17,6 +18,7 @@ import {
   useSelector
 } from "../DocumentProvider/selectors";
 import { useViewIndex } from "../ViewProvider/ViewProvider";
+import PopupSelection from "./PopupSelection";
 
 const Container = styled.div({
   padding: '0 20px',
@@ -42,6 +44,7 @@ const DocumentViewer = () => {
   const filteredAnnotations = useSelector((state) => selectFilteredEntityAnnotations(state, viewIndex));
   const sectionUrlHashId = useHashUrlId();
   const highlightAnnotationId = useSelector(selectHighlightAnnotationId);
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
   const dispatch = useDocumentDispatch();
 
   useEffect(() => {
@@ -89,15 +92,20 @@ const DocumentViewer = () => {
     })
   }
 
-  const onTextSelection = (event: MouseEvent, selectionNode: SelectionNode) => {
-    dispatch({
-      type: 'addAnnotation',
-      payload: {
-        viewIndex,
-        type: action.data || '',
-        ...selectionNode
-      }
-    })
+  const onTextSelection = (event: MouseEvent, selection: Selection) => {
+    console.log(selection.getRangeAt(0).getBoundingClientRect());
+    const { left, width, top } = selection.getRangeAt(0).getBoundingClientRect();
+
+    setPosition({ x: left + width + 2, y: top });
+
+    // dispatch({
+    //   type: 'addAnnotation',
+    //   payload: {
+    //     viewIndex,
+    //     type: action.data || '',
+    //     ...selectionNode
+    //   }
+    // })
   }
 
   return (
@@ -115,6 +123,11 @@ const DocumentViewer = () => {
           onTextSelection={onTextSelection}
           onTagDelete={handleTagDelete}
         />
+        {position && (
+          <Popup position={position}>
+            <PopupSelection />
+          </Popup>
+        )}
       </DocumentContainer>
     </Container>
   )

@@ -52,12 +52,10 @@ function MyApp({
       <TranslationProvider locale={locale}>
         <Global styles={GlobalStyles} />
         <NextUIProvider>
-          {/* <TranslationProvider> */}
           <Layout>
             <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
             {getLayout(<Component {...pageProps} />)}
           </Layout>
-          {/* </TranslationProvider> */}
         </NextUIProvider>
       </TranslationProvider>
     </SessionProvider>

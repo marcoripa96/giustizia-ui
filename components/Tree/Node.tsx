@@ -267,7 +267,17 @@ function ChildNode({ item, hasChildren, nTotalSubChildren, onNodeDelete }: Child
   )
 }
 
+type NodeContentProps = {
+  item: ChildTreeItem;
+  hasChildren: boolean;
+  nTotalSubChildren: number;
+  onNodeDelete: (event: MouseEvent) => void;
+}
+
+
+
 function Node({ item, toggle, hasChildren, level, ...props }: NodeProps) {
+  const t = useText('document');
   const { isSelected, onNodeSelect, onNodeDelete } = useTreeContext();
 
   const handleClick = () => {
@@ -282,6 +292,30 @@ function Node({ item, toggle, hasChildren, level, ...props }: NodeProps) {
     onNodeDelete(item.key);
   }
 
+  const renderNodeSquare = () => {
+    if (isTopLevelItem(item, level)) {
+      return (
+        <ColoredSquared color={item.color}>
+          {hasChildren && (
+            <NumberSquare color={item.color}>
+              <Text size={11} b>{nTotalSubChildren}</Text>
+            </NumberSquare>
+          )}
+        </ColoredSquared>
+      )
+    }
+
+    if (hasChildren) {
+      return (
+        <SoloNumberSquare>
+          <Text size={11} b>{nTotalSubChildren}</Text>
+        </SoloNumberSquare>
+      )
+    }
+
+    return null;
+  }
+
   const nTotalSubChildren = useMemo(() => hasChildren ? countChildren(item) : 0, [item, hasChildren]);
   const selected = isSelected(item.key);
 
@@ -293,19 +327,28 @@ function Node({ item, toggle, hasChildren, level, ...props }: NodeProps) {
         level={level}
         hasChildren={hasChildren}
         {...props}>
-        {isTopLevelItem(item, level) ? (
-          <TopLevelNode
-            item={item}
-            hasChildren={hasChildren}
-            nTotalSubChildren={nTotalSubChildren}
-            onNodeDelete={handleDelete} />
-        ) : (
-          <ChildNode
-            item={item}
-            hasChildren={hasChildren}
-            nTotalSubChildren={nTotalSubChildren}
-            onNodeDelete={handleDelete} />
-        )}
+        <>
+          {renderNodeSquare()}
+          <NodeTextContainer>
+            {hasChildren ? <b>{item.label}</b> : item.label}
+            {item.recognizable === false && (
+              <InfoIcon>
+                <Tooltip color="invert" content={(
+                  <Flex direction="column">
+                    <Text size={12} color="#FFF">
+                      {t('leftSidebar.addContent.tooltipNotRecognized')}
+                    </Text>
+                  </Flex>
+                )}>
+                  <FiInfo />
+                </Tooltip>
+              </InfoIcon>
+            )}
+            <DeleteButton onClick={handleDelete}>
+              <FiX />
+            </DeleteButton>
+          </NodeTextContainer>
+        </>
       </InnerContainer>
     </Container>
   );

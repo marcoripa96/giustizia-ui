@@ -31,6 +31,7 @@ class MyDocument extends Document {
         <body>
           <Main />
           <div id="select-popup" />
+          <div id="popup-portal" />
           <div id="sidebar-portal" />
           <NextScript />
         </body>

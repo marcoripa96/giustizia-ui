@@ -79,7 +79,7 @@ const TextNode = (props: TextNodeProps) => {
   const { text, start, end } = props;
 
   const handleMouseUp = (event: MouseEvent) => {
-    if (!isAddMode || !onTextSelection) return;
+    if (!onTextSelection) return;
 
     // get user text selection
     const selection = getTextSelection();
@@ -87,21 +87,23 @@ const TextNode = (props: TextNodeProps) => {
       return;
     }
 
-    // get offset of what it is selected inside the node where the selection happens
-    const nodeSelectionOffset = getNodeSelectionOffset(selection);
-    if (!nodeSelectionOffset) {
-      return;
-    }
 
-    // get the offset to the original text
-    const offset = getOriginalOffset({ start, end, ...nodeSelectionOffset })
-    if (!offset) {
-      return;
-    }
 
-    const text = selection.toString();
-    const selectionNode = { text, ...offset };
-    onTextSelection(event, selectionNode)
+    // // get offset of what it is selected inside the node where the selection happens
+    // const nodeSelectionOffset = getNodeSelectionOffset(selection);
+    // if (!nodeSelectionOffset) {
+    //   return;
+    // }
+
+    // // get the offset to the original text
+    // const offset = getOriginalOffset({ start, end, ...nodeSelectionOffset })
+    // if (!offset) {
+    //   return;
+    // }
+
+    // const text = selection.toString();
+    // const selectionNode = { text, ...offset };
+    onTextSelection(event, selection)
   }
 
   return (
