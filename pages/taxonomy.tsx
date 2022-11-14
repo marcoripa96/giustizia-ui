@@ -1,6 +1,7 @@
+import Description from "@/modules/taxonomy/Description";
+import SidebarContent from "@/modules/taxonomy/SidebarContent";
 import styled from "@emotion/styled";
-import { NextPage } from "next";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { NextPageWithLayout } from "./_app";
 
 const Sidebar = styled.div({
@@ -24,16 +25,21 @@ const RightContent = styled.div({
 
 // Page component
 const TaxonomyPage: NextPageWithLayout<{}> = () => {
+  const [rightContent, setRightContent] = useState(<Description/>)
+
+  const changeRightContent = (content: JSX.Element) => {      
+    setRightContent(content)
+  }
 
   return (
     <>
       {/* Sidebar content */}
       <Sidebar>
-        This is inside the sidebar
+        <SidebarContent changeRightContent={changeRightContent}/>
       </Sidebar>
       {/* Right page content */}
       <RightContent>
-        This is inside the right content
+        {rightContent}
       </RightContent>
     </>
   )
