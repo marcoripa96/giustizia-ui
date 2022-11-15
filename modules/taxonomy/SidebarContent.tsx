@@ -4,6 +4,7 @@ import { Text } from "@nextui-org/react";
 import { useState } from "react"
 import NodeManagement from "./NodeManagement";
 import { flatTaxonomy } from "./taxonomy"
+import { selectTreeTaxonomy, useSelector } from "./TaxonomyProvider/selectors";
 import ZeroShotCandidates from "./ZeroShotCandidates";
 
 type SidebarContentProps = {
@@ -17,7 +18,7 @@ const Container = styled.div({
 })
 
 const SidebarContent = ({ changeRightContent }: SidebarContentProps) => {
-  const [taxonomy, setTaxonomy] = useState(() => buildTreeFromFlattenedObject(flatTaxonomy));
+  const taxonomy = useSelector(selectTreeTaxonomy);
   const [selectedNodeKey, setSelectedNodeKey] = useState<string>('');
 
   const handleNodeSelect = (key: string) => {
