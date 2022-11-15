@@ -50,7 +50,9 @@ const EntityContext = ({ text, annotation }: EntityContextProps) => {
 
 
   const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
-    const types = [ann.type, ...ann.features.types || []]
+    const types_set = new Set(annotation.features.types || []);
+    types_set.add(annotation.type);
+    const types = Array.from(types_set);
     const nMoreTypes = types.length - 1;
     if (nMoreTypes === 0) {
       return types[0];
@@ -60,7 +62,9 @@ const EntityContext = ({ text, annotation }: EntityContextProps) => {
 
 
   const taxonomyNode = useMemo(() => {
-    const types = [annotation.type, ...annotation.features.types || []];
+    const types_set = new Set(annotation.features.types || []);
+    types_set.add(annotation.type);
+    const types = Array.from(types_set);
     return getAllNodeData(taxonomy, types[0]);
   }, [annotation]);
 

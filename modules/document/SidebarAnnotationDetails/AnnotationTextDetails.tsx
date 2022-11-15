@@ -29,7 +29,9 @@ const TextAnnotationDetailsContainer = styled.button({
 const TextAnnotationDetails = ({ text, annotation }: TextAnnotationDetails) => {
   const t = useText('document');
 
-  const types = [annotation.type, ...annotation.features.types || []]
+  const types_set = new Set(annotation.features.types || []);
+  types_set.add(annotation.type);
+  const types = Array.from(types_set);
 
   return (
     <>

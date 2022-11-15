@@ -83,7 +83,9 @@ const DeleteButton = styled.button({
 })
 
 const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
-  const types = [ann.type, ...ann.features.types || []]
+  const types_set = new Set(ann.features.types || []);
+  types_set.add(ann.type);
+  const types = Array.from(types_set);
   const nMoreTypes = types.length - 1;
   if (nMoreTypes === 0) {
     return types[0];
