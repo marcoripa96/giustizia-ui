@@ -1,5 +1,6 @@
 import Description from "@/modules/taxonomy/Description";
 import SidebarContent from "@/modules/taxonomy/SidebarContent";
+import TaxonomyProvider from "@/modules/taxonomy/TaxonomyProvider";
 import styled from "@emotion/styled";
 import { ReactElement, useState } from "react";
 import { NextPageWithLayout } from "./_app";
@@ -25,23 +26,23 @@ const RightContent = styled.div({
 
 // Page component
 const TaxonomyPage: NextPageWithLayout<{}> = () => {
-  const [rightContent, setRightContent] = useState(<Description/>)
+  const [rightContent, setRightContent] = useState(<Description />)
 
-  const changeRightContent = (content: JSX.Element) => {      
+  const changeRightContent = (content: JSX.Element) => {
     setRightContent(content)
   }
 
   return (
-    <>
+    <TaxonomyProvider>
       {/* Sidebar content */}
       <Sidebar>
-        <SidebarContent changeRightContent={changeRightContent}/>
+        <SidebarContent changeRightContent={changeRightContent} />
       </Sidebar>
       {/* Right page content */}
       <RightContent>
         {rightContent}
       </RightContent>
-    </>
+    </TaxonomyProvider>
   )
 }
 

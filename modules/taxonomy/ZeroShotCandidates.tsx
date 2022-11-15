@@ -2,7 +2,7 @@ import { Checkbox } from "@nextui-org/react";
 import fakeCandidates from "./fakeCandidates";
 
 type ZeroShotCandidatesProps = {
-  key: string;
+  typeKey: string;
 }
 
 // TODO: move into another file?
@@ -21,35 +21,36 @@ type Candidate = {
 }
 
 type CandidatesProps = {
-  candidates : Candidate[]
+  candidates: Candidate[]
 }
 
 
 type CandidateItemProps = {
-  candidate : Candidate;
+  candidate: Candidate;
 }
 
-const CandidateItem = ({candidate} : CandidateItemProps) => {
+const CandidateItem = ({ candidate }: CandidateItemProps) => {
   return (<tr><td>{candidate.context}</td><td>{candidate.doc_id}</td><td>{candidate.type_pred}</td><td><Checkbox></Checkbox></td></tr>)
 }
 
 // TODO: va riciclato per few-shot candidates? io direi di sì, ma poi vanno nascosti i bottoni
-const Candidates = ({candidates} : CandidatesProps) => {
+const Candidates = ({ candidates }: CandidatesProps) => {
   return (
     <table>
-    <tr><th>Context</th><th>Document</th><th>Approve</th></tr>
-    {candidates.map((candidate, index) => (
-      <CandidateItem candidate={candidate} key={index}></CandidateItem>
-    ))}
+      <tr><th>Context</th><th>Document</th><th>Approve</th></tr>
+      {candidates.map((candidate, index) => (
+        <CandidateItem candidate={candidate} key={index}></CandidateItem>
+      ))}
     </table>
   )
 }
 
-const ZeroShotCandidates = ({key}: ZeroShotCandidatesProps) => {
+const ZeroShotCandidates = ({ typeKey }: ZeroShotCandidatesProps) => {
   // TODO: chiamata API passando key, poi API recupera verbalizer e prende candidates
+
   const candidates = fakeCandidates
   return (<>
-    <h1>Zero-shot Candidates for {key}</h1>
+    <h1>Zero-shot Candidates for {typeKey}</h1>
     <Candidates candidates={candidates}></Candidates>
   </>)
 }

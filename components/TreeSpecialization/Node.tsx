@@ -12,7 +12,6 @@ import { FiSearch } from '@react-icons/all-files/fi/FiSearch'
 import { FiInfo } from '@react-icons/all-files/fi/FiInfo'
 import { CONTAINER_ITEM_SIZE, PARENT_SQUARE_SIZE, PADDING, INDENTATION_OFFSET, CHILD_SQUARE_SIZE } from "./Branch";
 import { Flex } from "../Flex";
-// import { Flex, useText } from "@/components";
 
 type NodeProps = {
   item: TreeItem | ChildTreeItem;
@@ -20,10 +19,6 @@ type NodeProps = {
   isExpanded: boolean;
   level: number;
   toggle: () => void;
-  onNodeDelete: (event: MouseEvent) => void;
-  onNodeAdd: (event: MouseEvent) => void;
-  onNodeEdit: (event: MouseEvent) => void;
-  onNodeGetZeroShotCandidates: (event: MouseEvent) => void;
 };
 
 export function isTopLevelItem(
@@ -47,9 +42,13 @@ const Container = styled.div<{ selected: boolean; }>(({ selected }) => ({
   height: `${CONTAINER_ITEM_SIZE}px`,
   padding: `${PADDING}px`,
   transition: 'background 150ms ease-out',
+  borderRadius: '6px',
   cursor: 'pointer',
   '&:hover': {
-    background: 'rgba(0,0,0,0.03)'
+    background: 'rgba(0,0,0,0.03)',
+    'button': {
+      visibility: 'visible'
+    }
   },
   '&:active': {
     background: 'rgba(0,0,0,0.08)'
@@ -130,9 +129,6 @@ const NodeTextContainer = styled.div({
   paddingRight: '32px',
   '&:hover': {
     paddingRight: '57px',
-    '> button': {
-      visibility: 'visible'
-    },
     '> div': {
       transform: 'translateY(-50%) translateX(-25px)'
     }
@@ -146,20 +142,24 @@ const NodeTextContainer = styled.div({
   }
 })
 
-const DeleteButton = styled.button({
-  position: 'absolute',
-  height: '20px',
-  width: '20px',
-  top: '50%',
-  right: '10px',
-  padding: 0,
+const NodeActionsContainer = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+})
+
+const ActionButton = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '18px',
+  padding: '5px',
   border: 'none',
   outline: 'none',
   borderRadius: '6px',
   background: 'transparent',
-  transform: 'translateY(-50%)',
-  visibility: 'hidden',
   cursor: 'pointer',
+  visibility: 'hidden',
   '&:hover': {
     background: 'rgba(0,0,0,0.1)',
   },
@@ -167,99 +167,6 @@ const DeleteButton = styled.button({
     width: '100%',
     height: '100%',
     color: 'rgba(0,0,0,0.5)'
-  }
-})
-
-const AddButton = styled.button({
-  position: 'absolute',
-  height: '20px',
-  width: '20px',
-  top: '50%',
-  right: '30px',
-  padding: 0,
-  border: 'none',
-  outline: 'none',
-  borderRadius: '6px',
-  background: 'transparent',
-  transform: 'translateY(-50%)',
-  visibility: 'hidden',
-  cursor: 'pointer',
-  '&:hover': {
-    background: 'rgba(0,0,0,0.1)',
-  },
-  '> svg': {
-    width: '100%',
-    height: '100%',
-    color: 'rgba(0,0,0,0.5)'
-  }
-})
-
-const EditButton = styled.button({
-  position: 'absolute',
-  height: '20px',
-  width: '20px',
-  top: '50%',
-  right: '50px',
-  padding: 0,
-  border: 'none',
-  outline: 'none',
-  borderRadius: '6px',
-  background: 'transparent',
-  transform: 'translateY(-50%)',
-  visibility: 'hidden',
-  cursor: 'pointer',
-  '&:hover': {
-    background: 'rgba(0,0,0,0.1)',
-  },
-  '> svg': {
-    width: '100%',
-    height: '100%',
-    color: 'rgba(0,0,0,0.5)'
-  }
-})
-
-const GetZeroShotCandidatesButton = styled.button({
-  position: 'absolute',
-  height: '20px',
-  width: '20px',
-  top: '50%',
-  right: '70px',
-  padding: 0,
-  border: 'none',
-  outline: 'none',
-  borderRadius: '6px',
-  background: 'transparent',
-  transform: 'translateY(-50%)',
-  visibility: 'hidden',
-  cursor: 'pointer',
-  '&:hover': {
-    background: 'rgba(0,0,0,0.1)',
-  },
-  '> svg': {
-    width: '100%',
-    height: '100%',
-    color: 'rgba(0,0,0,0.5)'
-  }
-})
-
-
-const InfoIcon = styled.div({
-  position: 'absolute',
-  height: '20px',
-  width: '20px',
-  top: '50%',
-  right: '10px',
-  padding: 0,
-  border: 'none',
-  outline: 'none',
-  borderRadius: '6px',
-  background: 'transparent',
-  transform: 'translateY(-50%)',
-  transition: 'transform 100ms ease-out',
-  'svg': {
-    width: '100%',
-    height: '100%',
-    color: 'rgba(0,0,0,0.4)'
   }
 })
 
@@ -317,18 +224,6 @@ function Node({ item, toggle, hasChildren, level, ...props }: NodeProps) {
     return null;
   }
 
-  const renderNodeButtons = () => {
-    
-  return (
-    <>
-      <AddButton onClick={handleAdd}><FiPlus /></AddButton>
-      {!isTopLevelItem(item, level) && <GetZeroShotCandidatesButton onClick={handleGetZeroShotCandidates}><FiSearch /></GetZeroShotCandidatesButton>}
-      {!isTopLevelItem(item, level) && <EditButton onClick={handleEdit}><FiEdit2 /></EditButton>}
-      {!isTopLevelItem(item, level) && <DeleteButton onClick={handleDelete}><FiX /></DeleteButton>}
-    </>
-    )
-  }
-
   const nTotalSubChildren = useMemo(() => hasChildren ? countChildren(item) : 0, [item, hasChildren]);
   const selected = isSelected(item.key);
 
@@ -340,13 +235,28 @@ function Node({ item, toggle, hasChildren, level, ...props }: NodeProps) {
         level={level}
         hasChildren={hasChildren}
         {...props}>
-        <>
-          {renderNodeSquare()}
-          <NodeTextContainer>
-            {hasChildren ? <b>{item.label}</b> : item.label}
-            {renderNodeButtons()}
-          </NodeTextContainer>
-        </>
+        {renderNodeSquare()}
+        <NodeTextContainer>
+          {hasChildren ? <b>{item.label}</b> : item.label}
+        </NodeTextContainer>
+        <NodeActionsContainer>
+          <ActionButton onClick={handleAdd}>
+            <FiPlus />
+          </ActionButton>
+          {!isTopLevelItem(item, level) && (
+            <>
+              <ActionButton onClick={handleGetZeroShotCandidates}>
+                <FiSearch />
+              </ActionButton>
+              <ActionButton onClick={handleEdit}>
+                <FiEdit2 />
+              </ActionButton>
+              <ActionButton onClick={handleDelete}>
+                <FiX />
+              </ActionButton>
+            </>
+          )}
+        </NodeActionsContainer>
       </InnerContainer>
     </Container>
   );

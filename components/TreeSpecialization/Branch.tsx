@@ -13,11 +13,11 @@ export const PARENT_SQUARE_SIZE = 20;
 // child square size
 export const CHILD_SQUARE_SIZE = 15;
 // padding of the container
-export const PADDING = 5;
+export const PADDING = 16;
 // indentation
 export const INDENTATION_OFFSET = 25;
 // container item size
-export const CONTAINER_ITEM_SIZE = 34;
+export const CONTAINER_ITEM_SIZE = 42;
 
 const getPaddingLeftChildrenArch = (level: number) => {
   if (level === 1) {
@@ -34,8 +34,8 @@ const Container = styled.div<{
   ...(expanded && hasChildren && {
     '&:before': {
       position: 'absolute',
-      top: 34,
-      bottom: 17,
+      top: CONTAINER_ITEM_SIZE,
+      bottom: CONTAINER_ITEM_SIZE / 2,
       left: getPaddingLeftChildrenArch(level + 1),
       display: 'block',
       width: 0,
