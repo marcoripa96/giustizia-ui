@@ -1,4 +1,5 @@
 import { buildTreeFromFlattenedObject, Tree } from "@/components/TreeSpecialization"
+import { ContentProps } from "@/pages/taxonomy";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
 import { useState } from "react"
@@ -8,7 +9,7 @@ import { selectTreeTaxonomy, useSelector } from "./TaxonomyProvider/selectors";
 import ZeroShotCandidates from "./ZeroShotCandidates";
 
 type SidebarContentProps = {
-  changeRightContent: (content: JSX.Element) => void;
+  changePageContent: (content: ContentProps) => void;
 }
 
 const Container = styled.div({
@@ -17,13 +18,16 @@ const Container = styled.div({
   padding: '5px'
 })
 
-const SidebarContent = ({ changeRightContent }: SidebarContentProps) => {
+const SidebarContent = ({ changePageContent }: SidebarContentProps) => {
   const taxonomy = useSelector(selectTreeTaxonomy);
   const [selectedNodeKey, setSelectedNodeKey] = useState<string>('');
 
   const handleNodeSelect = (key: string) => {
     setSelectedNodeKey(key);
-    changeRightContent(<NodeManagement typeKey={key} editMode={false} changeRightContent={changeRightContent} />)
+    changePageContent({
+      title: 'Gestisci tipo',
+      content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
+    })
   }
 
   const handleNodeDelete = (key: string) => {
@@ -32,17 +36,26 @@ const SidebarContent = ({ changeRightContent }: SidebarContentProps) => {
 
   const handleNodeAdd = (key: string) => {
     window.alert('TODO: \n1- set state to show the node add component (empty) \n2- set ' + key + ' as father in useState');
-    changeRightContent(<NodeManagement typeKey={key} editMode={false} changeRightContent={changeRightContent} />);
+    changePageContent({
+      title: 'Aggiungi nuovo tipo',
+      content: <NodeManagement typeKey={key} addNode changePageContent={changePageContent} />
+    });
   }
 
   const handleNodeEdit = (key: string) => {
     window.alert('TODO: \n1- set state to show the node add component (precompiled)')
-    changeRightContent(<NodeManagement typeKey={key} editMode={true} changeRightContent={changeRightContent} />);
+    changePageContent({
+      title: '',
+      content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
+    });
   }
 
   const handleNodeGetZeroShotCandidates = (key: string) => {
     window.alert('TODO: \n1- set state to show top candidates component')
-    changeRightContent(<ZeroShotCandidates typeKey={key} />);
+    changePageContent({
+      title: '',
+      content: <ZeroShotCandidates typeKey={key} />
+    });
   }
 
 

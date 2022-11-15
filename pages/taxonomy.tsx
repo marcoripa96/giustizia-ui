@@ -1,8 +1,9 @@
 import Description from "@/modules/taxonomy/Description";
+import PageContent from "@/modules/taxonomy/PageContent";
 import SidebarContent from "@/modules/taxonomy/SidebarContent";
 import TaxonomyProvider from "@/modules/taxonomy/TaxonomyProvider";
 import styled from "@emotion/styled";
-import { ReactElement, useState } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import { NextPageWithLayout } from "./_app";
 
 const Sidebar = styled.div({
@@ -18,30 +19,39 @@ const Sidebar = styled.div({
   }
 })
 
-const RightContent = styled.div({
-  display: 'flex',
-  flexDirection: 'column',
-  flexGrow: 1
-})
+// const RightContent = styled.div({
+//   display: 'flex',
+//   flexDirection: 'column',
+//   flexGrow: 1
+// })
+
+export type ContentProps = {
+  title: string;
+  content: ReactNode;
+}
 
 // Page component
 const TaxonomyPage: NextPageWithLayout<{}> = () => {
-  const [rightContent, setRightContent] = useState(<Description />)
+  const [content, setContent] = useState<ContentProps>({
+    title: 'Test',
+    content: <Description />
+  })
 
-  const changeRightContent = (content: JSX.Element) => {
-    setRightContent(content)
+  const changePageContent = (content: ContentProps) => {
+    setContent(content);
   }
 
   return (
     <TaxonomyProvider>
       {/* Sidebar content */}
       <Sidebar>
-        <SidebarContent changeRightContent={changeRightContent} />
+        <SidebarContent changePageContent={changePageContent} />
       </Sidebar>
       {/* Right page content */}
-      <RightContent>
+      <PageContent {...content} />
+      {/* <RightContent>
         {rightContent}
-      </RightContent>
+      </RightContent> */}
     </TaxonomyProvider>
   )
 }

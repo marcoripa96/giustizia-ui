@@ -7,6 +7,7 @@ const GlobalStyles = css`
     padding: 0;
     margin: 0;
     font-family: 'Inter', sans-serif;
+    --nextui-fonts-sans: 'Inter', sans-serif;
     background: #FFF;
   }
 

@@ -2,16 +2,17 @@ import { Button } from "@/components";
 import TagList from "@/components/TagList";
 import { FlatTreeNode } from "@/components/TreeSpecialization";
 import { useForm } from "@/hooks";
+import { ContentProps } from "@/pages/taxonomy";
 import styled from "@emotion/styled";
-import { Input } from "@nextui-org/react";
+import { Input, Text } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Description from "./Description";
-import { useSelector } from "./TaxonomyProvider/selectors";
+import { useSelector, useTaxonomyDispatch } from "./TaxonomyProvider/selectors";
 
 type NodeManagementProps = {
   typeKey: string;
-  editMode: boolean;
-  changeRightContent: (content: JSX.Element) => void;
+  addNode?: boolean;
+  changePageContent: (content: ContentProps) => void;
 }
 
 const Container = styled.div({
@@ -27,58 +28,72 @@ const Row = styled.div({
   gap: '10px'
 })
 
-const handleSave = (key: string, changeRightContent: (content: JSX.Element) => void) => {
-  window.alert('TODO: 1- update taxonomy \n2- go to the general view')
-  changeRightContent(<Description />)
+type FormState = {
+  label: string;
+  key: string;
+  terms: string[];
 }
 
-type FormProps = {
-  taxonomyNode: FlatTreeNode;
-}
 
-const Form = ({ taxonomyNode }: FormProps) => {
-  const { register, onSubmit, setValue } = useForm({
-    label: taxonomyNode.label,
-    key: taxonomyNode.key,
-    terms: taxonomyNode.terms || []
+const NodeManagement = ({ typeKey, addNode, changePageContent }: NodeManagementProps) => {
+  const dispatch = useTaxonomyDispatch();
+  const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
+  const { register, onSubmit, setValue, value } = useForm<FormState>({
+    label: addNode ? '' : taxonomyNode.label,
+    key: addNode ? '' : taxonomyNode.key,
+    terms: addNode ? [] : (taxonomyNode.terms || [])
   });
 
   useEffect(() => {
     setValue({
-      label: taxonomyNode.label,
-      key: taxonomyNode.key,
-      terms: taxonomyNode.terms || []
+      label: addNode ? '' : taxonomyNode.label,
+      key: addNode ? '' : taxonomyNode.key,
+      terms: addNode ? [] : (taxonomyNode.terms || [])
     })
-  }, [taxonomyNode])
+  }, [taxonomyNode, addNode]);
+
+  const handleSubmit = (value: FormState) => {
+    if (addNode) {
+      dispatch({
+        type: 'addType',
+        payload: {
+          ...value,
+          parent: typeKey
+        }
+      });
+    } else {
+      // c'è un problema con l'edit. la Key non deve essere anche la chiave del dizionario. Se pensiamo a mongo ad esempio è l'id di mongo. Quindi simulerei questa cosa
+      // dispatch({
+      //   type: 'editType',
+      //   payload: {
+      //     oldKey: typeKey,
+      //     new: {
+      //       ...value,
+      //       parent: typeKey
+      //     }
+      //   }
+      // });
+    }
+  }
 
 
   return (
-    <Container as="form">
+    <Container as="form" onSubmit={onSubmit(handleSubmit)}>
       <Row>
-        <Input {...register('label')} label="Etichetta" placeholder="Nome del tipo" />
-        <Input {...register('key')} label="Tag" placeholder="Tag del tipo" />
+        <Input size="lg" {...register('label')} label="Etichetta" placeholder="Nome del tipo" />
+        <Input size="lg" {...register('key')} label="Tag" placeholder="Tag del tipo" />
       </Row>
+      <Text>{`Aggiungi i termini più rappresentativi per il tipo:`}</Text>
       <TagList {...register('terms')} />
+      <Button
+        type="submit"
+        css={{
+          marginLeft: 'auto'
+        }}>
+        Save
+      </Button>
     </Container>
-    // <div>
-    //   <h1>Node Management</h1>
-    //   <span>{editMode ? 'Modify type' + key : 'Add new type under ' + key }</span>
-    //   <Button onClick={() => handleSave(key, changeRightContent)}>Conferma</Button>
-    // </div>
-  )
-}
-
-const NodeManagement = ({ typeKey, editMode, changeRightContent }: NodeManagementProps) => {
-  const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
-
-  return (
-    <Form taxonomyNode={taxonomyNode} />
-    // <div>
-    //   <h1>Node Management</h1>
-    //   <span>{editMode ? 'Modify type' + key : 'Add new type under ' + key }</span>
-    //   <Button onClick={() => handleSave(key, changeRightContent)}>Conferma</Button>
-    // </div>
-  )
+  );
 }
 
 export default NodeManagement

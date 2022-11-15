@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { FiX } from "@react-icons/all-files/fi/FiX"
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus"
-import { FormEvent, useCallback, useRef, useState } from "react"
+import { FormEvent, KeyboardEvent, useCallback, useRef, useState } from "react"
 import { useClickOutside, useInput } from "@/hooks"
 import { flushSync } from "react-dom"
 
@@ -113,13 +113,14 @@ const AddButton = ({ onAdd }: { onAdd: (str: string) => void }) => {
     inputRef.current?.focus();
   }
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    udpate()
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      udpate()
+    }
   }
 
   return (
-    <AddTagContainer ref={ref} as="form" isActive={isActive} onClick={handleClick} onSubmit={handleSubmit}>
+    <AddTagContainer ref={ref} isActive={isActive} onClick={handleClick} onKeyDown={handleKeyDown} >
       {isActive ? <AddInput ref={inputRef} /> : <FiPlus />}
     </AddTagContainer>
   )
