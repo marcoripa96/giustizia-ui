@@ -46,7 +46,13 @@ const t: Translation = {
         add: 'Add annotation',
         delete: 'Delete annotation',
         filter: 'Filter annotation',
-        settings: 'Settings'
+        settings: 'Settings',
+        clusters: 'Entities clusters',
+      },
+      clustersContent: {
+        title: 'Entities Clusters',
+        description: 'Below are shown the entities clusters with their mentions',
+        mentions: '{n} mentions'
       },
       addContent: {
         title: 'Add annotation',

@@ -9,9 +9,10 @@ import {
   useSelector,
   selectDocumentTaxonomy,
 } from '../DocumentProvider/selectors';
+import { ProcessedCluster } from '../DocumentProvider/types';
 import ClusterMentionsList from './ClusterMentionsList';
 
-type ClusterCardProps = Cluster & {
+type ClusterCardProps = ProcessedCluster & {
   selected: boolean;
   onClick: () => void;
 };

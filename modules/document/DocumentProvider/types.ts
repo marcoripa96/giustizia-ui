@@ -1,4 +1,4 @@
-import { AnnotationSet, Candidate, Document, EntityAnnotation } from "@/server/routers/document";
+import { AnnotationSet, Candidate, Cluster, Document, EntityAnnotation } from "@/server/routers/document";
 import { FlatTreeNode, TreeItem } from "../../../components/Tree";
 import { FlatTreeObj } from "../../../components/Tree";
 
@@ -39,6 +39,14 @@ export type UIAction = 'select' | 'add' | 'delete' | 'clusters' | 'settings';
 
 export type Taxonomy = TreeItem[];
 export type FlattenedTaxonomy = FlatTreeObj
+
+export type ProcessedCluster = Cluster & {
+  mentions: {
+    id: number;
+    mention: string;
+    mentionText: string
+  }[];
+}
 
 export type View = {
   typeFilter: string[];

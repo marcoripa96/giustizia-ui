@@ -1,12 +1,13 @@
 import { Cluster } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { ProcessedCluster } from "../DocumentProvider/types";
 import ClusterCard from "./ClusterCard";
 import ClusterGroup from "./ClusterGroup";
 
 
 type ClustersListProps = {
-  clusters: Cluster[];
+  clusters: ProcessedCluster[];
 }
 
 const ListContainer = styled.div({

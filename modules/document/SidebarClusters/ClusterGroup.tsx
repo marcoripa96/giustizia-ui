@@ -9,11 +9,12 @@ import { FiChevronDown } from '@react-icons/all-files/fi/FiChevronDown';
 import { FiChevronUp } from '@react-icons/all-files/fi/FiChevronUp';
 import ClusterCard from "./ClusterCard";
 import ClustersList from "./ClustersList";
+import { ProcessedCluster } from "../DocumentProvider/types";
 
 type ClusterGroup = {
   selected: boolean;
   type: string;
-  clusters: Cluster[],
+  clusters: ProcessedCluster[],
   onClick: () => void;
 }
 

@@ -13,7 +13,7 @@ import {
   DocumentStateContext,
   DocumentDispatchContext,
 } from './DocumentContext';
-import { State } from './types';
+import { ProcessedCluster, State } from './types';
 import { getAnnotationTypes, getCandidateId, getEntityIndex } from './utils';
 
 /**
@@ -158,7 +158,7 @@ export const selectDocumentClusters = createSelector(
             mentionText: `...${text.slice(startOffset, endOffset)}...`,
           };
         }),
-      };
+      } as ProcessedCluster;
     });;
 
     const clusterGroups = groupBy(
