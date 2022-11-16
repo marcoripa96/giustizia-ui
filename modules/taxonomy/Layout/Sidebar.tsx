@@ -2,32 +2,43 @@ import { buildTreeFromFlattenedObject, Tree } from "@/components/TreeSpecializat
 import { ContentProps } from "@/pages/taxonomy";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
+import { useRouter } from "next/router";
 import { useState } from "react"
-import NodeManagement from "./NodeManagement";
-import { flatTaxonomy } from "./taxonomy"
-import { selectTreeTaxonomy, useSelector } from "./TaxonomyProvider/selectors";
-import ZeroShotCandidates from "./ZeroShotCandidates";
+import NodeManagement from "../NodeManagement";
+import { flatTaxonomy } from "../taxonomy"
+import { selectTreeTaxonomy, useSelector } from "../TaxonomyProvider/selectors";
+import ZeroShotCandidates from "../ZeroShotCandidates";
 
-type SidebarContentProps = {
-  changePageContent: (content: ContentProps) => void;
-}
+// type SidebarContentProps = {
+//   changePageContent: (content: ContentProps) => void;
+// }
 
 const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
-  padding: '5px'
-})
+  width: '450px',
+  padding: '5px',
+  borderRight: '1px solid #F3F3F5',
+  '@media (max-width: 1276px)': {
+    width: '400px',
+  },
+  '@media (max-width: 926px)': {
+    width: '350px',
+  }
+});
 
-const SidebarContent = ({ changePageContent }: SidebarContentProps) => {
+const Sidebar = () => {
   const taxonomy = useSelector(selectTreeTaxonomy);
+  const router = useRouter();
   const [selectedNodeKey, setSelectedNodeKey] = useState<string>('');
 
   const handleNodeSelect = (key: string) => {
     setSelectedNodeKey(key);
-    changePageContent({
-      title: 'Gestisci tipo',
-      content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
-    })
+    router.push(`/taxonomy/${key.toLowerCase()}/edit`, undefined, { shallow: true });
+    // changePageContent({
+    //   title: 'Gestisci tipo',
+    //   content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
+    // })
   }
 
   const handleNodeDelete = (key: string) => {
@@ -35,27 +46,23 @@ const SidebarContent = ({ changePageContent }: SidebarContentProps) => {
   }
 
   const handleNodeAdd = (key: string) => {
-    window.alert('TODO: \n1- set state to show the node add component (empty) \n2- set ' + key + ' as father in useState');
-    changePageContent({
-      title: 'Aggiungi nuovo tipo',
-      content: <NodeManagement typeKey={key} addNode changePageContent={changePageContent} />
-    });
+    router.push(`/taxonomy/${key.toLowerCase()}/add`, undefined, { shallow: true });
   }
 
   const handleNodeEdit = (key: string) => {
     window.alert('TODO: \n1- set state to show the node add component (precompiled)')
-    changePageContent({
-      title: '',
-      content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
-    });
+    // changePageContent({
+    //   title: '',
+    //   content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
+    // });
   }
 
   const handleNodeGetZeroShotCandidates = (key: string) => {
-    window.alert('TODO: \n1- set state to show top candidates component')
-    changePageContent({
-      title: '',
-      content: <ZeroShotCandidates typeKey={key} />
-    });
+    router.push(`/taxonomy/${key.toLowerCase()}/zero-shot-candidates`, undefined, { shallow: true });
+    // changePageContent({
+    //   title: '',
+    //   content: <ZeroShotCandidates typeKey={key} />
+    // });
   }
 
 
@@ -75,5 +82,5 @@ const SidebarContent = ({ changePageContent }: SidebarContentProps) => {
 
 }
 
-export default SidebarContent
+export default Sidebar
 

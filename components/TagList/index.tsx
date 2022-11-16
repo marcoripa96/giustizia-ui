@@ -1,7 +1,7 @@
 import styled from "@emotion/styled"
 import { FiX } from "@react-icons/all-files/fi/FiX"
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus"
-import { FormEvent, KeyboardEvent, useCallback, useRef, useState } from "react"
+import { FormEvent, KeyboardEvent, MouseEvent, useCallback, useRef, useState } from "react"
 import { useClickOutside, useInput } from "@/hooks"
 import { flushSync } from "react-dom"
 
@@ -114,6 +114,7 @@ const AddButton = ({ onAdd }: { onAdd: (str: string) => void }) => {
   }
 
   const handleKeyDown = (event: KeyboardEvent) => {
+    event.stopPropagation();
     if (event.key === 'Enter') {
       udpate()
     }
@@ -134,7 +135,9 @@ const TagList = ({ value, onChange }: TagListProps) => {
     onChange([...value, str]);
   }
 
-  const handleDeleteTag = (index: number) => {
+  const handleDeleteTag = (event: MouseEvent, index: number) => {
+    event.stopPropagation();
+    event.preventDefault();
     onChange([...value.slice(0, index), ...value.slice(index + 1, value.length)]);
   }
 
@@ -143,7 +146,7 @@ const TagList = ({ value, onChange }: TagListProps) => {
       {value.map((tag, index) => (
         <Tag key={index}>
           <span>{tag}</span>
-          <DeleteTagButton onClick={() => handleDeleteTag(index)}>
+          <DeleteTagButton onClick={(event) => handleDeleteTag(event, index)}>
             <FiX />
           </DeleteTagButton>
         </Tag>

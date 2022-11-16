@@ -10,6 +10,7 @@ import { NextPage } from 'next';
 import { ReactElement, ReactNode } from 'react';
 import { SessionProvider } from "next-auth/react"
 import { TranslationProvider } from '@/components';
+import TaxonomyProvider from '@/modules/taxonomy/TaxonomyProvider';
 
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -49,16 +50,17 @@ function MyApp({
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <SessionProvider session={session} basePath={`${process.env.NEXT_PUBLIC_BASE_PATH}/api/auth`}>
+      <Global styles={GlobalStyles} />
       <TranslationProvider locale={locale}>
-        <Global styles={GlobalStyles} />
-        <NextUIProvider>
-          {/* <TranslationProvider> */}
-          <Layout>
-            <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
-            {getLayout(<Component {...pageProps} />)}
-          </Layout>
-          {/* </TranslationProvider> */}
-        </NextUIProvider>
+        <TaxonomyProvider>
+          <NextUIProvider>
+            <Layout>
+              <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
+              {getLayout(<Component {...pageProps} />)}
+            </Layout>
+          </NextUIProvider>
+        </TaxonomyProvider>
+
       </TranslationProvider>
     </SessionProvider>
   );

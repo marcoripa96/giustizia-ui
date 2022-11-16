@@ -1,7 +1,7 @@
 import { Button } from "@/components";
 import TagList from "@/components/TagList";
 import { FlatTreeNode } from "@/components/TreeSpecialization";
-import { useForm } from "@/hooks";
+import { useForm, useParam } from "@/hooks";
 import { ContentProps } from "@/pages/taxonomy";
 import styled from "@emotion/styled";
 import { Input, Text } from "@nextui-org/react";
@@ -12,7 +12,6 @@ import { useSelector, useTaxonomyDispatch } from "./TaxonomyProvider/selectors";
 type NodeManagementProps = {
   typeKey: string;
   addNode?: boolean;
-  changePageContent: (content: ContentProps) => void;
 }
 
 const Container = styled.div({
@@ -35,13 +34,14 @@ type FormState = {
 }
 
 
-const NodeManagement = ({ typeKey, addNode, changePageContent }: NodeManagementProps) => {
+const NodeManagement = ({ typeKey, addNode }: NodeManagementProps) => {
   const dispatch = useTaxonomyDispatch();
   const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
-  const { register, onSubmit, setValue, value } = useForm<FormState>({
-    label: addNode ? '' : taxonomyNode.label,
-    key: addNode ? '' : taxonomyNode.key,
-    terms: addNode ? [] : (taxonomyNode.terms || [])
+
+  const { register, onSubmit, setValue } = useForm<FormState>({
+    label: '',
+    key: '',
+    terms: []
   });
 
   useEffect(() => {
@@ -63,32 +63,34 @@ const NodeManagement = ({ typeKey, addNode, changePageContent }: NodeManagementP
       });
     } else {
       // c'è un problema con l'edit. la Key non deve essere anche la chiave del dizionario. Se pensiamo a mongo ad esempio è l'id di mongo. Quindi simulerei questa cosa
-      // dispatch({
-      //   type: 'editType',
-      //   payload: {
-      //     oldKey: typeKey,
-      //     new: {
-      //       ...value,
-      //       parent: typeKey
-      //     }
-      //   }
-      // });
+      dispatch({
+        type: 'editType',
+        payload: {
+          oldKey: typeKey,
+          new: {
+            ...value,
+            parent: typeKey
+          }
+        }
+      });
     }
   }
+
 
 
   return (
     <Container as="form" onSubmit={onSubmit(handleSubmit)}>
       <Row>
-        <Input size="lg" {...register('label')} label="Etichetta" placeholder="Nome del tipo" />
+        <Input size="lg" {...register('label')} label="Nome" placeholder="Nome del tipo" />
         <Input size="lg" {...register('key')} label="Tag" placeholder="Tag del tipo" />
       </Row>
       <Text>{`Aggiungi i termini più rappresentativi per il tipo:`}</Text>
       <TagList {...register('terms')} />
       <Button
         type="submit"
+        auto
         css={{
-          marginLeft: 'auto'
+          marginRight: 'auto'
         }}>
         Save
       </Button>
