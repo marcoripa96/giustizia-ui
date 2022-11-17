@@ -5,18 +5,20 @@ import { useSelector } from "@/modules/taxonomy/TaxonomyProvider/selectors";
 import ZeroShotCandidates from "@/modules/taxonomy/ZeroShotCandidates";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useQuery } from "@/utils/trpc";
-import { Text } from "@nextui-org/react";
+import { Loading, Text } from "@nextui-org/react";
 import { ReactElement } from "react";
 
 const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   const taxonomyNode = useSelector((state) => state.taxonomy[type.toUpperCase()]);
 
-  const { data } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [] }]);
+  const { data, isFetching } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [] }]);
 
+  // return <Loading size="xl" css={{ position: 'absolute', top: '50%', left: '50%', transform: 'translateY(-50%) translateX(-50%)' }} />
   return (
     <Content
       title={`Possibili esempi di ${taxonomyNode.label}`}
-      description="Seleziona gli esempi annotati correttamente">
+      description="Seleziona gli esempi annotati correttamente"
+      showLoader={isFetching}>
       {data ? <ZeroShotCandidates candidates={data} /> : null}
     </Content>
   )

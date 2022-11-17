@@ -1,11 +1,12 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
-import { Text } from "@nextui-org/react";
+import { Progress, Text } from "@nextui-org/react";
 import { PropsWithChildren, UIEvent, useEffect, useRef, useState } from "react";
 
 type ContentProps = PropsWithChildren<{
   title: string;
   description?: string;
+  showLoader?: boolean;
 }>
 
 const OuterContainer = styled.div({
@@ -62,7 +63,7 @@ const Header = styled.div({
 })
 
 
-const Content = ({ title, description, children }: ContentProps) => {
+const Content = ({ title, description, children, showLoader }: ContentProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -85,7 +86,7 @@ const Content = ({ title, description, children }: ContentProps) => {
             <Text size="$md" css={{ color: 'rgba(0,0,0,0.7)' }}>{description}</Text>
           </Header>
         )}
-        {children}
+        {showLoader ? <Progress indeterminated></Progress> : children}
       </InnerContainer>
     </OuterContainer>
   )
