@@ -2,9 +2,12 @@ import { Candidate } from "@/server/routers/taxonomy";
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Button, Checkbox, Text } from "@nextui-org/react";
-import { useEffect, useMemo, useState } from "react";
+import { MouseEvent, useEffect, useMemo, useState } from "react";
 import fakeCandidates from "./fakeCandidates";
 import { FiChevronDown } from '@react-icons/all-files/fi/FiChevronDown';
+import { Tooltip } from '@nextui-org/react';
+import Link from "next/link";
+
 
 type ZeroShotCandidatesProps = {
   candidates: Candidate[];
@@ -45,10 +48,13 @@ const ListItemContainer = styled.div({
   }
 })
 
-const Tag = styled.mark({
+const Tag = styled.a({
   padding: '2px',
   background: '#fcfcb5',
-  borderRadius: '6px'
+  borderRadius: '6px',
+  "&:hover": {
+    background: '#fcf653'
+  }
 })
 
 const CandidateItemWrapper = styled.div({
@@ -65,9 +71,20 @@ const CandidateItem = ({ candidate, onClick, isSelected, index }: CandidateItemP
     const mention = text.slice(offset_ex_start, offset_ex_end);
     const end = `${text.slice(offset_ex_end, text.length)}...`;
 
+    const handleLinkOnClick = (event: MouseEvent) => {
+      event.stopPropagation();
+    }
+
+    // TODO: sistemare url href con PoC_specialization_template
     return [
       start,
-      <Tag key={0}>{mention}</Tag>,
+      <Tooltip css={{ display: 'inline' }} color="invert" key={0} content={`Visualizza nel documento ${candidate.doc_id}`}>
+        <Link href={`/documents/${candidate.doc_id}?annotationSetId=PoC_gold&annotationId=${candidate.id}`} passHref>
+          <Tag key={0} onClick={handleLinkOnClick} target="_blank" >
+            {mention}
+          </Tag>
+        </Link>
+      </Tooltip>,
       end
     ]
   }, [candidate]);

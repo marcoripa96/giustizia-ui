@@ -5,6 +5,7 @@ import { Fragment, MouseEvent, useState } from 'react';
 import { scrollEntityIntoView } from '../DocumentProvider/utils';
 import { FiArrowRight } from '@react-icons/all-files/fi/FiArrowRight';
 import { useDocumentDispatch } from '../DocumentProvider/selectors';
+import { useRouter } from 'next/router';
 
 type ClusterMentionsListProps = {
   mentions: (Cluster['mentions'][number] & { mentionText: string })[];
@@ -76,34 +77,13 @@ const highlightMatchingText = (text: string, matchingText: string) => {
 };
 
 const ClusterMentionsList = ({ mentions }: ClusterMentionsListProps) => {
-  const dispatch = useDocumentDispatch();
+  // const dispatch = useDocumentDispatch();
+  const router = useRouter()
 
   const handleOnClick = (id: number) => (event: MouseEvent) => {
     event.stopPropagation();
 
-    const element = document.getElementById(`entity-tag-${id}`);
-    if (!element) return;
-
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-
-        if (entry.isIntersecting) {
-          observer.unobserve(element);
-          dispatch({
-            type: 'highlightAnnotation',
-            payload: {
-              annotationId: id,
-            },
-          });
-        }
-      },
-      { root: null, rootMargin: '0px', threshold: 1 }
-    );
-
-    observer.observe(element);
+    router.push(`/documents/${router.query.id}?annotationId=${id}`, undefined, { shallow: true })
   };
 
   return (

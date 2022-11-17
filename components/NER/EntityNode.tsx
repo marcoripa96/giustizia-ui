@@ -8,8 +8,28 @@ import { darken } from "polished";
 import { ReactNode, useCallback, useMemo, MouseEvent, useEffect, useState } from "react";
 import { useNERContext } from "./nerContext";
 import { FiX } from '@react-icons/all-files/fi/FiX';
+import { keyframes } from "@emotion/react";
 
 type EntityNodeProps = EntityNode<AdditionalAnnotationProps>
+
+const pulse = keyframes`
+0% {
+  transform: scale(1);
+}
+25% {
+  transform: scale(1.1);
+}
+50% {
+  transform: scale(1);
+}
+75% {
+  transform: scale(1.1);
+}
+100% {
+  transform: scale(1);
+}
+
+`
 
 const Tag = styled.span<{ color: string; highlight: boolean }>(({ color, highlight }) => ({
   display: 'inline-flex',
@@ -26,7 +46,8 @@ const Tag = styled.span<{ color: string; highlight: boolean }>(({ color, highlig
   border: `1px solid ${darken(0.05, color)}`,
   ...(highlight && {
     background: darken(0.1, color),
-    transform: 'scale(1.1)'
+    animation: `${pulse} 1000ms ease-out`,
+    zIndex: 9999
   }),
   '& > button': {
     background: darken(0.1, color),
@@ -34,7 +55,7 @@ const Tag = styled.span<{ color: string; highlight: boolean }>(({ color, highlig
       background: darken(0.2, color),
     }
   },
-  transition: 'background 500ms ease-out, transform 500ms ease-out'
+  transition: 'background 500ms ease-out'
 }));
 
 const TagLabel = styled.span<{ color: string }>(({ color }) => ({
@@ -85,7 +106,7 @@ function EntityNode(props: EntityNodeProps) {
       setHighlight(true);
       setTimeout(() => {
         setHighlight(false);
-      }, 500)
+      }, 1000)
     }
   }, [highlightAnnotation])
 

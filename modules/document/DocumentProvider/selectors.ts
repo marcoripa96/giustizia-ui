@@ -147,24 +147,27 @@ export const selectDocumentClusters = createSelector(
     }
 
     const clusters = annSetClusters.map((cluster) => {
+
+      const mentions = cluster.mentions.map((mention) => {
+        const ann = annSet.annotations.find((ann) => ann.id === mention.id);
+
+        if (!ann) {
+          return mention;
+        }
+
+        const startOffset = ann.start - 10 < 0 ? 0 : ann.start - 10;
+        const endOffset = ann.end + 50 > text.length ? text.length : ann.end + 50;
+
+        return {
+          ...mention,
+          mentionText: `...${text.slice(startOffset, endOffset)}...`,
+        };
+      })
+
       return {
         ...cluster,
-        mentions: cluster.mentions.map((mention) => {
-          const ann = annSet.annotations.find((ann) => ann.id === mention.id);
-          if (!ann) {
-            return mention;
-          }
-
-          const startOffset = ann.start - 10 < 0 ? 0 : ann.start - 10;
-          const endOffset =
-            ann.end + 50 > text.length ? text.length : ann.end + 50;
-
-          return {
-            ...mention,
-            mentionText: `...${text.slice(startOffset, endOffset)}...`,
-          };
-        }),
-      } as ProcessedCluster;
+        mentions: mentions.filter((m) => (m as any).mentionText),
+      };
     });;
 
     const clusterGroups = groupBy(

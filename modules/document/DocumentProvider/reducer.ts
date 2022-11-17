@@ -221,10 +221,11 @@ export const documentReducer = createImmerReducer<State, Action>({
   },
   changeAnnotationSet: (state, payload) => {
     const { annotationSet, viewIndex } = payload;
-    const { annotations } = state.data.annotation_sets[annotationSet]
-
-    state.ui.views[viewIndex].typeFilter = getTypeFilter(annotations);
-    state.ui.views[viewIndex].activeAnnotationSet = annotationSet;
+    if (annotationSet in state.data.annotation_sets) {
+      const { annotations } = state.data.annotation_sets[annotationSet]
+      state.ui.views[viewIndex].typeFilter = getTypeFilter(annotations);
+      state.ui.views[viewIndex].activeAnnotationSet = annotationSet;
+    }
   },
   setView: (state, payload) => {
     const { viewIndex, view } = payload;

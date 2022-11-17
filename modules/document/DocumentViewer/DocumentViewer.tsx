@@ -45,10 +45,14 @@ const DocumentViewer = () => {
   const dispatch = useDocumentDispatch();
 
   useEffect(() => {
+    
     const element = document.querySelector(`#${sectionUrlHashId}`);
-    if (element) {
-      element.scrollIntoView()
+    if (!element) {
+      return
     }
+
+    element.scrollIntoView()
+    
   }, [sectionUrlHashId]);
 
   const handleTagClick = (event: MouseEvent, annotation: EntityAnnotation) => {
