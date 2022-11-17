@@ -60,10 +60,10 @@ const CandidateItemWrapper = styled.div({
 
 const CandidateItem = ({ candidate, onClick, isSelected, index }: CandidateItemProps) => {
   const content = useMemo(() => {
-    const { context, offset_ex_start, offset_ex_end } = candidate;
-    const start = `...${context.slice(0, offset_ex_start)}`;
-    const mention = context.slice(offset_ex_start, offset_ex_end);
-    const end = `${context.slice(offset_ex_end, context.length)}...`;
+    const { text, offset_ex_start, offset_ex_end } = candidate;
+    const start = `...${text.slice(0, offset_ex_start)}`;
+    const mention = text.slice(offset_ex_start, offset_ex_end);
+    const end = `${text.slice(offset_ex_end, text.length)}...`;
 
     return [
       start,
