@@ -140,7 +140,13 @@ export const selectDocumentClusters = createSelector(
 
     const annSet = annotation_sets[activeAnnotationSet];
 
-    const clusters = features.clusters[activeAnnotationSet].map((cluster) => {
+    const annSetClusters = features.clusters[activeAnnotationSet];
+
+    if (!annSetClusters) {
+      return null;
+    }
+
+    const clusters = annSetClusters.map((cluster) => {
       return {
         ...cluster,
         mentions: cluster.mentions.map((mention) => {
