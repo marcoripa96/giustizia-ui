@@ -67,10 +67,7 @@ const NodeManagement = ({ typeKey, addNode }: NodeManagementProps) => {
         type: 'editType',
         payload: {
           oldKey: typeKey,
-          new: {
-            ...value,
-            parent: typeKey
-          }
+          newNode: value
         }
       });
     }

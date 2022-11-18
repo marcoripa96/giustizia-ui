@@ -1,31 +1,30 @@
-import { useParam } from "@/hooks";
 import Content from "@/modules/taxonomy/Content";
+import FewShotCandidates from "@/modules/taxonomy/FewShotExamples";
 import Layout, { LayoutContentProps } from "@/modules/taxonomy/Layout";
 import { useSelector } from "@/modules/taxonomy/TaxonomyProvider/selectors";
-import ZeroShotCandidates from "@/modules/taxonomy/ZeroShotCandidates";
 import { NextPageWithLayout } from "@/pages/_app";
 import { useQuery } from "@/utils/trpc";
-import { Loading, Text } from "@nextui-org/react";
 import { ReactElement } from "react";
 
-const ZeroShotCandidatesPage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
+const FewShotExamplesPage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   const taxonomyNode = useSelector((state) => state.taxonomy[type.toUpperCase()]);
 
   const { data, isFetching } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [] }], { staleTime: Infinity });
 
+  // return <Loading size="xl" css={{ position: 'absolute', top: '50%', left: '50%', transform: 'translateY(-50%) translateX(-50%)' }} />
   return (
     <Content
-      title={`Possibili esempi di ${taxonomyNode.label}`}
-      description="Seleziona gli esempi annotati correttamente"
+      title={`Esempi annotati di ${taxonomyNode.label}`}
+      description="Di seguito alcuni esempi annotati automaticamente sulla base della precedente scelta"
       showLoader={isFetching}>
-      {data ? <ZeroShotCandidates candidates={data} /> : null}
+      {data ? <FewShotCandidates candidates={data} /> : null}
     </Content>
   )
 
 }
 
 // Fullscreen layout for the page
-ZeroShotCandidatesPage.getLayout = function getLayout(page: ReactElement<LayoutContentProps>) {
+FewShotExamplesPage.getLayout = function getLayout(page: ReactElement<LayoutContentProps>) {
 
   return (
     <Layout>
@@ -34,4 +33,4 @@ ZeroShotCandidatesPage.getLayout = function getLayout(page: ReactElement<LayoutC
   )
 }
 
-export default ZeroShotCandidatesPage
+export default FewShotExamplesPage

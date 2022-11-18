@@ -27,19 +27,13 @@ const Row = styled.div({
 
 // Page component
 const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
-  const router = useRouter();
-
-  const handleClick = () => {
-    router.push(`/taxonomy/${type.toLowerCase()}/add`, undefined, { shallow: true });
-  }
-
   return (
     <Content
       title="Gestisci tipo">
       {/* <Row>
         <Button size="sm" auto iconRight={<FiPlus />} onClick={handleClick}>Aggiungi sottotipo</Button>
       </Row> */}
-      <NodeManagement typeKey={type.toUpperCase()} />
+      {type && <NodeManagement typeKey={type.toUpperCase()} />}
     </Content>
   )
 

@@ -36,7 +36,7 @@ const ContentWrapper = styled.div({
 
 
 const Layout = ({ children }: LayoutProps) => {
-  const [type] = useParam<string>('type');
+  const [type, isReady] = useParam<string>('type');
 
   const childrenWithProps = Children.map(children, child => {
     // Checking isValidElement is the safe way and avoids a
@@ -48,13 +48,13 @@ const Layout = ({ children }: LayoutProps) => {
     return child;
   });
 
+
+
   return (
     <PageContainer>
       <Sidebar />
       <ContentWrapper>
-        {/* <Content> */}
-        {childrenWithProps}
-        {/* </Content> */}
+        {isReady && childrenWithProps}
       </ContentWrapper>
     </PageContainer>
   )

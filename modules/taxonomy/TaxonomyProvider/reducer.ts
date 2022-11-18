@@ -1,5 +1,6 @@
 import { FlatTreeNode, FlatTreeObj } from "@/components/TreeSpecialization";
 import { createImmerReducer } from "@/utils/immerReducer";
+import { original } from "immer";
 
 export type State = {
   taxonomy: FlatTreeObj;
@@ -10,7 +11,12 @@ export type Dispatch = (action: Action) => void;
 type Action =
   | { type: 'setTaxonomy', payload: FlatTreeObj }
   | { type: 'addType', payload: FlatTreeNode }
-  | { type: 'editType', payload: { oldKey: string; new: FlatTreeNode; } }
+  | {
+    type: 'editType', payload: {
+      oldKey: string;
+      newNode: { label: string; key: string; terms: string[]; }
+    }
+  }
 // add type
 // edit type
 // delete type
@@ -26,10 +32,18 @@ export const taxonomyReducer = createImmerReducer<State, Action>({
     }
   },
   editType: (state, payload) => {
-    const { [payload.oldKey]: _, ...taxonomy } = state.taxonomy;
+    const { [payload.oldKey]: oldNode, ...taxonomy } = state.taxonomy;
+
     state.taxonomy = {
       ...taxonomy,
-      [payload.new.key]: payload.new
+      [payload.newNode.key]: {
+        ...oldNode,
+        ...payload.newNode
+      }
     }
+
+    console.log(state.taxonomy);
+
+
   }
 }) 
