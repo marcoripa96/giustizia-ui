@@ -9,7 +9,7 @@ import { Loading, Text } from "@nextui-org/react";
 import { ReactElement } from "react";
 
 const ZeroShotCandidatesPage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
-  const taxonomyNode = useSelector((state) => state.taxonomy[type.toUpperCase()]);
+  const taxonomyNode = useSelector((state) => state.taxonomy[type]);
 
   const { data, isFetching } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [] }], { staleTime: Infinity });
 

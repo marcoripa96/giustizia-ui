@@ -1,7 +1,8 @@
 import { useParam } from "@/hooks";
 import Content from "@/modules/taxonomy/Content";
 import Layout, { LayoutContentProps } from "@/modules/taxonomy/Layout";
-import NodeManagement from "@/modules/taxonomy/NodeManagement";
+import NodeManagement, { NodeManagementFormState } from "@/modules/taxonomy/NodeManagement";
+import { useTaxonomyDispatch } from "@/modules/taxonomy/TaxonomyProvider/selectors";
 import { NextPageWithLayout } from "@/pages/_app";
 import styled from "@emotion/styled";
 import { Button, Text } from "@nextui-org/react";
@@ -27,13 +28,25 @@ const Row = styled.div({
 
 // Page component
 const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
+  const dispatch = useTaxonomyDispatch();
+  const router = useRouter();
+
+  const handleSubmit = (value: NodeManagementFormState) => {
+    dispatch({
+      type: 'editType',
+      payload: {
+        oldKey: type,
+        newNode: value
+      }
+    });
+    router.push(`/taxonomy`, undefined, { shallow: true });
+  }
+
+
   return (
     <Content
       title="Gestisci tipo">
-      {/* <Row>
-        <Button size="sm" auto iconRight={<FiPlus />} onClick={handleClick}>Aggiungi sottotipo</Button>
-      </Row> */}
-      {type && <NodeManagement typeKey={type.toUpperCase()} />}
+      {type && <NodeManagement onSubmit={handleSubmit} typeKey={type} />}
     </Content>
   )
 

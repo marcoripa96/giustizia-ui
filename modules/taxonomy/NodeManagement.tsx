@@ -11,6 +11,7 @@ import { useSelector, useTaxonomyDispatch } from "./TaxonomyProvider/selectors";
 
 type NodeManagementProps = {
   typeKey: string;
+  onSubmit: (value: NodeManagementFormState) => void;
   addNode?: boolean;
 }
 
@@ -27,18 +28,17 @@ const Row = styled.div({
   gap: '10px'
 })
 
-type FormState = {
+export type NodeManagementFormState = {
   label: string;
   key: string;
   terms: string[];
 }
 
 
-const NodeManagement = ({ typeKey, addNode }: NodeManagementProps) => {
-  const dispatch = useTaxonomyDispatch();
+const NodeManagement = ({ typeKey, addNode, onSubmit: onSubmitProp }: NodeManagementProps) => {
   const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
 
-  const { register, onSubmit, setValue } = useForm<FormState>({
+  const { isDirty, register, onSubmit, setValue } = useForm<NodeManagementFormState>({
     label: '',
     key: '',
     terms: []
@@ -52,31 +52,29 @@ const NodeManagement = ({ typeKey, addNode }: NodeManagementProps) => {
     })
   }, [taxonomyNode, addNode]);
 
-  const handleSubmit = (value: FormState) => {
-    if (addNode) {
-      dispatch({
-        type: 'addType',
-        payload: {
-          ...value,
-          parent: typeKey
-        }
-      });
-    } else {
-      // c'è un problema con l'edit. la Key non deve essere anche la chiave del dizionario. Se pensiamo a mongo ad esempio è l'id di mongo. Quindi simulerei questa cosa
-      dispatch({
-        type: 'editType',
-        payload: {
-          oldKey: typeKey,
-          newNode: value
-        }
-      });
-    }
-  }
-
-
+  // const handleSubmit = (value: FormState) => {
+  //   if (addNode) {
+  //     dispatch({
+  //       type: 'addType',
+  //       payload: {
+  //         ...value,
+  //         parent: typeKey
+  //       }
+  //     });
+  //   } else {
+  //     // c'è un problema con l'edit. la Key non deve essere anche la chiave del dizionario. Se pensiamo a mongo ad esempio è l'id di mongo. Quindi simulerei questa cosa
+  //     dispatch({
+  //       type: 'editType',
+  //       payload: {
+  //         oldKey: typeKey,
+  //         newNode: value
+  //       }
+  //     });
+  //   }
+  // }
 
   return (
-    <Container as="form" onSubmit={onSubmit(handleSubmit)}>
+    <Container as="form" onSubmit={onSubmit(onSubmitProp)}>
       <Row>
         <Input size="lg" {...register('label')} label="Nome" placeholder="Nome del tipo" />
         <Input size="lg" {...register('key')} label="Tag" placeholder="Tag del tipo" />
@@ -85,6 +83,7 @@ const NodeManagement = ({ typeKey, addNode }: NodeManagementProps) => {
       <TagList {...register('terms')} />
       <Button
         type="submit"
+        disabled={!isDirty}
         auto
         css={{
           marginRight: 'auto'

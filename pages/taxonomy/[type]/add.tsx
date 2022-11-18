@@ -1,7 +1,7 @@
 import { useParam } from "@/hooks";
 import Description from "@/modules/taxonomy/Description";
 import Layout, { LayoutContentProps } from "@/modules/taxonomy/Layout";
-import NodeManagement from "@/modules/taxonomy/NodeManagement";
+import NodeManagement, { NodeManagementFormState } from "@/modules/taxonomy/NodeManagement";
 import TaxonomyProvider from "@/modules/taxonomy/TaxonomyProvider";
 import { NextPageWithLayout } from "@/pages/_app";
 import styled from "@emotion/styled";
@@ -10,6 +10,8 @@ import { ReactElement, ReactNode, useState } from "react";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import Link from "next/link";
 import Content from "@/modules/taxonomy/Content";
+import { useTaxonomyDispatch } from "@/modules/taxonomy/TaxonomyProvider/selectors";
+import { useRouter } from "next/router";
 
 
 export type ContentProps = {
@@ -20,11 +22,25 @@ export type ContentProps = {
 
 // Page component
 const AddTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
+  const dispatch = useTaxonomyDispatch();
+  const router = useRouter();
+
+  const handleSubmit = (value: NodeManagementFormState) => {
+    // console.log(value);
+    dispatch({
+      type: 'addType',
+      payload: {
+        ...value,
+        parent: type
+      }
+    });
+    router.push(`/taxonomy`, undefined, { shallow: true });
+  }
 
   return (
     <Content
       title="Aggiungi tipo">
-      <NodeManagement typeKey={type.toUpperCase()} addNode />
+      <NodeManagement onSubmit={handleSubmit} typeKey={type} addNode />
     </Content>
   )
 

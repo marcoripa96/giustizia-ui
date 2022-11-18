@@ -34,7 +34,7 @@ const Sidebar = () => {
 
   const handleNodeSelect = (key: string) => {
     setSelectedNodeKey(key);
-    router.push(`/taxonomy/${key.toLowerCase()}/edit`, undefined, { shallow: true });
+    router.push(`/taxonomy/${key}/edit`, undefined, { shallow: true });
     // changePageContent({
     //   title: 'Gestisci tipo',
     //   content: <NodeManagement typeKey={key} changePageContent={changePageContent} />
@@ -46,7 +46,7 @@ const Sidebar = () => {
   }
 
   const handleNodeAdd = (key: string) => {
-    router.push(`/taxonomy/${key.toLowerCase()}/add`, undefined, { shallow: true });
+    router.push(`/taxonomy/${key}/add`, undefined, { shallow: true });
   }
 
   const handleNodeEdit = (key: string) => {
@@ -58,7 +58,7 @@ const Sidebar = () => {
   }
 
   const handleNodeGetZeroShotCandidates = (key: string) => {
-    router.push(`/taxonomy/${key.toLowerCase()}/zero-shot-candidates`, undefined, { shallow: true });
+    router.push(`/taxonomy/${key}/zero-shot-candidates`, undefined, { shallow: true });
     // changePageContent({
     //   title: '',
     //   content: <ZeroShotCandidates typeKey={key} />

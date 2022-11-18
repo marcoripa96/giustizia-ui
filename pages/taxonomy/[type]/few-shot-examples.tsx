@@ -7,7 +7,7 @@ import { useQuery } from "@/utils/trpc";
 import { ReactElement } from "react";
 
 const FewShotExamplesPage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
-  const taxonomyNode = useSelector((state) => state.taxonomy[type.toUpperCase()]);
+  const taxonomyNode = useSelector((state) => state.taxonomy[type]);
 
   const { data, isFetching } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [] }], { staleTime: Infinity });
 

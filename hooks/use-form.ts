@@ -28,6 +28,7 @@ const getInputValue = (event: any) => {
  * Hook which holds the state of a form
  */
 export function useForm<T>(defaultValues: T) {
+  const [isDirty, setIsDirty] = useState(false);
   const [state, setState] = useState<State<T>>({
     value: defaultValues
   });
@@ -44,6 +45,7 @@ export function useForm<T>(defaultValues: T) {
         ...props
       }
     }));
+    // setIsDirty(true);
   };
 
   /**
@@ -53,6 +55,7 @@ export function useForm<T>(defaultValues: T) {
     const onChange = (event: any) => {
       const value = getInputValue(event);
       setValue({ [key]: value } as Partial<T>);
+      setIsDirty(true);
     };
 
     return {
@@ -70,6 +73,7 @@ export function useForm<T>(defaultValues: T) {
 
   return {
     value: state.value,
+    isDirty,
     setValue,
     register,
     onSubmit
