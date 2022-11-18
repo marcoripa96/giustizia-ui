@@ -52,27 +52,6 @@ const NodeManagement = ({ typeKey, addNode, onSubmit: onSubmitProp }: NodeManage
     })
   }, [taxonomyNode, addNode]);
 
-  // const handleSubmit = (value: FormState) => {
-  //   if (addNode) {
-  //     dispatch({
-  //       type: 'addType',
-  //       payload: {
-  //         ...value,
-  //         parent: typeKey
-  //       }
-  //     });
-  //   } else {
-  //     // c'è un problema con l'edit. la Key non deve essere anche la chiave del dizionario. Se pensiamo a mongo ad esempio è l'id di mongo. Quindi simulerei questa cosa
-  //     dispatch({
-  //       type: 'editType',
-  //       payload: {
-  //         oldKey: typeKey,
-  //         newNode: value
-  //       }
-  //     });
-  //   }
-  // }
-
   return (
     <Container as="form" onSubmit={onSubmit(onSubmitProp)}>
       <Row>

@@ -42,7 +42,7 @@ const Layout = ({ children }: LayoutProps) => {
     // Checking isValidElement is the safe way and avoids a
     // typescript error too.
     if (isValidElement(child)) {
-      const elem = cloneElement(child as ReactElement<LayoutContentProps>, { type });
+      const elem = cloneElement(child as ReactElement<LayoutContentProps>, { type: isReady && type ? type.toUpperCase() : undefined });
       return elem;
     }
     return child;
