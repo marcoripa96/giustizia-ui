@@ -193,7 +193,7 @@ export const documentReducer = createImmerReducer<State, Action>({
         newAnnotations;
       state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
 
-      if (state.data.features.clusters[activeAnnotationSet]) {
+      if (state.data.features.clusters && state.data.features.clusters[activeAnnotationSet]) {
         const newClusters = state.data.features.clusters[
           activeAnnotationSet
         ].map((cluster) => {
