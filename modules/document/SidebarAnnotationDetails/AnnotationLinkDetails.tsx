@@ -1,155 +1,128 @@
-import { Candidate } from "@/server/routers/document";
-import { useQuery } from "@/utils/trpc";
+import { Annotation } from "@/lib/ner/core/types";
+import { AdditionalAnnotationProps, Candidate } from "@/server/routers/document";
 import styled from "@emotion/styled";
-import { Collapse, Checkbox, Col, Text, Link } from "@nextui-org/react";
-import { FiArrowUpRight } from "@react-icons/all-files/fi/FiArrowUpRight";
-import { useState, useEffect, useMemo } from "react";
-import Image from 'next/image';
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
-import { getCandidateId } from "../DocumentProvider/utils";
+import { Collapse, Link, Text } from "@nextui-org/react";
+import { useMemo } from "react";
 
-type AnnotationLinkCollapseContentProps = {
-  candidate: Candidate;
-  fetchData: boolean;
+type AnnotationLinkDetailsProps = {
+  annotationFeatures: Annotation<AdditionalAnnotationProps>['features'] | undefined;
 }
 
-const AnnotationLinkCollapseContainer = styled.div({
+const Container = styled.div({
   display: 'flex',
   flexDirection: 'column',
   gap: '10px'
 })
 
-const ImgContainer = styled.div({
-  position: 'relative',
-  width: '100%',
-  height: '120px',
-  borderRadius: '4px',
-  border: '1px solid rgba(0,0,0,0.1)',
-  overflow: 'hidden'
+const Section = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
 })
 
-const Row = styled.div({
+const List = styled(Container)({
+  gap: '5px'
+})
+
+const ListItemContainer = styled.div({
   display: 'flex',
   flexDirection: 'row',
-  alignItems: 'center',
-  gap: '10px'
+  gap: '5px',
+  // alignItems: 'center'
 })
 
-const AnnotationLinkCollapseContentSkeleton = () => {
-  return (
-    <>
-      <Skeleton width="100%" height="120px" />
-      <Skeleton width="100%" height="5px" count={3} />
-      <Skeleton width="60%" height="5px" />
-      <Skeleton width="70%" height="5px" />
-    </>
+const ListItemContent = styled.div({
+  display: 'flex',
+  flexDirection: 'column'
+})
 
+type ListAdditionalCandidatesProps = {
+  candidates: Candidate[]
+}
+
+const ListAdditionalCandidates = ({ candidates }: ListAdditionalCandidatesProps) => {
+  return (
+    <Collapse
+      title={<Text size={15}>{`Altri candidati`}</Text>}
+      css={{
+        padding: 0,
+        '& > div:first-of-type': {
+          padding: '10px 0'
+        }
+      }}>
+      <List>
+        {candidates.map((candidate, index) => (
+          <ListItemContainer key={candidate.url}>
+            <Text>{index + 1}.</Text>
+            <ListItemContent>
+              <Text>{candidate.title}</Text>
+              <Text size={12} css={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Link href={candidate.url}>
+                  {candidate.url}
+                </Link>
+              </Text>
+            </ListItemContent>
+
+          </ListItemContainer>
+        ))}
+
+      </List>
+    </Collapse>
   )
 }
 
-const AnnotationLinkCollapseContent = ({ candidate, fetchData }: AnnotationLinkCollapseContentProps) => {
-  const { id, indexer } = candidate;
-  const { data, isLoading } = useQuery(['annotation.getAnnotationDetails', { id, indexer }], {
-    staleTime: Infinity,
-    enabled: fetchData
-  });
+const AnnotationLinkDetails = ({ annotationFeatures }: AnnotationLinkDetailsProps) => {
 
-  return (
-    <AnnotationLinkCollapseContainer>
-      {data ? (
-        <>
-          {data.thumbnail && (
-            <ImgContainer>
-              <Image alt="" layout="fill" src={data.thumbnail.source} objectFit="cover" />
-            </ImgContainer>
-          )}
-          <Text>
-            {data.extract}
-          </Text>
-        </>
-      ) : <AnnotationLinkCollapseContentSkeleton />}
+  const candidates = useMemo(() => {
+    if (!annotationFeatures
+      || !annotationFeatures.additional_candidates
+      || annotationFeatures.additional_candidates.length === 0) {
+      return null;
+    }
+    return annotationFeatures.additional_candidates.filter((candidate) => candidate.url !== annotationFeatures.url);
+  }, [annotationFeatures])
 
-    </AnnotationLinkCollapseContainer>
-  )
-}
-
-
-type AnnotationLinkDetailsProps = {
-  candidates: Candidate[] | undefined;
-  selectedId?: string;
-}
-
-const AnnotationLinkDetails = ({ selectedId, candidates }: AnnotationLinkDetailsProps) => {
-  const [open, setOpen] = useState<string | undefined>(undefined);
-
-  const handleCollapseClick = (id: string) => {
-    setOpen((s) => s === id ? undefined : id);
+  if (!annotationFeatures) {
+    return null;
   }
 
-  useEffect(() => {
-    setOpen(selectedId);
-  }, [selectedId]);
+  const isNil = () => {
+    let isNil = false;
 
-  // // sort candidates so that the matching candidate is on top
-  // // then order by score
-  // const orderedCandidates = useMemo(() => {
-  //   if (!candidates) {
-  //     return undefined;
-  //   }
-  //   return candidates.sort((a, b) => {
-  //     if (getCandidateId(a) === selectedId) {
-  //       return -1;
-  //     }
-  //     if (getCandidateId(b) === selectedId) {
-  //       return 1;
-  //     }
-  //     return b.score - a.score;
-  //   })
-  // }, [candidates, selectedId]);
+    if (annotationFeatures.is_nil === undefined) {
+
+      if (annotationFeatures.linking && annotationFeatures.linking.is_nil !== undefined) {
+        isNil = annotationFeatures.linking.is_nil;
+      }
+    } else {
+      isNil = annotationFeatures.is_nil;
+    }
+    return isNil;
+  }
 
   return (
-    <>
-      <Text size={15} b>Links</Text>
-      {candidates && candidates.length > 0 ? (
-        <Collapse.Group css={{ padding: 0 }}>
-          {candidates.map((candidate) => (
-            <Collapse
-              key={getCandidateId(candidate)}
-              onClick={() => handleCollapseClick(getCandidateId(candidate))}
-              expanded={open === getCandidateId(candidate)}
-              css={{
-                padding: 0,
-                '& > div:first-of-type': {
-                  padding: '10px 0'
-                }
-              }}
-              title={(
-                <Row>
-                  {selectedId === getCandidateId(candidate) && <Checkbox isSelected aria-label="True candidate" />}
-                  <Col>
-                    <Link onClick={(event) => event.stopPropagation()} href={candidate.url} target="_blank"
-                      css={{
-                        lineHeight: 1.2,
-                        fontSize: '14px',
-                        display: 'inline-flex',
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}>
-                      {candidate.title}
-                      <FiArrowUpRight />
-                    </Link>
-                    <Text size={12}>Score: {candidate.score.toFixed(2)}</Text>
-                  </Col>
-                </Row>
-              )}>
-              <AnnotationLinkCollapseContent candidate={candidate} fetchData={open === getCandidateId(candidate)} />
-            </Collapse>
-          ))}
-        </Collapse.Group>
-      ) : <Text css={{ color: 'rgba(0,0,0,0.6)', lineHeight: 1.2 }}>This annotation has not been linked to anything yet.</Text>}
-    </>
+    <Container>
+      <Text size={15} b>Informazioni Links</Text>
+      <Section>
+        {isNil() ? (
+          <Text blockquote size={14} css={{ padding: '10px', margin: '0', background: '#fdf7d5' }}>
+            {`L'annotazione è stata riconsociuta come una nuova entità non presente nella base di conoscenza.`}
+          </Text>
+        ) : (
+          <>
+            <Text>{annotationFeatures.title}</Text>
+            <Text size={12}>
+              <Link>
+                {annotationFeatures.url}
+              </Link>
+            </Text>
+          </>
+        )}
+      </Section >
+      <Section>
+        {candidates && <ListAdditionalCandidates candidates={candidates} />}
+      </Section>
+    </Container >
   )
-}
+};
 
 export default AnnotationLinkDetails;

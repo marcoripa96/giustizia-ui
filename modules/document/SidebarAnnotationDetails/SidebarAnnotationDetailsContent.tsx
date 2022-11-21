@@ -4,7 +4,7 @@ import TextAnnotationDetails from "./AnnotationTextDetails";
 import AnnotationLinkDetails from "./AnnotationLinkDetails";
 import { EditAnnotationModal } from "./EditAnnotationModal";
 import useModal from "@/hooks/use-modal";
-import { selectCurrentEntityLinkingFeatures, selectDocumentText, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
+import { selectAnnotationFeatures, selectDocumentText, useDocumentDispatch, useSelector } from "../DocumentProvider/selectors";
 import { EntityAnnotation } from "@/server/routers/document";
 import { getCandidateId } from "../DocumentProvider/utils";
 import { Flex, IconButton, useText } from "@/components";
@@ -37,6 +37,13 @@ const DetailsContainer = styled.div({
   gap: '10px',
 })
 
+// const Divider = styled.div({
+//   width: '100%',
+//   height: '1px',
+//   padding: '10px 0px',
+//   background: 'rgba(0,0,0,0.1)'
+// })
+
 const ButtonContainer = styled.div({
   position: 'sticky',
   bottom: 0,
@@ -51,7 +58,7 @@ const ButtonContainer = styled.div({
 const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
   const t = useText('document');
   const text = useSelector(selectDocumentText);
-  const linkingFeatures = useSelector(selectCurrentEntityLinkingFeatures);
+  const annotationFeatures = useSelector(selectAnnotationFeatures);
   const { setVisible, bindings } = useModal();
   const dispatch = useDocumentDispatch();
 
@@ -98,8 +105,10 @@ const AnnotationDetailsContent = ({ annotation }: AnnotationDetailsProps) => {
           </Col>
           <Divider />
           <TextAnnotationDetails text={text} annotation={annotation} />
-          {`NIL: ${linkingFeatures?.is_nil}`}
-          <AnnotationLinkDetails selectedId={getCandidateId(linkingFeatures?.top_candidate)} candidates={linkingFeatures?.candidates} />
+          {/* <Divider /> */}
+          {/* {`NIL: ${linkingFeatures?.is_nil}`} */}
+          {/* <AnnotationLinkDetails selectedId={getCandidateId(linkingFeatures?.top_candidate)} candidates={linkingFeatures?.candidates} /> */}
+          <AnnotationLinkDetails annotationFeatures={annotationFeatures} />
         </DetailsContainer>
         <ButtonContainer>
           <Button onClick={() => setVisible(true)}>{t('rightSidebar.editBtn')}</Button>

@@ -182,33 +182,34 @@ export const selectDocumentClusters = createSelector(
 /**
  * Select linking features for the current entity
  */
-export const selectCurrentEntityLinkingFeatures = createSelector(
+export const selectAnnotationFeatures = createSelector(
   selectCurrentEntity,
   (annotation) => {
     if (!annotation) {
       return undefined;
     }
-    const { candidates, top_candidate, ...rest } =
-      annotation.features.linking || {};
+    return annotation.features;
+    // const { candidates, top_candidate, ...rest } =
+    //   annotation.features.linking || {};
 
-    if (!candidates) {
-      return undefined;
-    }
-    // order candidates
-    const orderedCandidates = candidates.sort((a, b) => {
-      if (getCandidateId(a) === getCandidateId(top_candidate)) {
-        return -1;
-      }
-      if (getCandidateId(b) === getCandidateId(top_candidate)) {
-        return 1;
-      }
-      return b.score - a.score;
-    });
-    return {
-      candidates: orderedCandidates,
-      top_candidate,
-      ...rest,
-    };
+    // if (!candidates) {
+    //   return undefined;
+    // }
+    // // order candidates
+    // const orderedCandidates = candidates.sort((a, b) => {
+    //   if (getCandidateId(a) === getCandidateId(top_candidate)) {
+    //     return -1;
+    //   }
+    //   if (getCandidateId(b) === getCandidateId(top_candidate)) {
+    //     return 1;
+    //   }
+    //   return b.score - a.score;
+    // });
+    // return {
+    //   candidates: orderedCandidates,
+    //   top_candidate,
+    //   ...rest,
+    // };
   }
 );
 

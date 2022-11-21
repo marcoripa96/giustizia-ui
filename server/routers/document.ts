@@ -51,6 +51,10 @@ export type Candidate = {
 export type AdditionalAnnotationProps = {
   mention: string;
   cluster: number;
+  title: string;
+  url: string;
+  is_nil: boolean;
+  additional_candidates: Candidate[];
   ner: {
     source: string;
     spacy_model: string;
