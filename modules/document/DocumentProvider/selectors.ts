@@ -167,8 +167,8 @@ export const selectDocumentClusters = createSelector(
       return {
         ...cluster,
         mentions: mentions.filter((m) => (m as any).mentionText),
-      };
-    });;
+      } as ProcessedCluster;
+    });
 
     const clusterGroups = groupBy(
       clusters,
