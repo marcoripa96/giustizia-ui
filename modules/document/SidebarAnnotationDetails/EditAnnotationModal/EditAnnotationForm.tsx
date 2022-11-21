@@ -1,56 +1,73 @@
-import { Flex, useText } from "@/components";
-import { useForm, useInput } from "@/hooks";
-import { Candidate, EntityAnnotation } from "@/server/routers/document";
-import styled from "@emotion/styled";
-import { Button, Input, Modal, Text } from "@nextui-org/react";
-import { FiSearch } from "@react-icons/all-files/fi/FiSearch";
-import { Dispatch, SetStateAction, useMemo } from "react";
-import { selectDocumentText, useDocumentDispatch, useSelector } from "../../DocumentProvider/selectors";
-import EntityContext from "../EntityContext";
-import TypesHierarchy from "../TypesHierarchy";
-import AddLinkItem from "./AddLinkItem";
-import LinkList from "./LinkList";
-import SelectType from "./SelectType";
+import { Flex, useText } from '@/components';
+import { useForm, useInput } from '@/hooks';
+import { Candidate, EntityAnnotation } from '@/server/routers/document';
+import styled from '@emotion/styled';
+import { Button, Input, Modal, Text } from '@nextui-org/react';
+import { FiSearch } from '@react-icons/all-files/fi/FiSearch';
+import { Dispatch, SetStateAction, useMemo } from 'react';
+import {
+  selectDocumentText,
+  useDocumentDispatch,
+  useSelector,
+} from '../../DocumentProvider/selectors';
+import EntityContext from '../EntityContext';
+import TypesHierarchy from '../TypesHierarchy';
+import AddLinkItem from './AddLinkItem';
+import LinkList from './LinkList';
+import SelectType from './SelectType';
 
 type FormProps = {
   annotation: EntityAnnotation;
   setAnnotation: Dispatch<SetStateAction<EntityAnnotation | undefined>>;
   setVisible: (value: boolean) => void;
-}
+};
 
 type FormState = {
   types: string[];
-  linkCandidate: Candidate | undefined;
-}
+  linkCandidate: {
+    url: string;
+    title: string;
+  };
+};
 
 const Form = styled.form({
   display: 'flex',
-  flexDirection: 'column'
-})
+  flexDirection: 'column',
+});
 
 function matchTitleContains(items: Candidate[], value: string) {
-  const regex = new RegExp(value, 'i')
-  return items.filter((cand) => cand.title.match(regex))
+  const regex = new RegExp(value, 'i');
+  return items.filter((cand) => cand.title.match(regex));
 }
 
-const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps) => {
+const EditAnnotationForm = ({
+  annotation,
+  setAnnotation,
+  setVisible,
+}: FormProps) => {
   const t = useText('document');
   const {
     type,
     features: {
+      is_nil,
+      title,
+      url,
       types,
-      linking: {
-        candidates,
-        top_candidate
-      } = {}
-    }
+      additional_candidates,
+      // linking: {
+      //   candidates,
+      //   top_candidate
+      // } = {}
+    },
   } = annotation;
+  const resolvedTypes = Array.from(new Set([type, ...(types || [])]));
+
   const { value, register, onSubmit } = useForm<FormState>({
-    types: [type, ...types || []],
-    linkCandidate: top_candidate
+    types: resolvedTypes,
+    linkCandidate: { url, title },
   });
   const { binds: searchBinds } = useInput('');
-  const text = useSelector(selectDocumentText)
+  const text = useSelector(selectDocumentText);
   const dispatch = useDocumentDispatch();
 
   const handleSubmit = (data: FormState) => {
@@ -59,25 +76,25 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
       payload: {
         annotationId: annotation.id,
         topCandidate: data.linkCandidate,
-        types: data.types
-      }
-    })
+        types: data.types,
+      },
+    });
     setVisible(false);
-  }
+  };
 
   const filteredCandidates = useMemo(() => {
-    if (!candidates) return [];
-    return matchTitleContains(candidates, searchBinds.value)
-  }, [candidates, searchBinds.value]);
+    if (!additional_candidates) return [];
+    return matchTitleContains(additional_candidates, searchBinds.value);
+  }, [additional_candidates, searchBinds.value]);
 
   const tempAnn = {
     ...annotation,
     type: value.types[0],
     features: {
       ...annotation.features,
-      types: value.types.slice(1)
-    }
-  }
+      types: value.types.slice(1),
+    },
+  };
 
   return (
     <Form onSubmit={onSubmit(handleSubmit)}>
@@ -96,7 +113,9 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
           <SelectType {...register('types')} />
           {value.types.map((type, index) => (
             <Flex key={type} direction="row" alignItems="center" gap="5px">
-              <Text size={11} b>{index + 1}.</Text>
+              <Text size={11} b>
+                {index + 1}.
+              </Text>
               <TypesHierarchy type={type} />
             </Flex>
           ))}
@@ -112,19 +131,28 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
             placeholder={t('modals.editAnnotation.searchLink')}
             shadow={false}
             {...searchBinds}
-            contentLeft={<FiSearch />} />
+            contentLeft={<FiSearch />}
+          />
           <AddLinkItem setAnnotation={setAnnotation} />
-          <LinkList candidates={filteredCandidates} {...register('linkCandidate')} />
+          <LinkList
+            candidates={filteredCandidates}
+            {...register('linkCandidate')}
+          />
         </Flex>
       </Modal.Body>
       <Modal.Footer>
-        <Button auto flat onClick={() => setVisible(false)} css={{
-          background: 'rgba(0,0,0,0.1)',
-          color: 'rgba(0,0,0,0.6)',
-          '&:hover': {
-            background: 'rgba(0,0,0,0.15)'
-          }
-        }}>
+        <Button
+          auto
+          flat
+          onClick={() => setVisible(false)}
+          css={{
+            background: 'rgba(0,0,0,0.1)',
+            color: 'rgba(0,0,0,0.6)',
+            '&:hover': {
+              background: 'rgba(0,0,0,0.15)',
+            },
+          }}
+        >
           {t('modals.editAnnotation.btnCancel')}
         </Button>
         <Button type="submit" auto>
@@ -132,8 +160,7 @@ const EditAnnotationForm = ({ annotation, setAnnotation, setVisible }: FormProps
         </Button>
       </Modal.Footer>
     </Form>
-
-  )
-}
+  );
+};
 
 export default EditAnnotationForm;

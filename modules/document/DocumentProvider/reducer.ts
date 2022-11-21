@@ -1,9 +1,22 @@
-import { AnnotationSet, Cluster, EntityAnnotation } from "@/server/routers/document";
-import { createImmerReducer } from "@/utils/immerReducer";
-import { removeProps } from "@/utils/shared";
-import { FlatTreeNode, getNodeAndChildren } from "../../../components/Tree";
-import { State, Action } from "./types";
-import { addAnnotation, getAnnotationTypes, getEntityIndex, getTypeFilter, isSameAction, toggleLeftSidebar } from "./utils";
+import { Annotation } from '@/lib/ner/core/types';
+import {
+  AdditionalAnnotationProps,
+  AnnotationSet,
+  Cluster,
+  EntityAnnotation,
+} from '@/server/routers/document';
+import { createImmerReducer } from '@/utils/immerReducer';
+import { removeProps } from '@/utils/shared';
+import { FlatTreeNode, getNodeAndChildren } from '../../../components/Tree';
+import { State, Action } from './types';
+import {
+  addAnnotation,
+  getAnnotationTypes,
+  getEntityIndex,
+  getTypeFilter,
+  isSameAction,
+  toggleLeftSidebar,
+} from './utils';
 
 export const documentReducer = createImmerReducer<State, Action>({
   setData: (state, payload) => {
@@ -18,7 +31,7 @@ export const documentReducer = createImmerReducer<State, Action>({
     state.ui.action.data = undefined;
   },
   changeActionData: (state, payload) => {
-    state.ui.action.data = payload.data
+    state.ui.action.data = payload.data;
   },
   createAnnotationSet: (state, payload) => {
     const { name, preset } = payload;
@@ -28,12 +41,12 @@ export const documentReducer = createImmerReducer<State, Action>({
     const newAnnSet: AnnotationSet<EntityAnnotation> = {
       name: keyAnnSet,
       annotations: [],
-      next_annid: 0
+      next_annid: 0,
     };
 
     if (preset !== '') {
-      newAnnSet.annotations = state.data.annotation_sets[preset].annotations
-      newAnnSet.next_annid = state.data.annotation_sets[preset].next_annid
+      newAnnSet.annotations = state.data.annotation_sets[preset].annotations;
+      newAnnSet.next_annid = state.data.annotation_sets[preset].next_annid;
     }
 
     state.data.annotation_sets[keyAnnSet] = newAnnSet;
@@ -48,9 +61,9 @@ export const documentReducer = createImmerReducer<State, Action>({
 
     annotationSets.forEach((set) => {
       state.data.annotation_sets[set.name] = {
-        ...set
-      }
-    })
+        ...set,
+      };
+    });
   },
   setCurrentEntityId: (state, payload) => {
     const { viewIndex, annotationId } = payload;
@@ -61,7 +74,7 @@ export const documentReducer = createImmerReducer<State, Action>({
     if (entityIndex !== -1) {
       state.ui.selectedEntity = {
         viewIndex,
-        entityIndex
+        entityIndex,
       };
     } else {
       state.ui.selectedEntity = null;
@@ -78,7 +91,8 @@ export const documentReducer = createImmerReducer<State, Action>({
     if (annotations.length - 1 === previousSelectedEntity.entityIndex) {
       state.ui.selectedEntity.entityIndex = 0;
     } else {
-      state.ui.selectedEntity.entityIndex = previousSelectedEntity.entityIndex + 1;
+      state.ui.selectedEntity.entityIndex =
+        previousSelectedEntity.entityIndex + 1;
     }
   },
   previousCurrentEntity: (state) => {
@@ -92,18 +106,17 @@ export const documentReducer = createImmerReducer<State, Action>({
     if (previousSelectedEntity.entityIndex === 0) {
       state.ui.selectedEntity.entityIndex = annotations.length - 1;
     } else {
-      state.ui.selectedEntity.entityIndex = previousSelectedEntity.entityIndex - 1;
+      state.ui.selectedEntity.entityIndex =
+        previousSelectedEntity.entityIndex - 1;
     }
   },
   addAnnotation: (state, payload) => {
-    const { views } = state.ui
+    const { views } = state.ui;
     const { viewIndex, type, start, end, text } = payload;
     const { activeAnnotationSet, typeFilter } = views[viewIndex];
 
-    const {
-      next_annid,
-      annotations
-    } = state.data.annotation_sets[activeAnnotationSet];
+    const { next_annid, annotations } =
+      state.data.annotation_sets[activeAnnotationSet];
 
     const newAnnotation: any = {
       id: next_annid,
@@ -113,10 +126,13 @@ export const documentReducer = createImmerReducer<State, Action>({
       features: {
         mention: text,
         ner: {},
-        linking: {}
-      }
-    }
-    state.data.annotation_sets[activeAnnotationSet].annotations = addAnnotation(annotations, newAnnotation);
+        linking: {},
+      },
+    };
+    state.data.annotation_sets[activeAnnotationSet].annotations = addAnnotation(
+      annotations,
+      newAnnotation
+    );
     state.data.annotation_sets[activeAnnotationSet].next_annid = next_annid + 1;
 
     if (typeFilter.indexOf(type) === -1) {
@@ -142,18 +158,21 @@ export const documentReducer = createImmerReducer<State, Action>({
           features: {
             ...ann.features,
             types: types.slice(1),
-            linking: {
-              ...ann.features.linking,
-              ...(!!topCandidate && {
-                top_candidate: topCandidate
-              })
-            }
-          }
-        }
+            ...topCandidate,
+            is_nil: false,
+            // linking: {
+            //   ...ann.features.linking,
+            //   ...(!!topCandidate && {
+            //     top_candidate: topCandidate
+            //   })
+            // }
+          },
+        } as Annotation<AdditionalAnnotationProps>;
       }
       return ann;
     });
-    state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
+    state.data.annotation_sets[activeAnnotationSet].annotations =
+      newAnnotations;
     state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
   },
   deleteAnnotation: (state, payload) => {
@@ -166,22 +185,31 @@ export const documentReducer = createImmerReducer<State, Action>({
 
     if (indexToDelete !== -1) {
       const annToDelete = annotations[indexToDelete];
-      const newAnnotations = [...annotations.slice(0, indexToDelete), ...annotations.slice(indexToDelete + 1, annotations.length)];
-      state.data.annotation_sets[activeAnnotationSet].annotations = newAnnotations;
+      const newAnnotations = [
+        ...annotations.slice(0, indexToDelete),
+        ...annotations.slice(indexToDelete + 1, annotations.length),
+      ];
+      state.data.annotation_sets[activeAnnotationSet].annotations =
+        newAnnotations;
       state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
 
-      const newClusters = state.data.features.clusters[activeAnnotationSet].map((cluster) => {
-        if (cluster.id === annToDelete.features.cluster) {
-          return {
-            ...cluster,
-            mentions: cluster.mentions.filter((mention) => mention.id !== annToDelete.id)
+      const newClusters = state.data.features.clusters[activeAnnotationSet].map(
+        (cluster) => {
+          if (cluster.id === annToDelete.features.cluster) {
+            return {
+              ...cluster,
+              mentions: cluster.mentions.filter(
+                (mention) => mention.id !== annToDelete.id
+              ),
+            };
           }
+          return cluster;
         }
-        return cluster
-      })
+      );
 
-      state.data.features.clusters[activeAnnotationSet] = newClusters.filter((cluster) => cluster.mentions.length > 0);
-
+      state.data.features.clusters[activeAnnotationSet] = newClusters.filter(
+        (cluster) => cluster.mentions.length > 0
+      );
     }
   },
   addTaxonomyType: (state, payload) => {
@@ -193,8 +221,8 @@ export const documentReducer = createImmerReducer<State, Action>({
       label,
       ...(!parent && { ...rest }),
       recognizable: false,
-      parent: parent || null
-    } as FlatTreeNode
+      parent: parent || null,
+    } as FlatTreeNode;
 
     state.taxonomy[key] = newType;
   },
@@ -206,24 +234,25 @@ export const documentReducer = createImmerReducer<State, Action>({
 
     Object.values(state.data.annotation_sets).forEach((annSet) => {
       if (annSet.name.startsWith('entities')) {
-        annSet.annotations = annSet.annotations.filter((ann) => types.indexOf(ann.type) === -1);
+        annSet.annotations = annSet.annotations.filter(
+          (ann) => types.indexOf(ann.type) === -1
+        );
       }
-    })
+    });
 
     state.ui.views.forEach((view) => {
       const indexToRemove = view.typeFilter.indexOf(key);
       if (indexToRemove !== -1) {
         view.typeFilter.splice(indexToRemove, 1);
       }
-    })
+    });
     state.ui.selectedEntity = null;
-    state.taxonomy = removeProps(taxonomy, types)
-
+    state.taxonomy = removeProps(taxonomy, types);
   },
   changeAnnotationSet: (state, payload) => {
     const { annotationSet, viewIndex } = payload;
     if (annotationSet in state.data.annotation_sets) {
-      const { annotations } = state.data.annotation_sets[annotationSet]
+      const { annotations } = state.data.annotation_sets[annotationSet];
       state.ui.views[viewIndex].typeFilter = getTypeFilter(annotations);
       state.ui.views[viewIndex].activeAnnotationSet = annotationSet;
     }
@@ -232,14 +261,11 @@ export const documentReducer = createImmerReducer<State, Action>({
     const { viewIndex, view } = payload;
     state.ui.views[viewIndex] = {
       ...state.ui.views[viewIndex],
-      ...view
-    }
+      ...view,
+    };
   },
   addView: (state) => {
-    state.ui.views = [
-      ...state.ui.views,
-      state.ui.views[0]
-    ]
+    state.ui.views = [...state.ui.views, state.ui.views[0]];
   },
   removeView: (state) => {
     state.ui.views.splice(1, 1);
@@ -247,7 +273,7 @@ export const documentReducer = createImmerReducer<State, Action>({
   setUI: (state, payload) => {
     state.ui = {
       ...state.ui,
-      ...payload
-    }
-  }
-})
+      ...payload,
+    };
+  },
+});
