@@ -125,7 +125,7 @@ export const createTaxonomy = (taxonomy: Taxonomy, annotationSets: AnnotationSet
         const node: ChildNode = {
           key: ann.type,
           label: `${ann.type[0].toUpperCase()}${ann.type.slice(1).toLowerCase()}`,
-          parent: 'UNK',
+          parent: 'UNKNOWN',
           recognizable: false
         }
         unknownNodes[ann.type] = node;
