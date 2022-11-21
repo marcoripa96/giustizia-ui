@@ -193,8 +193,10 @@ export const documentReducer = createImmerReducer<State, Action>({
         newAnnotations;
       state.ui.views[viewIndex].typeFilter = getTypeFilter(newAnnotations);
 
-      const newClusters = state.data.features.clusters[activeAnnotationSet].map(
-        (cluster) => {
+      if (state.data.features.clusters[activeAnnotationSet]) {
+        const newClusters = state.data.features.clusters[
+          activeAnnotationSet
+        ].map((cluster) => {
           if (cluster.id === annToDelete.features.cluster) {
             return {
               ...cluster,
@@ -204,12 +206,12 @@ export const documentReducer = createImmerReducer<State, Action>({
             };
           }
           return cluster;
-        }
-      );
+        });
 
-      state.data.features.clusters[activeAnnotationSet] = newClusters.filter(
-        (cluster) => cluster.mentions.length > 0
-      );
+        state.data.features.clusters[activeAnnotationSet] = newClusters.filter(
+          (cluster) => cluster.mentions.length > 0
+        );
+      }
     }
   },
   addTaxonomyType: (state, payload) => {
