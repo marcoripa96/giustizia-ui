@@ -10,19 +10,27 @@ const nextConfig = {
     domains: ['upload.wikimedia.org'],
   },
   async redirects() {
-    return [
-      {
-        source: '/',
-        destination: process.env.NEXT_PUBLIC_BASE_PATH,
-        permanent: true,
-        basePath: false
-      },
+
+    let redirectRoutes = [
       {
         source: '/',
         destination: '/infer',
         permanent: true,
-      },
+      }
     ]
+
+    if (process.env.NEXT_PUBLIC_BASE_PATH) {
+      redirectRoutes = [
+        {
+          source: '/',
+          destination: process.env.NEXT_PUBLIC_BASE_PATH,
+          permanent: true,
+          basePath: false
+        },
+        ...redirectRoutes
+      ]
+    }
+    return redirectRoutes;
   },
   basePath: process.env.NEXT_PUBLIC_BASE_PATH,
 }
