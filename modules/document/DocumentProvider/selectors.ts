@@ -140,6 +140,10 @@ export const selectDocumentClusters = createSelector(
 
     const annSet = annotation_sets[activeAnnotationSet];
 
+    if (!features.clusters) {
+      return null;
+    }
+
     const annSetClusters = features.clusters[activeAnnotationSet];
 
     if (!annSetClusters) {
