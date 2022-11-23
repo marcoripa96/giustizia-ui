@@ -41,7 +41,7 @@ const AddTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
 
   return (
     <Content
-      title="Aggiungi tipo">
+      title={`Aggiungi sottotipo di ${taxonomyNode?.label}`}>
       <NodeManagement onSubmit={handleSubmit} taxonomyNode={taxonomyNode} addNode />
     </Content>
   )

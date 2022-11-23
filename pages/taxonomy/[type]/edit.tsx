@@ -46,7 +46,7 @@ const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
 
   return (
     <Content
-      title="Gestisci tipo">
+      title={`Gestisci tipo: ${taxonomyNode?.label}`}>
       {taxonomyNode && <NodeManagement onSubmit={handleSubmit} taxonomyNode={taxonomyNode} />}
     </Content>
   )

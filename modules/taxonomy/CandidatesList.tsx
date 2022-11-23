@@ -9,6 +9,7 @@ type CandidatesListProps = {
   candidates: Candidate[];
   selectedItems?: number[];
   selectable?: boolean;
+  getUrl: (candidate: Candidate) => string;
   onChange?: (index: number) => void;
 }
 
@@ -17,6 +18,7 @@ type CandidateItemProps = {
   selectable: boolean;
   candidate: Candidate;
   isSelected?: boolean;
+  getUrl: (candidate: Candidate) => string;
   onClick: () => void;
 }
 
@@ -51,7 +53,7 @@ const Tag = styled.a({
   }
 })
 
-const CandidateItem = ({ candidate, onClick, isSelected, selectable, index }: CandidateItemProps) => {
+const CandidateItem = ({ candidate, onClick, isSelected, selectable, index, getUrl }: CandidateItemProps) => {
   const content = useMemo(() => {
     const { text, offset_ex_start, offset_ex_end } = candidate;
     const start = `...${text.slice(0, offset_ex_start)}`;
@@ -66,7 +68,8 @@ const CandidateItem = ({ candidate, onClick, isSelected, selectable, index }: Ca
     return [
       start,
       <Tooltip css={{ display: 'inline' }} color="invert" key={0} content={`Visualizza nel documento ${candidate.doc_id}`}>
-        <Link href={`/documents/${candidate.doc_id}?annotationSetId=PoC_gold&annotationId=${candidate.id}`} passHref>
+        {/* <Link href={`/documents/${candidate.doc_id}?annotationSetId=PoC_gold&annotationId=${candidate.id}`} passHref> */}
+        <Link href={getUrl(candidate)} passHref>
           <Tag key={0} onClick={handleLinkOnClick} target="_blank" >
             {mention}
           </Tag>
@@ -124,7 +127,7 @@ const ShowMoreButton = styled.button({
 
 const CANDIDATES_PER_PAGE = 20;
 
-const CandidatesList = ({ candidates, selectedItems, selectable, onChange }: CandidatesListProps) => {
+const CandidatesList = ({ candidates, selectedItems, selectable, onChange, getUrl }: CandidatesListProps) => {
   const [page, setPage] = useState(1);
 
   const pageCandidates = useMemo(() => {
@@ -152,6 +155,7 @@ const CandidatesList = ({ candidates, selectedItems, selectable, onChange }: Can
           selectable={!!selectable}
           candidate={candidate}
           onClick={() => handleChange(index)}
+          getUrl={getUrl}
           isSelected={selectedItems && selectedItems.includes(index)}
         />
       ))}

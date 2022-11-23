@@ -32,7 +32,9 @@ const FewShotExamples = ({ candidates }: FewShotExamplesProps) => {
 
   return (
     <Container>
-      <CandidatesList candidates={candidates} />
+      <CandidatesList
+        getUrl={(candidate) => `/documents/${candidate.doc_id}?annotationSetId=${process.env.NEXT_PUBLIC_FEW_SHOT_ANN_SET_ID}&annotationId=${candidate.id}`}
+        candidates={candidates} />
     </Container>
   )
 }

@@ -38,7 +38,7 @@ const getZeroShotExamples = async (type_id: string, verbalizer: string[]): Promi
     );
     return candidates;
   } catch (err) {
-    console.log(err);
+
     throw new TRPCError({
       code: 'NOT_FOUND',
       message: `AAA`,

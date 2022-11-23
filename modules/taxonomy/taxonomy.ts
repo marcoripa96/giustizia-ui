@@ -33,6 +33,12 @@ const baseTaxonomy: Taxonomy = [
     key: 'LOC',
     label: 'Location',
     color: '#FAE8FF',
+    children: []
+  },
+  {
+    key: 'ORG',
+    label: 'Organization',
+    color: '#baf2e6',
     children: [
       {
         key: 'TRIBUNALE',
@@ -40,11 +46,6 @@ const baseTaxonomy: Taxonomy = [
         recognizable: true,
       }
     ]
-  },
-  {
-    key: 'ORG',
-    label: 'Organization',
-    color: '#baf2e6'
   },
   {
     key: 'PARTE',

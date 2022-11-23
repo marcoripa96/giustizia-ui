@@ -130,11 +130,6 @@ export const baseTaxonomy: Taxonomy = [
     color: '#FAE8FF',
     children: [
       {
-        key: 'tribunale',
-        label: 'Tribunale',
-        recognizable: true,
-      },
-      {
         key: 'indirizzo',
         label: 'Indirizzo',
         recognizable: true,
@@ -278,7 +273,13 @@ export const baseTaxonomy: Taxonomy = [
   {
     key: 'organizzazione',
     label: 'Organizzazione',
-    color: '#baf2e6'
+    color: '#baf2e6',
+    children: [
+      {
+        key: 'tribunale',
+        label: 'Tribunale'
+      }
+    ]
   },
   {
     key: 'persona_giuridica',

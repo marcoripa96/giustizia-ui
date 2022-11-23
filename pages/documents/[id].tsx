@@ -32,35 +32,34 @@ const Document: NextPageWithLayout = () => {
 
     }
 
-    if (annotationId != null) {
+    setTimeout(() => {
+      if (annotationId != null) {
+        const element = document.getElementById(`entity-tag-${annotationId}`);
+        if (!element) return;
 
-      const element = document.getElementById(`entity-tag-${annotationId}`);
-      if (!element) return;
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const [entry] = entries;
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const [entry] = entries;
+            if (entry.isIntersecting) {
+              observer.unobserve(element);
+              dispatch({
+                type: 'highlightAnnotation',
+                payload: {
+                  annotationId: Number(annotationId)
+                },
+              });
+            }
+          },
+          { root: null, rootMargin: '0px', threshold: 1 }
+        );
 
-          if (entry.isIntersecting) {
-            observer.unobserve(element);
-            dispatch({
-              type: 'highlightAnnotation',
-              payload: {
-                annotationId: Number(annotationId)
-              },
-            });
-          }
-        },
-        { root: null, rootMargin: '0px', threshold: 1 }
-      );
+        observer.observe(element);
 
-      observer.observe(element);
-
-    }
-
-
+      }
+    }, 200)
   }, [router.query])
 
   return (
