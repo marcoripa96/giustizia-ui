@@ -52,11 +52,15 @@ const NodeManagement = ({ typeKey, addNode, onSubmit: onSubmitProp }: NodeManage
     })
   }, [taxonomyNode, addNode]);
 
+  const toInputUppercase = (event: any) => {
+    event.target.value = event.target.value.toUpperCase();
+  };
+
   return (
     <Container as="form" onSubmit={onSubmit(onSubmitProp)}>
       <Row>
         <Input size="lg" {...register('label')} label="Nome" placeholder="Nome del tipo" />
-        <Input size="lg" {...register('key')} label="Tag" placeholder="Tag del tipo" />
+        <Input size="lg" onInput={toInputUppercase} {...register('key')} label="Tag" placeholder="Tag del tipo" />
       </Row>
       <Text>{`Aggiungi i termini più rappresentativi per il tipo:`}</Text>
       <TagList {...register('terms')} />
