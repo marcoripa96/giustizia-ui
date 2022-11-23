@@ -39,13 +39,20 @@ export const taxonomyReducer = createImmerReducer<State, Action>({
   editType: (state, payload) => {
     const { [payload.oldKey]: oldNode, ...taxonomy } = state.taxonomy;
 
-    state.taxonomy = {
-      ...taxonomy,
-      [payload.newNode.key]: {
-        ...oldNode,
-        ...payload.newNode
+    const newTaxonomy = Object.keys(state.taxonomy).reduce((acc, key) => {
+      if (key === oldNode.key) {
+        acc[payload.newNode.key] = {
+          ...oldNode,
+          ...payload.newNode
+        }
+      } else {
+        acc[key] = state.taxonomy[key];
       }
-    }
+
+      return acc;
+    }, {} as FlatTreeObj);
+
+    state.taxonomy = newTaxonomy;
   },
   deleteType: (state, payload) => {
     const { [payload.key]: _, ...taxonomy } = state.taxonomy;
