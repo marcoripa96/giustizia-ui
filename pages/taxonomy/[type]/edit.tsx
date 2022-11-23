@@ -2,7 +2,7 @@ import { useParam } from "@/hooks";
 import Content from "@/modules/taxonomy/Content";
 import Layout, { LayoutContentProps } from "@/modules/taxonomy/Layout";
 import NodeManagement, { NodeManagementFormState } from "@/modules/taxonomy/NodeManagement";
-import { useTaxonomyDispatch } from "@/modules/taxonomy/TaxonomyProvider/selectors";
+import { useSelector, useTaxonomyDispatch } from "@/modules/taxonomy/TaxonomyProvider/selectors";
 import { NextPageWithLayout } from "@/pages/_app";
 import styled from "@emotion/styled";
 import { Button, Text } from "@nextui-org/react";
@@ -30,6 +30,7 @@ const Row = styled.div({
 const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   const dispatch = useTaxonomyDispatch();
   const router = useRouter();
+  const taxonomyNode = useSelector((state) => state.taxonomy[type]);
 
   const handleSubmit = (value: NodeManagementFormState) => {
     dispatch({
@@ -46,7 +47,7 @@ const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   return (
     <Content
       title="Gestisci tipo">
-      {type && <NodeManagement onSubmit={handleSubmit} typeKey={type} />}
+      {taxonomyNode && <NodeManagement onSubmit={handleSubmit} taxonomyNode={taxonomyNode} />}
     </Content>
   )
 

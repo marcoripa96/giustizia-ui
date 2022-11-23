@@ -17,6 +17,11 @@ type Action =
       newNode: { label: string; key: string; terms: string[]; }
     }
   }
+  | {
+    type: 'deleteType', payload: {
+      key: string;
+    }
+  }
 // add type
 // edit type
 // delete type
@@ -41,9 +46,10 @@ export const taxonomyReducer = createImmerReducer<State, Action>({
         ...payload.newNode
       }
     }
+  },
+  deleteType: (state, payload) => {
+    const { [payload.key]: _, ...taxonomy } = state.taxonomy;
 
-    console.log(state.taxonomy);
-
-
+    state.taxonomy = taxonomy;
   }
 }) 

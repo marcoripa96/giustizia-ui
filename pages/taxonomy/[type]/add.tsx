@@ -10,7 +10,7 @@ import { ReactElement, ReactNode, useState } from "react";
 import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import Link from "next/link";
 import Content from "@/modules/taxonomy/Content";
-import { useTaxonomyDispatch } from "@/modules/taxonomy/TaxonomyProvider/selectors";
+import { useSelector, useTaxonomyDispatch } from "@/modules/taxonomy/TaxonomyProvider/selectors";
 import { useRouter } from "next/router";
 
 
@@ -24,6 +24,8 @@ export type ContentProps = {
 const AddTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   const dispatch = useTaxonomyDispatch();
   const router = useRouter();
+  const taxonomyNode = useSelector((state) => state.taxonomy[type]);
+
 
   const handleSubmit = (value: NodeManagementFormState) => {
     // console.log(value);
@@ -40,7 +42,7 @@ const AddTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   return (
     <Content
       title="Aggiungi tipo">
-      <NodeManagement onSubmit={handleSubmit} typeKey={type} addNode />
+      <NodeManagement onSubmit={handleSubmit} taxonomyNode={taxonomyNode} addNode />
     </Content>
   )
 

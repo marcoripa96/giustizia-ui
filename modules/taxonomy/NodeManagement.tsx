@@ -10,7 +10,7 @@ import Description from "./Description";
 import { useSelector, useTaxonomyDispatch } from "./TaxonomyProvider/selectors";
 
 type NodeManagementProps = {
-  typeKey: string;
+  taxonomyNode: FlatTreeNode;
   onSubmit: (value: NodeManagementFormState) => void;
   addNode?: boolean;
 }
@@ -35,8 +35,8 @@ export type NodeManagementFormState = {
 }
 
 
-const NodeManagement = ({ typeKey, addNode, onSubmit: onSubmitProp }: NodeManagementProps) => {
-  const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
+const NodeManagement = ({ taxonomyNode, addNode, onSubmit: onSubmitProp }: NodeManagementProps) => {
+  // const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
 
   const { isDirty, register, onSubmit, setValue } = useForm<NodeManagementFormState>({
     label: '',
