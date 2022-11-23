@@ -56,7 +56,7 @@ const ZeroShotCandidates = ({ candidates }: ZeroShotCandidatesProps) => {
         selectable
         candidates={candidates}
         onChange={handleSelectionChange}
-        getUrl={(candidate) => `/documents/${candidate.doc_id}?annotationSetId=${process.env.NEXT_PUBLIC_ZERO_SHOT_ANN_SET_ID}&annotationId=${candidate.id}`}
+        getUrl={(candidate) => `/documents/${candidate.doc_id}?annotationSetId=PoC_specialization_template&annotationId=${candidate.id}`}
       />
 
       <Footer>
