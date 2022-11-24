@@ -36,7 +36,7 @@ const AddTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
         parent: type
       }
     });
-    router.push(`/taxonomy`, undefined, { shallow: true });
+    router.push(`/taxonomy/${value.key}/edit`, undefined, { shallow: true });
   }
 
   return (

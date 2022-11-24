@@ -115,10 +115,22 @@ const AddButton = ({ onAdd }: { onAdd: (str: string) => void }) => {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     event.stopPropagation();
-    if (event.key === 'Enter') {
-      udpate()
+    flushSync(() => {
+      if (event.key === 'Enter' || event.key === 'Tab') {
+        udpate();
+      }
+    })
+
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      flushSync(() => {
+        setIsActive(true);
+      })
+      inputRef.current?.focus();
+
     }
   }
+
 
   return (
     <AddTagContainer ref={ref} isActive={isActive} onClick={handleClick} onKeyDown={handleKeyDown} >

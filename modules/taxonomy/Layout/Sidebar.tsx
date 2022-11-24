@@ -34,17 +34,21 @@ const Sidebar = () => {
       type: 'deleteType',
       payload: { key }
     })
+    router.push(`/taxonomy`, undefined, { shallow: true });
   }
 
   const handleNodeAdd = (key: string) => {
+    setSelectedNodeKey(key);
     router.push(`/taxonomy/${key}/add`, undefined, { shallow: true });
   }
 
   const handleNodeEdit = (key: string) => {
+    setSelectedNodeKey(key);
     router.push(`/taxonomy/${key}/edit`, undefined, { shallow: true });
   }
 
   const handleNodeGetZeroShotCandidates = (key: string) => {
+    setSelectedNodeKey(key);
     router.push(`/taxonomy/${key}/zero-shot-candidates`, undefined, { shallow: true });
   }
 

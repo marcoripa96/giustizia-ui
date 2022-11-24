@@ -1,10 +1,11 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Progress, Text } from "@nextui-org/react";
-import { PropsWithChildren, UIEvent, useEffect, useRef, useState } from "react";
+import { PropsWithChildren, ReactNode, UIEvent, useEffect, useRef, useState } from "react";
 
 type ContentProps = PropsWithChildren<{
   title: string;
+  actionsToolbar?: ReactNode;
   description?: string;
   showLoader?: boolean;
 }>
@@ -62,8 +63,15 @@ const Header = styled.div({
   animation: `${slideDown} 250ms ease-out`
 })
 
+const Actions = styled.div({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: '10px'
+})
 
-const Content = ({ title, description, children, showLoader }: ContentProps) => {
+
+const Content = ({ title, description, children, showLoader, actionsToolbar }: ContentProps) => {
   const [showPreview, setShowPreview] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -79,6 +87,11 @@ const Content = ({ title, description, children, showLoader }: ContentProps) => 
         <TextInfo ref={ref}>
           <Text h1 css={{ margin: 0 }}>{title}</Text>
           {description && <Text size="$2xl" css={{ color: 'rgba(0,0,0,0.7)' }}>{description}</Text>}
+          {actionsToolbar && (
+            <Actions>
+              {actionsToolbar}
+            </Actions>
+          )}
         </TextInfo>
         {showPreview && (
           <Header>

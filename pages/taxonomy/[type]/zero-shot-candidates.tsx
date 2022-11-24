@@ -9,7 +9,7 @@ import { ReactElement } from "react";
 const ZeroShotCandidatesPage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
   const taxonomyNode = useSelector((state) => state.taxonomy[type]);
 
-  const { data, isFetching } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [] }], { staleTime: Infinity });
+  const { data, isFetching } = useQuery(['taxonomygetZeroShotCandidates', { id: type, terms: taxonomyNode.terms || [], parent: taxonomyNode.parent as string }], { staleTime: Infinity });
 
   return (
     <Content

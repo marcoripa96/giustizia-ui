@@ -21,7 +21,7 @@ export type Candidate = {
 const baseURL = `${process.env.API_BASE_URI}/specialization`;
 
 
-const getZeroShotExamples = async (type_id: string, verbalizer: string[]): Promise<Candidate[]> => {
+const getZeroShotExamples = async (type_id: string, verbalizer: string[], ancestor_type_id: string): Promise<Candidate[]> => {
   try {
     const candidates = fetchJson<any, Candidate[]>(
       `${baseURL}/zero`,
@@ -32,7 +32,8 @@ const getZeroShotExamples = async (type_id: string, verbalizer: string[]): Promi
         },
         body: {
           type_id,
-          verbalizer
+          verbalizer,
+          ancestor_type_id
         }
       }
     );
@@ -67,12 +68,13 @@ export const taxonomy = createRouter()
   .query('getZeroShotCandidates', {
     input: z.object({
       id: z.string(),
-      terms: z.string().array()
+      terms: z.string().array(),
+      parent: z.string()
     }),
     resolve: async ({ input }) => {
-      const { id, terms } = input;
+      const { id, terms, parent } = input;
 
-      const candidates = await getZeroShotExamples(id, terms);
+      const candidates = await getZeroShotExamples(id, terms, parent);
       return candidates;
     },
   })

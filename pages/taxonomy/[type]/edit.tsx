@@ -10,7 +10,7 @@ import { FiPlus } from "@react-icons/all-files/fi/FiPlus";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactElement, ReactNode, useState } from "react";
-import { unknown } from "zod";
+import { FiSearch } from '@react-icons/all-files/fi/FiSearch'
 
 
 export type ContentProps = {
@@ -24,7 +24,6 @@ const Row = styled.div({
   alignItems: 'center',
   justifyContent: 'space-between'
 })
-
 
 // Page component
 const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
@@ -40,15 +39,40 @@ const EditTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
         newNode: value
       }
     });
-    router.push(`/taxonomy`, undefined, { shallow: true });
+    router.push(`/taxonomy/${value.key}/edit`, undefined, { shallow: true });
+  }
+
+  const handleAddSubtype = () => {
+    router.push(`/taxonomy/${type}/add`, undefined, { shallow: true });
+  }
+
+  const handleSearchExamples = () => {
+    router.push(`/taxonomy/${type}/zero-shot-candidates`, undefined, { shallow: true });
   }
 
 
   return (
-    <Content
-      title={`Gestisci tipo: ${taxonomyNode?.label}`}>
-      {taxonomyNode && <NodeManagement onSubmit={handleSubmit} taxonomyNode={taxonomyNode} />}
-    </Content>
+    <>
+      {taxonomyNode && (
+        <Content
+          title={`Gestisci tipo: ${taxonomyNode?.label}`}
+          actionsToolbar={(
+            <>
+              <Button flat iconRight={<FiPlus />} auto onClick={handleAddSubtype}>Aggiungi sottotipo</Button>
+              {taxonomyNode.parent && (
+                <Button
+                  flat
+                  auto
+                  disabled={!taxonomyNode.terms || taxonomyNode.terms.length === 0}
+                  iconRight={<FiSearch />}
+                  onClick={handleSearchExamples}>Cerca esempi</Button>)}
+            </>
+          )}>
+          <NodeManagement onSubmit={handleSubmit} taxonomyNode={taxonomyNode} />
+        </Content>
+      )}
+    </>
+
   )
 
 }

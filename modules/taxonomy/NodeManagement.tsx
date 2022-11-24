@@ -62,8 +62,12 @@ const NodeManagement = ({ taxonomyNode, addNode, onSubmit: onSubmitProp }: NodeM
         <Input size="lg" {...register('label')} label="Nome" placeholder="Nome del tipo" />
         <Input size="lg" onInput={toInputUppercase} {...register('key')} label="Tag" placeholder="Tag del tipo" />
       </Row>
-      <Text>{`Aggiungi i termini più rappresentativi per il tipo:`}</Text>
-      <TagList {...register('terms')} />
+      {(taxonomyNode.parent || addNode) && (
+        <>
+          <Text>{`Aggiungi i termini più rappresentativi per il tipo:`}</Text>
+          <TagList {...register('terms')} />
+        </>
+      )}
       <Button
         type="submit"
         disabled={!isDirty}
@@ -71,7 +75,7 @@ const NodeManagement = ({ taxonomyNode, addNode, onSubmit: onSubmitProp }: NodeM
         css={{
           marginRight: 'auto'
         }}>
-        Save
+        Salva modifiche
       </Button>
     </Container>
   );

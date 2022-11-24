@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
  * Detect a click outisde of an element
  */
 const useClickOutside = <T extends HTMLDivElement>(cb: (event: DocumentEventMap['mousedown']) => void) => {
-  const ref = useRef<T>(null);
+  const ref = useRef<T | null>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: DocumentEventMap['mousedown']) => {

@@ -67,6 +67,7 @@ export function useForm<T>(defaultValues: T) {
   const onSubmit = (handle: (value: State<T>["value"]) => void) => {
     return (event: FormEvent) => {
       event.preventDefault();
+      setIsDirty(false);
       handle(state.value);
     };
   };
