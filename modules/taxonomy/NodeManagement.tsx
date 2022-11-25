@@ -5,7 +5,7 @@ import { useForm, useParam } from "@/hooks";
 import { ContentProps } from "@/pages/taxonomy";
 import styled from "@emotion/styled";
 import { Input, Text } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { FocusEvent, useEffect, useRef, useState } from "react";
 import Description from "./Description";
 import { useSelector, useTaxonomyDispatch } from "./TaxonomyProvider/selectors";
 
@@ -38,11 +38,14 @@ export type NodeManagementFormState = {
 const NodeManagement = ({ taxonomyNode, addNode, onSubmit: onSubmitProp }: NodeManagementProps) => {
   // const taxonomyNode = useSelector((state) => state.taxonomy[typeKey]);
 
-  const { isDirty, register, onSubmit, setValue } = useForm<NodeManagementFormState>({
+  const { isDirty, value, register, onSubmit, setValue } = useForm<NodeManagementFormState>({
     label: '',
     key: '',
     terms: []
   });
+  const previousLabel = useRef<string>('');
+
+
 
   useEffect(() => {
     setValue({
@@ -52,6 +55,21 @@ const NodeManagement = ({ taxonomyNode, addNode, onSubmit: onSubmitProp }: NodeM
     })
   }, [taxonomyNode, addNode]);
 
+  const handleOnBlur = () => {
+    if (!addNode) return;
+
+    const lbl = value.label.toLowerCase();
+    if (lbl !== previousLabel.current) {
+      setValue({
+        terms: value.terms.length === 0
+          ? [lbl]
+          : value.terms.map((term) => term === previousLabel.current ? lbl : term)
+      })
+      previousLabel.current = lbl
+    }
+  }
+
+
   const toInputUppercase = (event: any) => {
     event.target.value = event.target.value.toUpperCase();
   };
@@ -59,7 +77,7 @@ const NodeManagement = ({ taxonomyNode, addNode, onSubmit: onSubmitProp }: NodeM
   return (
     <Container as="form" onSubmit={onSubmit(onSubmitProp)}>
       <Row>
-        <Input size="lg" {...register('label')} label="Nome" placeholder="Nome del tipo" />
+        <Input size="lg" {...register('label')} label="Nome" placeholder="Nome del tipo" onBlur={handleOnBlur} />
         <Input size="lg" onInput={toInputUppercase} {...register('key')} label="Tag" placeholder="Tag del tipo" />
       </Row>
       {(taxonomyNode.parent || addNode) && (
