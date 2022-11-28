@@ -1,7 +1,7 @@
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Popover, Avatar, Button, Dropdown, User, Text } from "@nextui-org/react";
-import { FaSignOutAlt } from "@react-icons/all-files/fa/FaSignOutAlt";
+import { FiSliders } from "@react-icons/all-files/fi/FiSliders";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -59,10 +59,13 @@ const LoginAvatar = () => {
         />
       </Dropdown.Trigger>
       <Dropdown.Menu aria-label="Static Actions" onAction={handleAction}>
-        <Dropdown.Item key="profile">
-          <Text b color="inherit">
-            @{data?.user?.name}
-          </Text>
+        <Dropdown.Item key="profile" icon={<FiSliders />}>
+          <Link href="/taxonomy" passHref>
+            <Text as="a" b color="inherit">
+              Gestisci tassonomia
+            </Text>
+          </Link>
+
         </Dropdown.Item>
         <Dropdown.Item key="logout" color="error" withDivider>
           {t('toolbar.logout')}
