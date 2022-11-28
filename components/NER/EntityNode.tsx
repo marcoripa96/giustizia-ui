@@ -1,6 +1,6 @@
 import { getSpan } from "@/lib/ner/core";
 import { Annotation, EntityNode } from "@/lib/ner/core/types";
-import { ChildNodeWithColor } from "@/components/Tree";
+import { ChildNodeWithColor, getAllNodeData } from "@/components/Tree";
 import { AdditionalAnnotationProps, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Tooltip } from "@nextui-org/react";
@@ -82,16 +82,6 @@ const DeleteButton = styled.button({
   cursor: 'pointer'
 })
 
-const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
-  const types_set = new Set(ann.features.types || []);
-  types_set.add(ann.type);
-  const types = Array.from(types_set);
-  const nMoreTypes = types.length - 1;
-  if (nMoreTypes === 0) {
-    return types[0];
-  }
-  return `${types[0]} +${nMoreTypes}`
-}
 
 
 function EntityNode(props: EntityNodeProps) {
@@ -145,6 +135,18 @@ function EntityNode(props: EntityNodeProps) {
   }
 
   const { color } = useMemo(() => getTaxonomyNode(annotation.type), [annotation]);
+
+  const getTypesText = (ann: Annotation<AdditionalAnnotationProps>) => {
+    const types_set = new Set(ann.features.types || []);
+    types_set.add(ann.type);
+    const types = Array.from(types_set).map((t) => getTaxonomyNode(t).label);
+    const nMoreTypes = types.length - 1;
+    if (nMoreTypes === 0) {
+      return types[0];
+    }
+    return `${types[0]} +${nMoreTypes}`
+  }
+
 
   /**
    * Get a tag element
