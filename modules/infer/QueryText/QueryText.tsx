@@ -143,7 +143,7 @@ const QueryText = ({ contentExample }: QueryTextProps) => {
     return Object.values(doc.annotation_sets).filter((annSet) =>
       annSet.name.startsWith('entities_')
     );
-  }, [document]);
+  }, [doc]);
 
   // filter annotations based on the current type filter and current annotation set
   const filteredAnnotations = useMemo(() => {
@@ -155,7 +155,7 @@ const QueryText = ({ contentExample }: QueryTextProps) => {
     return annotations.filter((ann) => {
       return entityFilter.indexOf(ann.type) !== -1;
     });
-  }, [document, entityFilter, currentAnnotationSet]);
+  }, [doc, entityFilter, currentAnnotationSet]);
 
   return (
     <>
