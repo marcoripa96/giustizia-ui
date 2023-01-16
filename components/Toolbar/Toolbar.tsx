@@ -15,7 +15,7 @@ const Container = styled.div({
   background: '#FFF',
   // boxShadow: '0 2px 4px rgb(0 0 0 / 2%), inset 0 -1px 0 rgb(0 0 0 / 6%)',
   padding: '5px 24px',
-  borderBottom: '1px solid #EAECED',
+  // borderBottom: '1px solid #EAECED',
   zIndex: '10'
 })
 

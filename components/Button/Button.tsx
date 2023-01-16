@@ -13,7 +13,9 @@ const Button = ({
 
   const isDisabled = loading ? true : disabled;
   return (
-    <NextUIButton disabled={isDisabled} {...props}>
+    <NextUIButton disabled={isDisabled} {...props} css={{
+      background: '#000'
+    }}>
       {loading ? <Loading color="currentColor" size="sm" /> : children}
     </NextUIButton>
   )

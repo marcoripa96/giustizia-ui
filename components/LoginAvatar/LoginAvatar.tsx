@@ -54,6 +54,7 @@ const LoginAvatar = () => {
       <Dropdown.Trigger>
         <Avatar
           size="md"
+          squared
           text={data?.user?.name?.slice(0, 1).toUpperCase()}
           pointer
         />
