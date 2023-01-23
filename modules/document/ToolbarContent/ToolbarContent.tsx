@@ -4,7 +4,9 @@ import { HiArrowLeft } from '@react-icons/all-files/hi/HiArrowLeft';
 import { Text } from "@nextui-org/react";
 import { IconButton, Button, useText } from "@/components";
 import Link from "next/link";
-import { useMutation } from "@/utils/trpc";
+import { useContext, useMutation } from "@/utils/trpc";
+import { useQueryClient } from "react-query";
+import { useParam } from "@/hooks";
 
 const Container = styled.div({
   flexGrow: 1,
@@ -22,19 +24,24 @@ const ToolbarContent = () => {
   const document = useSelector(selectDocumentData);
   const save = useMutation(['document.save']);
   const dispatch = useDocumentDispatch();
+  const utils = useContext();
+  const [id] = useParam<string>('id');
+
 
   const handleSave = () => {
     save.mutate({
-      docId: document.id,
-      annotationSets: document.annotation_sets
+      docId: id,
+      doc: document
     }, {
-      onSuccess: (data) => {
-        dispatch({
-          type: 'udpateAnnotationSets',
-          payload: {
-            annotationSets: data
-          }
-        })
+      onSuccess: async (data) => {
+        const v = await utils.refetchQueries({ queryKey: ['document.getDocument'] })
+        console.log(v);
+        // dispatch({
+        //   type: 'udpateAnnotationSets',
+        //   payload: {
+        //     annotationSets: data
+        //   }
+        // })
       }
     })
   }

@@ -178,12 +178,13 @@ export const documents = createRouter()
   })
   .mutation('save', {
     input: z.object({
-      docId: z.number(),
-      annotationSets: z.any().optional(),
+      docId: z.string(),
+      doc: z.any().optional(),
     }),
     resolve: async ({ input }) => {
-      const { docId, annotationSets } = input;
-      return fetchJson<any, AnnotationSet<EntityAnnotation>[]>(
+      const { docId, doc } = input;
+
+      const res = await fetchJson<any, string>(
         `${baseURL}/save`,
         {
           method: 'POST',
@@ -192,9 +193,11 @@ export const documents = createRouter()
           },
           body: {
             docId,
-            annotationSets,
+            doc,
           },
         }
       );
+      return res;
+
     },
   });
