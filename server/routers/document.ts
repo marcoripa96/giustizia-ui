@@ -54,6 +54,7 @@ export type AdditionalAnnotationProps = {
   title: string;
   url: string;
   is_nil: boolean;
+  review_time?: number;
   additional_candidates: Candidate[];
   ner: {
     source: string;
