@@ -41,15 +41,7 @@ const useTrackTime = ({ seconds, isRunning: isRunningProp, resetWhenChanges }: U
 
   useEffect(() => {
     reset(seconds);
-  }, [resetWhenChanges])
-
-  // const start = () => {
-  //   setIsRunning(true);
-  // }
-
-  // const stop = () => {
-  //   setIsRunning(false);
-  // }
+  }, resetWhenChanges)
 
   const reset = (secs?: number) => {
     setElapsedSeconds(secs || 0);

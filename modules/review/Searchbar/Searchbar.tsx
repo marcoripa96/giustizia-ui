@@ -1,18 +1,19 @@
 import styled from "@emotion/styled";
-import { ChangeEvent, HTMLAttributes, PropsWithChildren, ReactNode, useMemo, useRef, useState } from "react";
+import { ChangeEvent, HTMLAttributes, KeyboardEvent, PropsWithChildren, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { selectCurrentEntities, useSelector } from "../ReviewProvider/selectors";
 import SearchModal from "./SearchModal";
 import Fuse from 'fuse.js'
 import ScrollArea from "../ReviewList/ScrollArea";
 import { FiPlus } from '@react-icons/all-files/fi/FiPlus';
 import { motion } from "framer-motion";
-import { useWindowEventListener } from "@/hooks";
+import { useDocumentEventListener, useWindowEventListener } from "@/hooks";
 import { useOnClickOutside } from "usehooks-ts";
 import { Virtualizer } from "@tanstack/react-virtual";
 import { Candidate } from "@/server/routers/document";
 import { FiSearch } from '@react-icons/all-files/fi/FiSearch';
 import ShortcutButton from "@/components/ShortcutButton/ShortcutButton";
 import { Text } from "@nextui-org/react";
+import { createNewCandidate } from "../ReviewProvider/utils";
 
 const Container = styled.div({
   display: 'flex',
@@ -176,27 +177,17 @@ const ItemContentContainer = styled.div({
 })
 
 type SearchbarProps = HTMLAttributes<HTMLInputElement> & {
+  active?: boolean;
   value?: string;
   onItemSelected: (candidate: Candidate) => void;
+  onOpen: () => void;
+  onClose: () => void;
 }
 
-const createNewCandidate = (candidate: Partial<Candidate>): Candidate => {
-  return {
-    id: 0,
-    indexer: 0,
-    norm_score: 0,
-    raw_score: 0,
-    score: 0,
-    title: '',
-    url: '',
-    ...candidate
-  }
-}
 
-const Searchbar = ({ value: searchKey, onChange, onItemSelected }: SearchbarProps) => {
+
+const Searchbar = ({ value: searchKey, active, onChange, onClose, onOpen, onItemSelected }: SearchbarProps) => {
   const [selectedItem, setSelectedItem] = useState<number>(0);
-  const [active, setActive] = useState(false);
-  // const [searchKey, setSearchKey] = useState('');
   const entities = useSelector(selectCurrentEntities);
 
   const refList = useRef<Virtualizer<HTMLDivElement, Element>>(null);
@@ -204,18 +195,18 @@ const Searchbar = ({ value: searchKey, onChange, onItemSelected }: SearchbarProp
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
   useOnClickOutside(anchorRef, () => {
-    setUserActive(false);
+    onClose();
   });
 
-  useWindowEventListener('keydown', (event) => {
-    if (event.key === 'f' && event.ctrlKey) {
-      event.preventDefault();
-      setUserActive(true);
-    } else if (event.key === ' ' && event.ctrlKey) {
-      event.preventDefault();
-      selectItem()
+  useEffect(() => {
+    if (!active) {
+      inputRef.current?.blur();
+    } else {
+      inputRef.current?.focus();
     }
-    // keyboard navigation
+  }, [active]);
+
+  useDocumentEventListener('keydown', (event) => {
     if (active) {
       switch (event.key) {
         case 'ArrowUp': {
@@ -244,13 +235,12 @@ const Searchbar = ({ value: searchKey, onChange, onItemSelected }: SearchbarProp
           break;
         case 'Enter': {
           event.preventDefault();
-          // propagate change
           selectItem();
         }
           break;
         case 'Escape': {
           event.preventDefault();
-          setUserActive(false);
+          onClose();
         }
       }
     }
@@ -268,23 +258,13 @@ const Searchbar = ({ value: searchKey, onChange, onItemSelected }: SearchbarProp
         onItemSelected(createNewCandidate({ title: searchKey, url: searchKey }));
       }
     }
-    setUserActive(false);
+    onClose();
   }
 
 
   const handleInputFocus = () => {
-    setUserActive(true);
+    onOpen();
     setSelectedItem(0);
-  }
-
-  const setUserActive = (active: boolean) => {
-    if (!active) {
-      setActive(false);
-      inputRef.current?.blur();
-    } else {
-      setActive(true);
-      inputRef.current?.focus();
-    }
   }
 
   const currentEntities = useMemo(() => {
@@ -301,15 +281,16 @@ const Searchbar = ({ value: searchKey, onChange, onItemSelected }: SearchbarProp
 
   return (
     <Container>
-      <SearchContainer ref={anchorRef} active={active}>
+      <SearchContainer ref={anchorRef} active={!!active}>
         <FiSearch />
         <Input
           ref={inputRef}
           placeholder="Search candidate entity..."
-          active={active}
+          active={!!active}
           onFocus={handleInputFocus}
           value={searchKey}
           onChange={onChange}
+
         />
         <ShortcutButton shortcut={['Ctrl', 'F']} />
         <Text css={{ opacity: 0.6, fontSize: '12px' }}>or</Text>
@@ -327,7 +308,6 @@ const Searchbar = ({ value: searchKey, onChange, onItemSelected }: SearchbarProp
                   {searchKey ? `Add "${searchKey}" as new entity...` : 'Add new entity'}
                 </span>
               </ItemContentContainer>
-
             </ListItem>
             <Divider />
 

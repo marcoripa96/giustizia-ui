@@ -1,11 +1,16 @@
+import { Candidate } from "@/server/routers/document";
 import { createReducer } from "@/utils/createReducer";
-import { createImmerReducer } from "@/utils/immerReducer";
-import { current } from "immer";
 import { Action, State } from "./types";
 import { addIfUnique, setNextItem } from "./utils";
 
 export const reviewReducer = createReducer<State, Action>({
   setState: (state, payload) => {
+    if (payload.data.isLoading) {
+      return {
+        ...state,
+        isLoading: payload.data.isLoading
+      }
+    }
     return {
       ...state,
       ...payload.data
@@ -21,6 +26,10 @@ export const reviewReducer = createReducer<State, Action>({
     }
   },
   updateTime: (state, payload) => {
+    if (!state.currentDocument) {
+      return state;
+    }
+
     const annSet = Object.keys(state.currentDocument.annotation_sets)[0];
     const { time, cursor } = payload;
 
@@ -50,8 +59,21 @@ export const reviewReducer = createReducer<State, Action>({
     }
   },
   addCandidateOptionItem: (state, payload) => {
+    if (!state.currentDocument) {
+      return state;
+    }
     const annSet = Object.keys(state.currentDocument.annotation_sets)[0];
-    const cursor = state.ui.currentItemCursor;
+    const { cursor, index, candidate } = payload;
+
+    let selectedCandidate = candidate as Candidate;
+
+    if (!candidate && cursor == null && index == null) {
+      return state;
+    }
+
+    if (cursor != null && index != null) {
+      selectedCandidate = state.currentDocument.annotation_sets[annSet].annotations[cursor].features.additional_candidates[index];
+    }
 
     const newState: State = {
       ...state,
@@ -67,7 +89,7 @@ export const reviewReducer = createReducer<State, Action>({
                   ...ann,
                   features: {
                     ...ann.features,
-                    additional_candidates: addIfUnique(ann.features.additional_candidates, payload.candidate)
+                    additional_candidates: addIfUnique(ann.features.additional_candidates, selectedCandidate)
                   }
                 }
               }
@@ -78,10 +100,10 @@ export const reviewReducer = createReducer<State, Action>({
       }
     }
 
-    return setNextItem(newState, payload.candidate);
+    return setNextItem(newState, payload);
   },
   nextAnnotation: (state, payload) => {
-    return setNextItem(state, payload.candidate);
+    return setNextItem(state, payload);
   },
   prevAnnotation: (state, payload) => {
     const cursor = state.ui.currentItemCursor;

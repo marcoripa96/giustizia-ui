@@ -6,8 +6,8 @@ export type Action =
   | { type: 'setState'; payload: { data: State } }
   | { type: 'updateTime'; payload: { time: number; cursor: number } }
   | { type: 'setActiveItem'; payload: { cursor: number } }
-  | { type: 'addCandidateOptionItem'; payload: { candidate: Candidate } }
-  | { type: 'nextAnnotation'; payload: { candidate: Candidate } }
+  | { type: 'addCandidateOptionItem'; payload: { cursor?: number; index?: number; candidate?: Candidate; } }
+  | { type: 'nextAnnotation'; payload: { cursor?: number; index?: number; candidate?: Candidate; } }
   | { type: 'prevAnnotation' }
 
 export type ActionType = Action['type'];
@@ -21,9 +21,15 @@ export type UIListAnnotationItem = {
 
 
 export type State = {
+  id: string;
+  docId: string;
+  name: string;
+  total: number;
+  done: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
-  currentDocument: Document;
+  currentDocument: Document | undefined;
+  isLoading: boolean;
   ui: {
     totalReviewed: number;
     currentItemCursor: number;

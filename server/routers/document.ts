@@ -46,6 +46,7 @@ export type Candidate = {
   norm_score: number;
   title: string;
   url: string;
+  wikipedia_id?: string;
 };
 
 export type AdditionalAnnotationProps = {

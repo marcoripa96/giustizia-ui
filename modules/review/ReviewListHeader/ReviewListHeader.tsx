@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
 import { selectAvgTime, selectProgress, useSelector } from "../ReviewProvider/selectors";
 import ProgressBar from "./ProgressBar";
+import SourceHeader from "./SourceHeader";
 
 const Container = styled.div({
   position: 'sticky',
@@ -27,14 +28,15 @@ const Row = styled.div({
 })
 
 const ReviewListHeader = () => {
-  const documentTitle = useSelector((state) => state.currentDocument.name);
+  const document = useSelector((state) => state.currentDocument);
   const avgReviewTime = useSelector(selectAvgTime);
 
   return (
     <Container>
+      <SourceHeader />
       <Row>
         <Text css={{ fontSize: '24px', fontWeight: 600, letterSpacing: '-2px' }}>
-          {documentTitle}
+          {document && document.name}
         </Text>
         <Text css={{ fontSize: '14px', fontWeight: 600, color: 'rgba(0,0,0,0.5)' }}>
           Avg. review time: {getTimeFromSeconds(avgReviewTime)}

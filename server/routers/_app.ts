@@ -4,6 +4,7 @@ import { documents } from './document';
 import { infer } from './infer';
 import { review } from './review';
 import { taxonomy } from './taxonomy';
+import { wikipedia } from './wikipedia';
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
@@ -14,3 +15,4 @@ export const appRouter = createRouter()
   .merge('infer.', infer)
   .merge('taxonomy', taxonomy)
   .merge('review.', review)
+  .merge('wikipedia.', wikipedia)

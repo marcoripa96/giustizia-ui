@@ -1,9 +1,10 @@
+import { useParam } from "@/hooks";
 import useTrackTime from "@/hooks/use-track-time";
 import { getTimeFromSeconds } from "@/utils/time";
 import styled from "@emotion/styled";
 import { Text } from "@nextui-org/react";
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock';
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSelector, selectProgress, selectCurrentAnnotation, useReviewDispatch } from "../ReviewProvider/selectors";
 
 const ProgressBarContainer = styled.div({
@@ -47,17 +48,18 @@ const CircleSeparator = styled.div({
 })
 
 const Timer = () => {
-  const { features: { review_time = 0 } } = useSelector(selectCurrentAnnotation);
+  const ann = useSelector(selectCurrentAnnotation);
   const cursor = useSelector((state) => state.ui.currentItemCursor);
   const dispatch = useReviewDispatch();
+  const docId = useSelector((state) => state.docId);
+
   const { elapsedTime } = useTrackTime({
-    seconds: review_time,
+    seconds: ann && ann.features.review_time || 0,
     isRunning: false,
-    resetWhenChanges: cursor
+    resetWhenChanges: [cursor, docId]
   });
 
   const prevCursor = useRef<number>(0);
-
 
   useEffect(() => {
     if (prevCursor.current != null) {

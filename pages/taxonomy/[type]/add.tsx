@@ -28,7 +28,7 @@ const AddTypePage: NextPageWithLayout<LayoutContentProps> = ({ type }) => {
 
 
   const handleSubmit = (value: NodeManagementFormState) => {
-    // console.log(value);
+
     dispatch({
       type: 'addType',
       payload: {

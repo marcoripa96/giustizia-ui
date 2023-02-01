@@ -28,7 +28,8 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "pages/review/[source]"
   ],
   "exclude": [
     "node_modules"

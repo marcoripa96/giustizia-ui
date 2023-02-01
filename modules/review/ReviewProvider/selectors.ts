@@ -39,12 +39,22 @@ export function useSelector<T>(cb: (state: State) => T) {
 
 export const selectCurrentDocument = (state: State) => state.currentDocument;
 export const selectUIState = (state: State) => state.ui;
-// export const selectListAnnotationsState = (state: State) => state.ui.listAnnotations;
+export const selectSourceInfo = (state: State) => ({
+  id: state.id,
+  name: state.name,
+  done: state.done,
+  total: state.total,
+  hasNextPage: state.hasNextPage,
+  hasPreviousPage: state.hasPreviousPage
+})
 
 export const selectListAnnotations = createSelector(
   selectCurrentDocument,
   selectUIState,
   (doc, uiState) => {
+    if (!doc) {
+      return [];
+    }
     const annSet = Object.values(doc.annotation_sets)[0];
     const { lastItemCursor } = uiState;
     const { text } = doc;
@@ -68,6 +78,9 @@ export const selectListAnnotations = createSelector(
 export const selectCurrentEntities = createSelector(
   selectCurrentDocument,
   (doc) => {
+    if (!doc) {
+      return [];
+    }
     const annSet = Object.keys(doc.annotation_sets)[0];
 
     const candidatesIndex = doc.annotation_sets[annSet].annotations.reduce((acc, ann) => {
@@ -90,6 +103,9 @@ export const selectCurrentAnnotation = createSelector(
   selectCurrentDocument,
   selectUIState,
   (doc, uiState) => {
+    if (!doc) {
+      return undefined;
+    }
     const annSet = Object.values(doc.annotation_sets)[0];
 
     const { currentItemCursor } = uiState;
@@ -100,8 +116,15 @@ export const selectCurrentAnnotation = createSelector(
 export const selectProgress = createSelector(
   selectCurrentDocument,
   selectUIState,
-  (document, uiState) => {
-    const annSet = Object.values(document.annotation_sets)[0];
+  (doc, uiState) => {
+    if (!doc) {
+      return {
+        completion: 0,
+        total: 0,
+        cursor: 0
+      };
+    }
+    const annSet = Object.values(doc.annotation_sets)[0];
     // const totalWithAnnotation = annSet.annotations.reduce((acc, ann) => ann.features.url ? acc + 1 : acc, 0);
     return {
       completion: (uiState.totalReviewed / annSet.annotations.length) * 100,
@@ -115,6 +138,10 @@ export const selectAvgTime = createSelector(
   selectCurrentDocument,
   selectUIState,
   (doc, uiState) => {
+    if (!doc) {
+      return 0
+    }
+
     const annSet = Object.values(doc.annotation_sets)[0];
 
     const { lastItemCursor } = uiState;
@@ -124,5 +151,24 @@ export const selectAvgTime = createSelector(
     return items.length === 0 ? 0 : items.reduce((acc, item) => acc + (item.features.review_time || 0), 0) / items.length;
   }
 );
+
+export const selectDocumentToSave = createSelector(
+  selectCurrentDocument,
+  selectAvgTime,
+  (doc, avgTime) => {
+    if (!doc) {
+      return undefined;
+    }
+
+    return {
+      ...doc,
+      features: {
+        ...doc.features,
+        avgReviewTime: avgTime
+      }
+    }
+  }
+);
+
 
 

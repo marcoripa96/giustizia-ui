@@ -2,12 +2,13 @@ import { Annotation } from "@/lib/ner/core/types";
 import { AdditionalAnnotationProps, Candidate, EntityAnnotation } from "@/server/routers/document";
 import styled from "@emotion/styled";
 import { Link, Text } from "@nextui-org/react";
-import { PropsWithChildren, useEffect, useMemo } from "react";
+import { HTMLAttributes, MouseEvent, PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import { keyframes } from "@emotion/react";
 import useTrackTime from "@/hooks/use-track-time";
 import { useReviewDispatch } from "../ReviewProvider/selectors";
 import ShortcutButton from "@/components/ShortcutButton/ShortcutButton";
+import LinkPopover from "./LInkPopover";
 
 export type ReviewListItemProps = {
   text: string;
@@ -16,7 +17,7 @@ export type ReviewListItemProps = {
   endAnnRelativeOffset: number;
   active: boolean;
   highlightSelectionItem: number | null;
-  onClick: (candidate: Candidate) => void;
+  onClick: (index: number) => void;
 }
 
 const popIn = keyframes({
@@ -135,11 +136,13 @@ type OptionItemProps = {
   highlight: boolean;
   candidate: Candidate;
   onClick: () => void;
+  onMouseMove: (event: MouseEvent<HTMLElement>) => void;
+  onMouseLeave: (event: MouseEvent<HTMLElement>) => void;
 }
 
-const OptionItem = ({ index, selected, highlight, candidate, onClick }: OptionItemProps) => {
+const OptionItem = ({ index, selected, highlight, candidate, onClick, onMouseMove, onMouseLeave }: OptionItemProps) => {
   return (
-    <OptionItemContainer selected={selected} highlight={highlight} onClick={onClick}>
+    <OptionItemContainer selected={selected} highlight={highlight} onClick={onClick} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>
       {index < 10 && <ShortcutButton shortcut={index < 9 ? `${index + 1}` : '\\'} />}
       <Text css={{
         whiteSpace: 'nowrap',
@@ -154,20 +157,16 @@ const OptionItem = ({ index, selected, highlight, candidate, onClick }: OptionIt
 };
 
 
-const ReviewListItem = ({ text: textProp, annotation, startAnnRelativeOffset, endAnnRelativeOffset, active, highlightSelectionItem, onClick }: ReviewListItemProps) => {
-  const { features: { review_time = 0 } } = annotation;
-
-  // const { elapsedTime } = useTrackTime({ seconds: review_time, isRunning: active });
-  const dispatch = useReviewDispatch();
-
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'updateTime',
-  //     payload: {
-  //       time: elapsedTime
-  //     }
-  //   })
-  // }, [elapsedTime]);
+const ReviewListItem = ({
+  text: textProp,
+  annotation,
+  startAnnRelativeOffset,
+  endAnnRelativeOffset,
+  active,
+  highlightSelectionItem,
+  onClick,
+}: ReviewListItemProps) => {
+  const [popOverState, setPopOverState] = useState<{ x: number; y: number; candidate: Candidate; } | null>(null);
 
   const { additional_candidates, url } = annotation.features;
 
@@ -186,6 +185,18 @@ const ReviewListItem = ({ text: textProp, annotation, startAnnRelativeOffset, en
     endAnnRelativeOffset
   ])
 
+
+  const handleMouseMove = (event: MouseEvent<HTMLElement>, candidate: Candidate) => {
+    const bbox = event.currentTarget.getBoundingClientRect();
+    const x = event.pageX - event.currentTarget.offsetLeft + 20;
+    const y = bbox.top;
+    setPopOverState({ x, y, candidate });
+  }
+
+  const handleMouseLeave = (event: MouseEvent<HTMLElement>) => {
+    setPopOverState(null);
+  }
+
   return (
     <ItemContainer active={active}>
       <TextContainer>
@@ -198,10 +209,13 @@ const ReviewListItem = ({ text: textProp, annotation, startAnnRelativeOffset, en
             index={index}
             highlight={highlightSelectionItem === index}
             selected={url === candidate.url}
-            onClick={() => onClick(candidate)}
+            onClick={() => onClick(index)}
+            onMouseLeave={handleMouseLeave}
+            onMouseMove={(e) => handleMouseMove(e, candidate)}
             candidate={candidate} />
         ))}
       </OptionsList>
+      <LinkPopover anchor={popOverState} />
     </ItemContainer>
   )
 };
