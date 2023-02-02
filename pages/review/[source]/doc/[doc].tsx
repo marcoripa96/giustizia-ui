@@ -1,4 +1,5 @@
 import { useDocumentEventListener, useParam, useQueryParam, useWindowEventListener } from "@/hooks";
+import Helper from "@/modules/review/Helper/Helpter";
 import LoadingOverlay from "@/modules/review/LoadingOverlay";
 import ReviewList from "@/modules/review/ReviewList/ReviewList";
 import { ReviewListItemProps } from "@/modules/review/ReviewList/ReviewListItem";
@@ -226,6 +227,7 @@ const ReviewDocument = () => {
           onItemSelected={handleItemSelected} />
       </MainContent>
       <LoadingOverlay show={loading || saveDocumentMutation.isLoading} />
+      <Helper />
     </OuterContainer>
   )
 };
