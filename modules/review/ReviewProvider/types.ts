@@ -23,9 +23,9 @@ export type UIListAnnotationItem = {
 export type State = {
   id: string;
   docId: string;
+  doneIds: string[],
   name: string;
   total: number;
-  done: number;
   hasNextPage: boolean;
   hasPreviousPage: boolean;
   currentDocument: Document | undefined;
@@ -34,6 +34,5 @@ export type State = {
     totalReviewed: number;
     currentItemCursor: number;
     lastItemCursor: number;
-    // listAnnotations: UIListAnnotationItem[];
   }
 };

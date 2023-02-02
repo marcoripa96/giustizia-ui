@@ -1,11 +1,13 @@
-import { Source } from "@/server/routers/review";
+import { Source, SourceDoc } from "@/server/routers/review";
 import { useQuery } from "@/utils/trpc";
 import styled from "@emotion/styled";
 import { Row, Text } from "@nextui-org/react";
-import { FiFolder } from "@react-icons/all-files/fi/FiFolder";
+import { FiFile } from "@react-icons/all-files/fi/FiFile";
 import { FiCheck } from "@react-icons/all-files/fi/FiCheck";
+import { FiChevronLeft } from "@react-icons/all-files/fi/FiChevronLeft";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useParam } from "@/hooks";
 import LoadingOverlay from "@/modules/review/LoadingOverlay";
 
 const OuterContainer = styled.div({
@@ -20,6 +22,7 @@ const InnerContainer = styled.div({
   gridTemplateColumns: 'repeat(auto-fill,minmax(256px,1fr))',
   gridGap: '32px 32px'
 })
+
 const FolderContainer = styled(motion.a)({
   borderRadius: '10px',
   padding: '10px',
@@ -74,25 +77,25 @@ const BackButton = styled(motion.a)({
 })
 
 
-type FolderProps = Source;
+type FolderProps = SourceDoc;
 
-const Folder = ({ id, name, total, done }: FolderProps) => {
-  const isDone = total === done;
+const Folder = ({ id, name, nAnnotations, done }: FolderProps) => {
+  const [sourceId] = useParam<string>('source');
 
   return (
-    <Link passHref href={`/review/${id}`}>
+    <Link passHref href={`/review/${sourceId}/doc/${id}`}>
       <FolderContainer whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}>
         <FolderRow>
           <FolderIconContainer>
-            <FiFolder />
+            <FiFile />
           </FolderIconContainer>
           <FolderContent>
-            <Text size="16px" css={{ fontWeight: 500 }}>
+            <Text size="16px" css={{ fontWeight: 500, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '180px' }}>
               {name}
             </Text>
-            <Text size="14px" color="rgba(0,0,0,0.5)">{`${done}/${total} documents`}</Text>
+            <Text size="14px" color="rgba(0,0,0,0.5)">{`${nAnnotations} annotations`}</Text>
           </FolderContent>
-          {isDone && (
+          {done && (
             <DoneIconContainer>
               <FiCheck />
             </DoneIconContainer>
@@ -105,23 +108,26 @@ const Folder = ({ id, name, total, done }: FolderProps) => {
 }
 
 const ReviewPage = () => {
-  const { data, isFetching, isSuccess } = useQuery(['review.getAllSources']);
+  const [sourceId] = useParam<string>('source');
+  const { data, isFetching, isSuccess } = useQuery(['review.getSource', { sourceId }]);
 
   const isLoading = isFetching && !data;
 
   if (isLoading) {
-    <LoadingOverlay show={isLoading} />
+    return <LoadingOverlay show={isLoading} />;
   }
-
   return (
     <OuterContainer>
       <Row css={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <Text h2>Review folders</Text>
-        <Text css={{ fontSize: '24px', color: 'rgba(0,0,0,0.5)', alignSelf: 'flex-end' }}>{`${data?.sources.length} folders`}</Text>
+        <Link passHref href={`/review`}>
+          <BackButton whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.02 }}><FiChevronLeft /></BackButton>
+        </Link>
+        <Text h2>{data?.name}</Text>
+        <Text css={{ fontSize: '24px', color: 'rgba(0,0,0,0.5)', alignSelf: 'flex-end' }}>{`${data?.docs.length} documents`}</Text>
       </Row>
       <InnerContainer>
-        {data?.sources.map((source) => (
-          <Folder key={source.id} {...source} />
+        {data?.docs.map((doc) => (
+          <Folder key={doc.id} {...doc} />
         ))}
       </InnerContainer>
     </OuterContainer>

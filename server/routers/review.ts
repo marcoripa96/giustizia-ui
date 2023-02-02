@@ -12,11 +12,19 @@ export type GetDocumentProps = {
   currentDocument: Document;
 }
 
+export type SourceDoc = {
+  id: string;
+  name: string;
+  done: boolean;
+  nAnnotations: number;
+}
+
 export type GetSourceProps = {
   id: string;
   name: string;
   total: number;
-  done: number;
+  doneIds: string[];
+  docs: SourceDoc[]
 }
 
 
@@ -25,11 +33,28 @@ export type PostSaveDocumentProps = {
   docId: string;
 }
 
+export type Source = {
+  id: string;
+  name: string;
+  total: number;
+  done: number;
+}
+
+export type GetSourcesProps = {
+  sources: Source[];
+};
+
 export const review = createRouter()
+  .query('getAllSources', {
+    resolve: ({ input }) => {
+      return fetchJson<void, GetSourcesProps>(`${baseURL}/review/source`);
+    },
+  })
   .query('getSource', {
     input: z
       .object({
         sourceId: z.string(),
+        docId: z.string().optional(),
       }),
     resolve: ({ input }) => {
       const { sourceId } = input;

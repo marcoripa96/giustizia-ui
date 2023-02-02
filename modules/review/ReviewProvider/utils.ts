@@ -29,9 +29,13 @@ export const setNextItem = (state: State, { cursor, index, candidate }: { cursor
 
   const nAnnotations = state.currentDocument.annotation_sets[annSet].annotations.length;
   const isLastItem = currentItemCursor === nAnnotations - 1;
+  const doneIdsSet = new Set(state.doneIds);
+
+  const newDoneIds = isLastItem && doneIdsSet.has(state.docId) ? [...state.doneIds, state.docId] : state.doneIds;
 
   const newState: State = {
     ...state,
+    doneIds: newDoneIds,
     currentDocument: {
       ...state.currentDocument,
       annotation_sets: {

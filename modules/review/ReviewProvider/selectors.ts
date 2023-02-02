@@ -39,14 +39,23 @@ export function useSelector<T>(cb: (state: State) => T) {
 
 export const selectCurrentDocument = (state: State) => state.currentDocument;
 export const selectUIState = (state: State) => state.ui;
+export const selectDocId = (state: State) => state.docId;
+export const selectDoneIds = (state: State) => state.doneIds;
 export const selectSourceInfo = (state: State) => ({
   id: state.id,
   name: state.name,
-  done: state.done,
+  done: state.doneIds.length,
   total: state.total,
+  doneIds: state.doneIds,
   hasNextPage: state.hasNextPage,
   hasPreviousPage: state.hasPreviousPage
 })
+
+export const selectIsDocDone = createSelector(
+  selectDocId,
+  selectDoneIds,
+  (docId, doneIds) => new Set(doneIds).has(docId)
+)
 
 export const selectListAnnotations = createSelector(
   selectCurrentDocument,
@@ -120,6 +129,7 @@ export const selectProgress = createSelector(
     if (!doc) {
       return {
         completion: 0,
+        totalReviewed: 0,
         total: 0,
         cursor: 0
       };
@@ -128,6 +138,7 @@ export const selectProgress = createSelector(
     // const totalWithAnnotation = annSet.annotations.reduce((acc, ann) => ann.features.url ? acc + 1 : acc, 0);
     return {
       completion: (uiState.totalReviewed / annSet.annotations.length) * 100,
+      done: uiState.totalReviewed,
       total: annSet.annotations.length,
       cursor: uiState.currentItemCursor
     };

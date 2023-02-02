@@ -1,9 +1,10 @@
 import { useDocumentEventListener, useParam, useQueryParam, useWindowEventListener } from "@/hooks";
+import LoadingOverlay from "@/modules/review/LoadingOverlay";
 import ReviewList from "@/modules/review/ReviewList/ReviewList";
 import { ReviewListItemProps } from "@/modules/review/ReviewList/ReviewListItem";
 import ReviewListHeader from "@/modules/review/ReviewListHeader/ReviewListHeader";
 import ReviewProvider from "@/modules/review/ReviewProvider/ReviewProvider";
-import { selectCurrentEntities, selectDocumentToSave, selectListAnnotations, selectProgress, useReviewDispatch, useSelector } from "@/modules/review/ReviewProvider/selectors";
+import { selectCurrentEntities, selectDocumentToSave, selectIsDocDone, selectListAnnotations, selectProgress, useReviewDispatch, useSelector } from "@/modules/review/ReviewProvider/selectors";
 import { createNewCandidate } from "@/modules/review/ReviewProvider/utils";
 import Searchbar from "@/modules/review/Searchbar/Searchbar";
 import { Candidate, EntityAnnotation } from "@/server/routers/document";
@@ -64,9 +65,11 @@ const ReviewDocument = () => {
   const loading = useSelector((state) => state.isLoading);
   const listItems = useSelector(selectListAnnotations);
   const currentItemListCursor = useSelector((state) => state.ui.currentItemCursor);
+  const lastItemListCursor = useSelector((state) => state.ui.lastItemCursor);
   const docToSave = useSelector(selectDocumentToSave);
   const refScroller = useRef<Virtualizer<HTMLDivElement, Element>>(null);
-  const { total } = useSelector(selectProgress);
+  const { total, done } = useSelector(selectProgress);
+  const isDocDone = useSelector(selectIsDocDone);
   const [sourceId] = useParam<string>('source');
   const [docId] = useParam<string>('doc');
   const saveDocumentMutation = useMutation(['review.saveDocument']);
@@ -79,6 +82,25 @@ const ReviewDocument = () => {
     }
 
   }, [currentItemListCursor, listItems]);
+
+  useEffect(() => {
+    if (!sourceId || !docId || total === 0 || isDocDone) {
+      return;
+    }
+    if (done !== total) {
+      return;
+    }
+
+    saveDocumentMutation.mutate({
+      sourceId,
+      docId,
+      document: docToSave
+    }, {
+      onSuccess: () => {
+        router.push(`/review/${sourceId}/doc/${Number(docId) + 1}`, undefined, { shallow: true });
+      }
+    })
+  }, [total, done, sourceId, docId, docToSave, isDocDone])
 
   useDocumentEventListener('keydown', (event) => {
     // open search
@@ -180,17 +202,7 @@ const ReviewDocument = () => {
         align: 'start'
       })
     } else {
-
-      saveDocumentMutation.mutate({
-        sourceId,
-        docId,
-        document: docToSave
-      }, {
-        onSuccess: () => {
-          router.push(`/review/${sourceId}/doc/${Number(docId) + 1}`, undefined, { shallow: true });
-        }
-      })
-      // save doc and change doc
+      console.log(docToSave);
     }
   }
 
@@ -213,30 +225,7 @@ const ReviewDocument = () => {
           onClose={handleSearchbarClose}
           onItemSelected={handleItemSelected} />
       </MainContent>
-      <AnimatePresence>
-        {(loading || saveDocumentMutation.isLoading) && (
-          <OverlayLoading
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}>
-            <LoadingSpinner
-              animate={{
-                scale: [1, 2, 2, 1, 1],
-                rotate: [0, 0, 180, 180, 0],
-                borderRadius: ["10%", "10%", "50%", "50%", "10%"]
-              }}
-              transition={{
-                duration: 2,
-                ease: "easeInOut",
-                times: [0, 0.2, 0.5, 0.8, 1],
-                repeat: Infinity,
-                repeatDelay: 1
-              }}
-            />
-          </OverlayLoading>
-        )}
-      </AnimatePresence>
-
+      <LoadingOverlay show={loading || saveDocumentMutation.isLoading} />
     </OuterContainer>
   )
 };
