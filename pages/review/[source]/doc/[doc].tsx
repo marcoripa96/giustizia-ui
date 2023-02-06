@@ -1,21 +1,34 @@
-import { useDocumentEventListener, useParam, useQueryParam, useWindowEventListener } from "@/hooks";
-import Helper from "@/modules/review/Helper/Helpter";
-import LoadingOverlay from "@/modules/review/LoadingOverlay";
-import ReviewList from "@/modules/review/ReviewList/ReviewList";
-import { ReviewListItemProps } from "@/modules/review/ReviewList/ReviewListItem";
-import ReviewListHeader from "@/modules/review/ReviewListHeader/ReviewListHeader";
-import ReviewProvider from "@/modules/review/ReviewProvider/ReviewProvider";
-import { selectCurrentEntities, selectDocumentToSave, selectIsDocDone, selectListAnnotations, selectProgress, useReviewDispatch, useSelector } from "@/modules/review/ReviewProvider/selectors";
-import { createNewCandidate } from "@/modules/review/ReviewProvider/utils";
-import Searchbar from "@/modules/review/Searchbar/Searchbar";
-import { Candidate, EntityAnnotation } from "@/server/routers/document";
-import { useMutation, useQuery } from "@/utils/trpc";
-import styled from "@emotion/styled";
-import { Virtualizer } from "@tanstack/react-virtual";
-import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
-import { ChangeEvent, ReactElement, useEffect, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import {
+  useDocumentEventListener,
+  useParam,
+  useQueryParam,
+  useWindowEventListener,
+} from '@/hooks';
+import Helper from '@/modules/review/Helper/Helpter';
+import LoadingOverlay from '@/modules/review/LoadingOverlay';
+import ReviewList from '@/modules/review/ReviewList/ReviewList';
+import { ReviewListItemProps } from '@/modules/review/ReviewList/ReviewListItem';
+import ReviewListHeader from '@/modules/review/ReviewListHeader/ReviewListHeader';
+import ReviewProvider from '@/modules/review/ReviewProvider/ReviewProvider';
+import {
+  selectCurrentEntities,
+  selectDocumentToSave,
+  selectIsDocDone,
+  selectListAnnotations,
+  selectProgress,
+  useReviewDispatch,
+  useSelector,
+} from '@/modules/review/ReviewProvider/selectors';
+import { createNewCandidate } from '@/modules/review/ReviewProvider/utils';
+import Searchbar from '@/modules/review/Searchbar/Searchbar';
+import { Candidate, EntityAnnotation } from '@/server/routers/document';
+import { useMutation, useQuery } from '@/utils/trpc';
+import styled from '@emotion/styled';
+import { Virtualizer } from '@tanstack/react-virtual';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
+import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 const OuterContainer = styled.div({
   display: 'flex',
@@ -24,8 +37,8 @@ const OuterContainer = styled.div({
   inset: 0,
   maxWidth: '900px',
   margin: '0 auto',
-  padding: '0px 20px'
-})
+  padding: '0px 20px',
+});
 
 const InnerContainer = styled.div({
   display: 'flex',
@@ -33,8 +46,8 @@ const InnerContainer = styled.div({
   width: '100%',
   height: '100%',
   maxWidth: '1264px',
-  margin: '0 auto'
-})
+  margin: '0 auto',
+});
 
 const OverlayLoading = styled(motion.div)({
   display: 'flex',
@@ -42,30 +55,34 @@ const OverlayLoading = styled(motion.div)({
   justifyContent: 'center',
   position: 'fixed',
   inset: 0,
-  background: 'rgba(0,0,0,0.06)'
-})
+  background: 'rgba(0,0,0,0.06)',
+});
 
 const LoadingSpinner = styled(motion.div)({
   width: '20px',
   height: '20px',
   // border: '2px solid #000'
-  background: '#000'
-})
+  background: '#000',
+});
 
 const MainContent = styled.div({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
-  height: '100%'
-})
+  height: '100%',
+});
 
 const ReviewDocument = () => {
   const [searchKey, setSearchKey] = useState('');
   const [searchbarActive, setSearchbarActive] = useState(false);
-  const [highlightSelectionListItem, setHighlightSelectionListItem] = useState<number | null>(null);
+  const [highlightSelectionListItem, setHighlightSelectionListItem] = useState<
+    number | null
+  >(null);
   const loading = useSelector((state) => state.isLoading);
   const listItems = useSelector(selectListAnnotations);
-  const currentItemListCursor = useSelector((state) => state.ui.currentItemCursor);
+  const currentItemListCursor = useSelector(
+    (state) => state.ui.currentItemCursor
+  );
   const docToSave = useSelector(selectDocumentToSave);
   const refScroller = useRef<Virtualizer<HTMLDivElement, Element>>(null);
   const { total, done } = useSelector(selectProgress);
@@ -78,10 +95,11 @@ const ReviewDocument = () => {
 
   useEffect(() => {
     if (listItems.length > 0) {
-      const key = listItems[currentItemListCursor].annotation.features.mention.replace(/\s{1,}/g, ' ').toLowerCase();
+      const key = listItems[currentItemListCursor].annotation.features.mention
+        .replace(/\s{1,}/g, ' ')
+        .toLowerCase();
       setSearchKey(key);
     }
-
   }, [currentItemListCursor, listItems]);
 
   useEffect(() => {
@@ -92,16 +110,23 @@ const ReviewDocument = () => {
       return;
     }
 
-    saveDocumentMutation.mutate({
-      sourceId,
-      docId,
-      document: docToSave
-    }, {
-      onSuccess: () => {
-        router.push(`/review/${sourceId}/doc/${Number(docId) + 1}`, undefined, { shallow: true });
+    saveDocumentMutation.mutate(
+      {
+        sourceId,
+        docId,
+        document: docToSave,
+      },
+      {
+        onSuccess: () => {
+          router.push(
+            `/review/${sourceId}/doc/${Number(docId) + 1}`,
+            undefined,
+            { shallow: true }
+          );
+        },
       }
-    })
-  }, [total, done, sourceId, docId, docToSave, isDocDone])
+    );
+  }, [total, done, sourceId, docId, docToSave, isDocDone]);
 
   useDocumentEventListener('keydown', (event) => {
     // open search
@@ -116,33 +141,33 @@ const ReviewDocument = () => {
       nextItem({
         cursor: currentItemListCursor,
         withAdd: true,
-        candidate: createNewCandidate({ title: searchKey, url: searchKey })
+        candidate: createNewCandidate({ title: searchKey, url: searchKey }),
       });
       setSearchbarActive(false);
       return;
     }
-    // skip item
-    if (event.key === ' ') {
-      event.preventDefault();
-      flushSync(() => {
-        dispatch({
-          type: 'skipAnnotation'
-        })
-      })
-      scrollToNextItem();
-      return;
-    }
 
     if (!searchbarActive) {
+      // skip item
+      if (event.key === ' ') {
+        event.preventDefault();
+        flushSync(() => {
+          dispatch({
+            type: 'skipAnnotation',
+          });
+        });
+        scrollToNextItem();
+        return;
+      }
       // highlight an option for the current item
       const n = Number(event.key);
-      if (event.key === '\\' || n > 0 && n < 10) {
+      if (event.key === '\\' || (n > 0 && n < 10)) {
         event.preventDefault();
         setHighlightSelectionListItem(event.key === '\\' ? 9 : n - 1);
+        return;
       }
     }
-
-  })
+  });
 
   useWindowEventListener('keyup', (event) => {
     if (!searchbarActive) {
@@ -151,7 +176,7 @@ const ReviewDocument = () => {
         event.preventDefault();
         nextItem({
           cursor: currentItemListCursor,
-          index: highlightSelectionListItem
+          index: highlightSelectionListItem,
         });
       }
       setHighlightSelectionListItem(null);
@@ -160,67 +185,71 @@ const ReviewDocument = () => {
 
   const handleSearchbarOpen = () => {
     setSearchbarActive(true);
-  }
+  };
 
   const handleSearchbarClose = () => {
     setSearchbarActive(false);
-  }
+  };
 
-  const handleChangeActiveItem = (index: number, inView: boolean, entry: IntersectionObserverEntry) => {
+  const handleChangeActiveItem = (
+    index: number,
+    inView: boolean,
+    entry: IntersectionObserverEntry
+  ) => {
     if (!inView) {
       return;
     }
     dispatch({
       type: 'setActiveItem',
       payload: {
-        cursor: index
-      }
-    })
-  }
+        cursor: index,
+      },
+    });
+  };
 
   const handleChangeReviewList = (cursor: number, index: number) => {
     nextItem({
       cursor,
-      index
+      index,
     });
-  }
+  };
 
   const handleItemSelected = (candidate: Candidate) => {
     nextItem({
       cursor: currentItemListCursor,
       candidate,
-      withAdd: true
+      withAdd: true,
     });
-  }
+  };
 
   const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchKey(event.target.value);
-  }
+  };
 
   const scrollToNextItem = () => {
     if (currentItemListCursor + 1 < total) {
       refScroller.current?.scrollToIndex(currentItemListCursor + 1, {
-        align: 'start'
-      })
+        align: 'start',
+      });
     }
-  }
+  };
 
   const nextItem = (props: {
-    cursor: number,
-    index?: number,
-    candidate?: Candidate,
-    withAdd?: boolean
+    cursor: number;
+    index?: number;
+    candidate?: Candidate;
+    withAdd?: boolean;
   }) => {
     flushSync(() => {
       dispatch({
         type: props.withAdd ? 'addCandidateOptionItem' : 'nextAnnotation',
         payload: {
-          ...props
-        }
-      })
-    })
+          ...props,
+        },
+      });
+    });
     scrollToNextItem();
-  }
+  };
 
   return (
     <OuterContainer>
@@ -232,27 +261,25 @@ const ReviewDocument = () => {
           cursor={currentItemListCursor}
           highlightOptionIndex={highlightSelectionListItem}
           onChange={handleChangeReviewList}
-          onChangeActiveItem={handleChangeActiveItem} />
+          onChangeActiveItem={handleChangeActiveItem}
+        />
         <Searchbar
           active={searchbarActive}
           value={searchKey}
           onChange={handleSearchInputChange}
           onOpen={handleSearchbarOpen}
           onClose={handleSearchbarClose}
-          onItemSelected={handleItemSelected} />
+          onItemSelected={handleItemSelected}
+        />
       </MainContent>
       <LoadingOverlay show={loading || saveDocumentMutation.isLoading} />
       <Helper />
     </OuterContainer>
-  )
+  );
 };
 
 export default ReviewDocument;
 
 ReviewDocument.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <ReviewProvider>
-      {page}
-    </ReviewProvider>
-  )
-}
+  return <ReviewProvider>{page}</ReviewProvider>;
+};
