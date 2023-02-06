@@ -66,7 +66,6 @@ const ReviewDocument = () => {
   const loading = useSelector((state) => state.isLoading);
   const listItems = useSelector(selectListAnnotations);
   const currentItemListCursor = useSelector((state) => state.ui.currentItemCursor);
-  const lastItemListCursor = useSelector((state) => state.ui.lastItemCursor);
   const docToSave = useSelector(selectDocumentToSave);
   const refScroller = useRef<Virtualizer<HTMLDivElement, Element>>(null);
   const { total, done } = useSelector(selectProgress);
@@ -79,7 +78,8 @@ const ReviewDocument = () => {
 
   useEffect(() => {
     if (listItems.length > 0) {
-      setSearchKey(listItems[currentItemListCursor].annotation.features.mention);
+      const key = listItems[currentItemListCursor].annotation.features.mention.replace(/\s{1,}/g, ' ').toLowerCase();
+      setSearchKey(key);
     }
 
   }, [currentItemListCursor, listItems]);
@@ -118,8 +118,21 @@ const ReviewDocument = () => {
         withAdd: true,
         candidate: createNewCandidate({ title: searchKey, url: searchKey })
       });
+      setSearchbarActive(false);
       return;
     }
+    // skip item
+    if (event.key === ' ') {
+      event.preventDefault();
+      flushSync(() => {
+        dispatch({
+          type: 'skipAnnotation'
+        })
+      })
+      scrollToNextItem();
+      return;
+    }
+
     if (!searchbarActive) {
       // highlight an option for the current item
       const n = Number(event.key);
@@ -184,6 +197,14 @@ const ReviewDocument = () => {
     setSearchKey(event.target.value);
   }
 
+  const scrollToNextItem = () => {
+    if (currentItemListCursor + 1 < total) {
+      refScroller.current?.scrollToIndex(currentItemListCursor + 1, {
+        align: 'start'
+      })
+    }
+  }
+
   const nextItem = (props: {
     cursor: number,
     index?: number,
@@ -198,13 +219,7 @@ const ReviewDocument = () => {
         }
       })
     })
-    if (currentItemListCursor + 1 < total) {
-      refScroller.current?.scrollToIndex(currentItemListCursor + 1, {
-        align: 'start'
-      })
-    } else {
-      console.log(docToSave);
-    }
+    scrollToNextItem();
   }
 
   return (

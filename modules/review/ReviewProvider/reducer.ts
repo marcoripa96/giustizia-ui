@@ -114,5 +114,29 @@ export const reviewReducer = createReducer<State, Action>({
         currentItemCursor: cursor > 0 ? cursor - 1 : 0
       }
     }
+  },
+  skipAnnotation: (state, payload) => {
+    if (!state.currentDocument) {
+      return state;
+    }
+    const annSet = Object.keys(state.currentDocument.annotation_sets)[0];
+    const nAnnotations = state.currentDocument.annotation_sets[annSet].annotations.length;
+
+    const { currentItemCursor, lastItemCursor } = state.ui;
+    const isLastItem = currentItemCursor === nAnnotations - 1;
+
+    return {
+      ...state,
+      ui: {
+        ...state.ui,
+        totalReviewed: state.ui.totalReviewed > lastItemCursor ? state.ui.totalReviewed : state.ui.totalReviewed + 1,
+        ...(currentItemCursor === lastItemCursor ? {
+          lastItemCursor: isLastItem ? lastItemCursor : lastItemCursor + 1,
+          currentItemCursor: isLastItem ? lastItemCursor : lastItemCursor + 1
+        } : {
+          currentItemCursor: currentItemCursor + 1
+        })
+      }
+    }
   }
 });

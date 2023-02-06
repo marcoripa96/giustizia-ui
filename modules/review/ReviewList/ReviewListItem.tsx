@@ -96,7 +96,7 @@ const OptionItemContainer = styled.button<{ selected: boolean; highlight: boolea
   })
 }));
 
-const StyledTag = styled.span({
+const StyledTag = styled.a({
   background: '#000',
   padding: '0px 5px',
   color: '#FFF',
@@ -117,11 +117,12 @@ const StyledTagType = styled.span({
 
 type TagProps = PropsWithChildren<{
   type: string;
+  href?: string;
 }>
 
-const Tag = ({ type, children }: TagProps) => {
+const Tag = ({ type, href, children }: TagProps) => {
   return (
-    <StyledTag>
+    <StyledTag href={href} target="_blank">
       {children}
       <StyledTagType>{type}</StyledTagType>
     </StyledTag>
@@ -176,7 +177,13 @@ const ReviewListItem = ({
     const additionalTypes = types.slice(1, types.length);
     const typeLabel = `${firstType}${additionalTypes.length > 0 ? `+${additionalTypes.length}` : ''}`
     const firstPart = textProp.slice(0, startAnnRelativeOffset);
-    const ann = <Tag type={typeLabel} key={annotation.id}>{textProp.slice(startAnnRelativeOffset, endAnnRelativeOffset)}</Tag>
+    const hrefKey = annotation.features.mention.replace(/\s{1,}/g, '+').toLowerCase();
+    const href = `https://it.wikipedia.org/wiki/Special:Search?go=Go&search=${hrefKey}`
+    const ann = (
+      <Tag type={typeLabel} key={annotation.id} href={href}>
+        {textProp.slice(startAnnRelativeOffset, endAnnRelativeOffset)}
+      </Tag>
+    );
     const lastPart = textProp.slice(endAnnRelativeOffset, textProp.length);
     return [firstPart, ann, lastPart];
   }, [

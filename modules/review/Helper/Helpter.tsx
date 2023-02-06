@@ -74,6 +74,11 @@ const Helper = () => {
             <Text css={{ lineHeight: 1.3 }}>Add precompiled entity to list of candidates and select it as match</Text>
           </CommandRow>
           <CommandRow>
+            <ShortcutButton shortcut={["Ctrl"]} />
+            →
+            <Text>Skip annotation</Text>
+          </CommandRow>
+          <CommandRow>
             <ShortcutButton shortcut={["Ctrl", "F"]} />
             →
             <Text>Open search</Text>

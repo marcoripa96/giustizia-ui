@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createRouter } from "../context";
 import { Candidate, Document } from "./document";
 
-const baseURL = `${process.env.API_BASE_URI}/mongo`;
+const baseURL = `${process.env.API_BASE_URI}`;
 
 export type GetDocumentProps = {
   docId: string;

@@ -9,6 +9,7 @@ export type Action =
   | { type: 'addCandidateOptionItem'; payload: { cursor?: number; index?: number; candidate?: Candidate; } }
   | { type: 'nextAnnotation'; payload: { cursor?: number; index?: number; candidate?: Candidate; } }
   | { type: 'prevAnnotation' }
+  | { type: 'skipAnnotation' }
 
 export type ActionType = Action['type'];
 export type Dispatch = (action: Action) => void;
