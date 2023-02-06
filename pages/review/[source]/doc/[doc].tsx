@@ -11,6 +11,7 @@ import { ReviewListItemProps } from '@/modules/review/ReviewList/ReviewListItem'
 import ReviewListHeader from '@/modules/review/ReviewListHeader/ReviewListHeader';
 import ReviewProvider from '@/modules/review/ReviewProvider/ReviewProvider';
 import {
+  selectCurrentAnnotation,
   selectCurrentEntities,
   selectDocumentToSave,
   selectIsDocDone,
@@ -92,6 +93,7 @@ const ReviewDocument = () => {
   const saveDocumentMutation = useMutation(['review.saveDocument']);
   const dispatch = useReviewDispatch();
   const router = useRouter();
+  const currentAnnotation = useSelector(selectCurrentAnnotation);
 
   useEffect(() => {
     if (listItems.length > 0) {
@@ -136,7 +138,7 @@ const ReviewDocument = () => {
       return;
     }
     // assign new item and go next
-    if (event.key === ' ' && event.ctrlKey) {
+    if (event.key === 'a' && event.ctrlKey) {
       event.preventDefault();
       nextItem({
         cursor: currentItemListCursor,
@@ -147,18 +149,43 @@ const ReviewDocument = () => {
       return;
     }
 
-    if (!searchbarActive) {
-      // skip item
-      if (event.key === ' ') {
-        event.preventDefault();
-        flushSync(() => {
-          dispatch({
-            type: 'skipAnnotation',
-          });
+    // assign new item and go next
+    if (event.key === 'q' && event.ctrlKey) {
+      event.preventDefault();
+      const hrefKey = currentAnnotation?.features.mention.replace(/\s{1,}/g, '+').toLowerCase();
+      const href = `https://it.wikipedia.org/wiki/Special:Search?go=Go&search=${hrefKey}`
+      window.open(href, '_blank');
+      return;
+    }
+
+    // confirm selection
+    if (event.key === 'Enter' && event.ctrlKey) {
+      event.preventDefault();
+
+      flushSync(() => {
+        dispatch({
+          type: 'confirmAnnotation'
         });
-        scrollToNextItem();
-        return;
-      }
+      });
+      scrollToNextItem();
+      setSearchbarActive(false);
+      return;
+    }
+
+    // nil selection
+    if (event.key === ' ' && event.ctrlKey) {
+      event.preventDefault();
+      flushSync(() => {
+        dispatch({
+          type: 'nilAnnotation'
+        });
+      });
+      scrollToNextItem();
+      setSearchbarActive(false);
+      return;
+    }
+
+    if (!searchbarActive) {
       // highlight an option for the current item
       const n = Number(event.key);
       if (event.key === '\\' || (n > 0 && n < 10)) {

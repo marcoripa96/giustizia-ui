@@ -10,6 +10,8 @@ export type Action =
   | { type: 'nextAnnotation'; payload: { cursor?: number; index?: number; candidate?: Candidate; } }
   | { type: 'prevAnnotation' }
   | { type: 'skipAnnotation' }
+  | { type: 'nilAnnotation' }
+  | { type: 'confirmAnnotation' }
 
 export type ActionType = Action['type'];
 export type Dispatch = (action: Action) => void;

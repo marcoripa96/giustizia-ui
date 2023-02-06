@@ -294,7 +294,7 @@ const Searchbar = ({ value: searchKey, active, onChange, onClose, onOpen, onItem
         />
         <ShortcutButton shortcut={['Ctrl', 'F']} />
         <Text css={{ opacity: 0.6, fontSize: '12px' }}>or</Text>
-        <ShortcutButton shortcut={['Ctrl', 'Space']} />
+        <ShortcutButton shortcut={['Ctrl', 'A']} />
         <SearchModal anchorRef={anchorRef} open={active}>
           <SearchModalContent>
             <ListItem

@@ -69,14 +69,19 @@ const Helper = () => {
             <Text>Select candidate as match</Text>
           </CommandRow>
           <CommandRow>
-            <ShortcutButton shortcut={["Ctrl", "Space"]} />
+            <ShortcutButton shortcut={["Ctrl", "a"]} />
             →
             <Text css={{ lineHeight: 1.3 }}>Add precompiled entity to list of candidates and select it as match</Text>
           </CommandRow>
           <CommandRow>
-            <ShortcutButton shortcut={["Ctrl"]} />
+            <ShortcutButton shortcut={["Ctrl", "Enter"]} />
             →
-            <Text>Skip annotation</Text>
+            <Text>Confirm current selection</Text>
+          </CommandRow>
+          <CommandRow>
+            <ShortcutButton shortcut={["Ctrl", "Space"]} />
+            →
+            <Text>Assign NIL to annotation</Text>
           </CommandRow>
           <CommandRow>
             <ShortcutButton shortcut={["Ctrl", "F"]} />
