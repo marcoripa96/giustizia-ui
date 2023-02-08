@@ -95,6 +95,8 @@ const ReviewDocument = () => {
   const router = useRouter();
   const currentAnnotation = useSelector(selectCurrentAnnotation);
 
+  const isLoading = loading || saveDocumentMutation.isLoading;
+
   useEffect(() => {
     if (listItems.length > 0) {
       const key = listItems[currentItemListCursor].annotation.features.mention
@@ -111,6 +113,8 @@ const ReviewDocument = () => {
     if (done !== total) {
       return;
     }
+
+    console.log(`Saving docId ${docId}`);
 
     saveDocumentMutation.mutate(
       {
@@ -131,6 +135,9 @@ const ReviewDocument = () => {
   }, [total, done, sourceId, docId, docToSave, isDocDone]);
 
   useDocumentEventListener('keydown', (event) => {
+    if (isLoading) {
+      return;
+    }
     // open search
     if (event.key === 'f' && event.ctrlKey) {
       event.preventDefault();
@@ -299,7 +306,7 @@ const ReviewDocument = () => {
           onItemSelected={handleItemSelected}
         />
       </MainContent>
-      <LoadingOverlay show={loading || saveDocumentMutation.isLoading} />
+      <LoadingOverlay show={isLoading} />
       <Helper />
     </OuterContainer>
   );
