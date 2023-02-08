@@ -292,7 +292,7 @@ const Searchbar = ({ value: searchKey, active, onChange, onClose, onOpen, onItem
           onChange={onChange}
 
         />
-        <ShortcutButton shortcut={['Ctrl', 'F']} />
+        <ShortcutButton shortcut={['\\']} />
         <Text css={{ opacity: 0.6, fontSize: '12px' }}>or</Text>
         <ShortcutButton shortcut={['Ctrl', 'A']} />
         <SearchModal anchorRef={anchorRef} open={active}>

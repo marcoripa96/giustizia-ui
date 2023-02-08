@@ -135,11 +135,12 @@ const ReviewDocument = () => {
   }, [total, done, sourceId, docId, docToSave, isDocDone]);
 
   useDocumentEventListener('keydown', (event) => {
-    if (isLoading) {
+    // disable hotkeys if in loading state or if I'm holding down the keys
+    if (isLoading || event.repeat) {
       return;
     }
     // open search
-    if (event.key === 'f' && event.ctrlKey) {
+    if (event.key === '\\') {
       event.preventDefault();
       setSearchbarActive(true);
       return;

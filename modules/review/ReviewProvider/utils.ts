@@ -60,7 +60,7 @@ export const setNextItem = (state: State, { cursor, index, candidate }: { cursor
     },
     ui: {
       ...state.ui,
-      totalReviewed: state.ui.totalReviewed > lastItemCursor ? state.ui.totalReviewed : state.ui.totalReviewed + 1,
+      totalReviewed: currentItemCursor < lastItemCursor ? state.ui.totalReviewed : state.ui.totalReviewed + 1,
       ...(currentItemCursor === lastItemCursor ? {
         lastItemCursor: isLastItem ? lastItemCursor : lastItemCursor + 1,
         currentItemCursor: isLastItem ? lastItemCursor : lastItemCursor + 1

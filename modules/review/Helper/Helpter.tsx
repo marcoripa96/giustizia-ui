@@ -84,7 +84,7 @@ const Helper = () => {
             <Text>Assign NIL to annotation</Text>
           </CommandRow>
           <CommandRow>
-            <ShortcutButton shortcut={["Ctrl", "F"]} />
+            <ShortcutButton shortcut={["\\"]} />
             →
             <Text>Open search</Text>
           </CommandRow>
