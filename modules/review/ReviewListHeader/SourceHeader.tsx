@@ -1,10 +1,11 @@
 import { useParam } from "@/hooks";
 import styled from "@emotion/styled";
-import { Pagination, Text } from "@nextui-org/react";
-import { selectSourceInfo, useSelector } from "../ReviewProvider/selectors";
+import { Text } from "@nextui-org/react";
+import { selectIsDocDone, selectSourceInfo, useSelector } from "../ReviewProvider/selectors";
 import { FiChevronRight } from '@react-icons/all-files/fi/FiChevronRight';
 import { FiChevronLeft } from "@react-icons/all-files/fi/FiChevronLeft";
 import { FiFolder } from "@react-icons/all-files/fi/FiFolder";
+import { FiSave } from "@react-icons/all-files/fi/FiSave";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -53,10 +54,15 @@ const SourceTitle = styled.div({
   }
 })
 
-const SourceHeader = () => {
+type SourceHeaderProps = {
+  handleOverwriteDocument: () => void;
+}
+
+const SourceHeader = ({ handleOverwriteDocument }: SourceHeaderProps) => {
   const { name, total, hasNextPage, hasPreviousPage } = useSelector(selectSourceInfo);
   const [sourceId] = useParam<string>('source');
   const [docId] = useParam<string>('doc');
+  const isDocDone = useSelector(selectIsDocDone);
 
   return (
     <Container>
@@ -92,6 +98,15 @@ const SourceHeader = () => {
             <FiChevronRight />
           </Button>
         </Link>
+        {isDocDone && (
+          <Button
+            onClick={handleOverwriteDocument}
+            whileTap={{ scale: 0.95 }}
+            disabled={!hasPreviousPage}>
+            <FiSave />
+            Overwrite changes
+          </Button>
+        )}
 
       </ButtonsContainer>
     </Container>

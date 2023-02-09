@@ -134,6 +134,17 @@ const ReviewDocument = () => {
     );
   }, [total, done, sourceId, docId, docToSave, isDocDone]);
 
+  const handleOverwriteDocument = () => {
+    saveDocumentMutation.mutate(
+      {
+        sourceId,
+        docId,
+        document: docToSave,
+      }
+    );
+  }
+
+
   useDocumentEventListener('keydown', (event) => {
     // disable hotkeys if in loading state or if I'm holding down the keys
     if (isLoading || event.repeat) {
@@ -289,7 +300,7 @@ const ReviewDocument = () => {
   return (
     <OuterContainer>
       <MainContent>
-        <ReviewListHeader />
+        <ReviewListHeader handleOverwriteDocument={handleOverwriteDocument} />
         <ReviewList
           ref={refScroller}
           items={listItems}

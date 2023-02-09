@@ -44,14 +44,18 @@ const TitleContainer = styled.div({
   minWidth: 0
 })
 
-const ReviewListHeader = () => {
+type ReviewListHeaderProps = {
+  handleOverwriteDocument: () => void;
+}
+
+const ReviewListHeader = ({ handleOverwriteDocument }: ReviewListHeaderProps) => {
   const document = useSelector((state) => state.currentDocument);
   const avgReviewTime = useSelector(selectAvgTime);
   const isDone = useSelector(selectIsDocDone);
 
   return (
     <Container>
-      <SourceHeader />
+      <SourceHeader handleOverwriteDocument={handleOverwriteDocument} />
       <Row>
         <TitleContainer>
           <Text css={{ fontSize: '24px', fontWeight: 600, letterSpacing: '-2px', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
