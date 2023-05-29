@@ -11,6 +11,7 @@ import { ReactElement, ReactNode } from 'react';
 import { SessionProvider } from "next-auth/react"
 import { TranslationProvider } from '@/components';
 import TaxonomyProvider from '@/modules/taxonomy/TaxonomyProvider';
+import '@/styles/globals.css'
 
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {

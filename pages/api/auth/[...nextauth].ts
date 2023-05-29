@@ -32,7 +32,7 @@ export default NextAuth({
           //   message: 'Invalid password'
           // })
         }
-        const user = { name: username };
+        const user = { name: username, id: '' };
         return user
       }
     })
