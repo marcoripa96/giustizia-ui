@@ -27,6 +27,27 @@ const GlobalStyles = css`
   #__next {
     min-height: 100vh;
   }
+
+  .underline-yellow {
+  background-image: linear-gradient(rgba(245,192,112,.4), rgba(245,192,112,.4));
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  background-position: 0 88%;
+}
+
+.underline-green {
+  background-image: linear-gradient(rgba(245,112,112,.4), rgba(245,112,112,.4));
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  background-position: 0 88%;
+}
+
+.underline-blue {
+  background-image: linear-gradient(rgba(112,130,245,.4), rgba(112,130,245,.4));
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  background-position: 0 88%;
+}
 `
 
 export default GlobalStyles;
