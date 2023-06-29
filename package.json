@@ -20,6 +20,7 @@
     "@trpc/next": "^9.22.0",
     "@trpc/react": "^9.22.0",
     "@trpc/server": "^9.22.0",
+    "clsx": "^1.2.1",
     "eventsource-parser": "^1.0.0",
     "framer-motion": "^8.5.4",
     "fuse.js": "^6.6.2",
@@ -37,6 +38,7 @@
     "react-query": "^3.38.0",
     "react-transition-group": "^4.4.2",
     "reselect": "^4.1.6",
+    "tailwind-merge": "^1.13.2",
     "usehooks-ts": "^2.9.1",
     "zod": "^3.14.4"
   },
