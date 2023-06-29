@@ -20,6 +20,7 @@
     "@trpc/next": "^9.22.0",
     "@trpc/react": "^9.22.0",
     "@trpc/server": "^9.22.0",
+    "eventsource-parser": "^1.0.0",
     "framer-motion": "^8.5.4",
     "fuse.js": "^6.6.2",
     "immer": "^9.0.14",
