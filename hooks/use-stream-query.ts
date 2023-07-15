@@ -2,11 +2,12 @@ import { useState } from "react";
 
 function useStreamQuery<T>(endpoint: string) {
   const [content, setContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
 
   const stream = async (requestBody: T) => {
     setContent('');
-    setIsStreaming(true);
+    setIsLoading(true);
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}${endpoint}`, {
       method: "POST",
       headers: {
@@ -14,8 +15,9 @@ function useStreamQuery<T>(endpoint: string) {
       },
       body: JSON.stringify(requestBody),
     });
+    setIsLoading(false);
 
-    console.log(response)
+    setIsStreaming(true);
 
     if (!response.ok) {
       throw new Error(response.statusText);
@@ -43,7 +45,8 @@ function useStreamQuery<T>(endpoint: string) {
   return {
     stream,
     content,
-    isStreaming
+    isStreaming,
+    isLoading
   }
 }
 

@@ -3,6 +3,7 @@ import { annotations } from './annotation';
 import { documents } from './document';
 import { infer } from './infer';
 import { review } from './review';
+import { search } from './search';
 import { taxonomy } from './taxonomy';
 import { wikipedia } from './wikipedia';
 
@@ -16,3 +17,4 @@ export const appRouter = createRouter()
   .merge('taxonomy', taxonomy)
   .merge('review.', review)
   .merge('wikipedia.', wikipedia)
+  .merge('search.', search)
