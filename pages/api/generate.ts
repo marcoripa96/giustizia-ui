@@ -9,9 +9,11 @@ export type GenerateRequest = {
   max_new_tokens?: number;
   top_p?: number;
   token_repetition_penalty_max?: number;
+  devMode?: boolean;
 }
 
-const defaultSystemPrompt = "Replay to the user QUERY only using the information in the CONTEXT. If you don't know the answer just say that you don't know."
+const defaultSystemPromptSearch = "Replay to the user QUERY only using the information in the CONTEXT. If you don't know the answer just say that you don't know.";
+const defaultSystemPrompt = "Answer to the user questions";
 
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -25,8 +27,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!params.messages) {
     res.status(401).json({ message: 'messages is required' });
   }
+
+  console.log(params)
+
+  let systemContent = '';
+
+  if (params.system) {
+    systemContent = params.system;
+  } else if (params.devMode) {
+    systemContent = defaultSystemPrompt;
+  } else {
+    systemContent = defaultSystemPromptSearch;
+  }
+
+  console.log(systemContent);
+
   // add system prompt
-  params.messages.unshift({ role: 'system', content: params.system ? params.system : defaultSystemPrompt })
+  params.messages.unshift({ role: 'system', content: systemContent })
   // remove display message only used in the app
   const messages = params.messages.map(({ usrMessage, ...rest }) => rest);
 

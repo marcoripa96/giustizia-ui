@@ -36,11 +36,9 @@ function useChat({ endpoint, initialMessages }: UseChatOptions) {
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
 
-  console.log(state);
-
   const messagesRef = useRef(state.messages);
 
-  const stream = async ({ context, ...options }: Omit<GenerateOptions & { messages: Message[] }, 'system'>) => {
+  const stream = async ({ context, ...options }: Omit<GenerateOptions & { messages: Message[]; devMode?: boolean }, 'system'>) => {
     setIsLoading(true);
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}${endpoint}`, {
@@ -114,7 +112,7 @@ function useChat({ endpoint, initialMessages }: UseChatOptions) {
     })
   }
 
-  const appendMessage = async ({ message, ...generateOptions }: GenerateOptions & { message: string }) => {
+  const appendMessage = async ({ message, ...generateOptions }: GenerateOptions & { message: string; devMode?: boolean }) => {
 
     const generateContent = () => {
       if (generateOptions.context) {
@@ -140,6 +138,7 @@ function useChat({ endpoint, initialMessages }: UseChatOptions) {
   }
 
   const restartChat = () => {
+    messagesRef.current = initialMessages;
     setState((s) => ({ ...s, messages: initialMessages }));
   }
 

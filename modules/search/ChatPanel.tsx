@@ -100,7 +100,7 @@ const ChatPanel = ({ devMode }: ChatPanel) => {
 
     const context = useDocumentContext ? await mostSimilarDocumentsMutation.mutateAsync({ query: formValues.message }) : undefined;
 
-    void appendMessage({ ...formValues, context })
+    void appendMessage({ ...formValues, context, devMode })
     setValue({
       message: ''
     })

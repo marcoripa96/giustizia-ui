@@ -2,7 +2,7 @@ import { useForm } from "@/hooks";
 import { Facet } from "@/server/routers/search";
 import { Checkbox } from "@nextui-org/react";
 import Fuse from "fuse.js";
-import { SearchIcon } from "lucide-react";
+import { Link, Link2, SearchIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
@@ -90,7 +90,13 @@ const FacetFilter = ({ facet, filterType }: FacetFilterProps) => {
           console.log(option)
           return (
             <Checkbox key={option.key} isSelected={filters.includes(option.key)} value={filterType === 'annotation' ? option.display_name : option.key} onChange={(checked) => handleChecked(checked, option.key)}>
-              <span className="text-base whitespace-nowrap text-ellipsis overflow-hidden w-48">{filterType === 'annotation' ? option.display_name : option.key}</span>
+              <div className="flex flex-row items-center gap-1">
+                {option.is_linked && (
+                  <span className="flex items-center justify-center rounded-md uppercase text-xs bg-blue-100 px-1 font-semibold p-[1px]"><Link className="h-3 w-3 text-black" /></span>
+                )}
+                <span className="text-base whitespace-nowrap text-ellipsis overflow-hidden w-48">{filterType === 'annotation' ? option.display_name : option.key}</span>
+              </div>
+
             </Checkbox>
           )
         })}

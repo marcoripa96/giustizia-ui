@@ -47,7 +47,7 @@ export type Facet = {
   key: string;
   n_children: number;
   doc_count: number;
-  children: { key: string; display_name: string; doc_count: number; }[]
+  children: { key: string; display_name: string; is_linked?: boolean; doc_count: number; }[]
 }
 
 

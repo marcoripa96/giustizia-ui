@@ -1,6 +1,7 @@
 import { Skeleton } from "@/components/Skeleton";
 import { cn } from "@/lib/utils";
 import { DocumentWithChunk } from "@/server/routers/search";
+import { Tooltip } from "@nextui-org/react";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import { FileText, Sparkles, User, Link as LinkIcon, Unlink, Link2 } from "lucide-react";
 import Link from "next/link";
@@ -68,22 +69,37 @@ const Message = ({ role, content, usrMessage, context, isDoneStreaming }: ReplyP
           <>
             <div className="w-full h-[2px] bg-slate-200 my-4" />
             <div className="flex flex-col gap-2">
-              {context.map((doc, i) => (
-                <motion.div key={doc.id} className="flex flex-col p-2 gap-2" variants={variants} custom={i} initial="hidden"
-                  animate="visible">
-                  <div className="flex flex-row items-center gap-2">
-                    <Link2 size={14} />
-                    <span className="text-neutral-900/80 tracking-wide text-sm whitespace-nowrap text-ellipsis overflow-hidden">{urlToPathArray(`/documents/${doc.id}`).join(' > ')}</span>
-                  </div>
-                  <Link href={`/documents/${doc.id}`} passHref>
-                    <a className="text-blue-700 text-base tracking-wide">{doc.title}</a>
-                  </Link>
-                  <div className="text-xs tracking-wide">
-                    {doc.preview}
-                  </div>
-                </motion.div>
-              ))}
+              <div className="flex flex-col gap-2">
+                {context.map((doc, i) => (
+                  <motion.div key={doc.id} className="flex flex-col p-2 gap-2" variants={variants} custom={i} initial="hidden"
+                    animate="visible">
+                    <div className="flex flex-row items-center gap-2">
+                      <Link2 size={14} />
+                      <span className="text-neutral-900/80 tracking-wide text-sm whitespace-nowrap text-ellipsis overflow-hidden">{urlToPathArray(`/documents/${doc.id}`).join(' > ')}</span>
+                    </div>
+                    <Link href={`/documents/${doc.id}`} passHref>
+                      <a className="text-blue-700 text-base tracking-wide">{doc.title}</a>
+                    </Link>
+                    <div className="text-xs tracking-wide">
+                      {doc.preview}
+                    </div>
+                    <div className="flex flex-row items-center flex-wrap gap-x-2">
+                      <span className="text-xs leading-tight font-semibold">Relevant passages:</span>
+                      {doc.chunks.map((chunk) => (
+                        <Tooltip content={<div className="max-w-xs">{chunk.text}</div>} key={chunk.id}>
+                          <div className="whitespace-nowrap w-56 text-ellipsis overflow-hidden text-xs bg-slate-200 rounded-md px-2">
+                            {chunk.text.slice(0, 50)}
+                          </div>
+                        </Tooltip>
+
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
             </div>
+
           </>
         )}
 
