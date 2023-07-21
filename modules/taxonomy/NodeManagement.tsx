@@ -2,7 +2,7 @@ import { Button } from "@/components";
 import TagList from "@/components/TagList";
 import { FlatTreeNode } from "@/components/TreeSpecialization";
 import { useForm, useParam } from "@/hooks";
-import { ContentProps } from "@/pages/taxonomy";
+import { ContentProps } from "@/pages/old/taxonomy";
 import styled from "@emotion/styled";
 import { Input, Text } from "@nextui-org/react";
 import { FocusEvent, useEffect, useRef, useState } from "react";

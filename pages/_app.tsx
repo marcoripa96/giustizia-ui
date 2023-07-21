@@ -12,6 +12,7 @@ import { SessionProvider } from "next-auth/react"
 import { TranslationProvider } from '@/components';
 import TaxonomyProvider from '@/modules/taxonomy/TaxonomyProvider';
 import '@/styles/globals.css'
+import { LLMButton } from '@/modules/search/LLMButton';
 
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -58,10 +59,10 @@ function MyApp({
             <Layout>
               <NextNProgress color="rgb(75 85 99)" showOnShallow={false} />
               {getLayout(<Component {...pageProps} />)}
+              <LLMButton />
             </Layout>
           </NextUIProvider>
         </TaxonomyProvider>
-
       </TranslationProvider>
     </SessionProvider>
   );

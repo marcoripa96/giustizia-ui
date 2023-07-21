@@ -11,13 +11,7 @@ const nextConfig = {
   },
   async redirects() {
 
-    let redirectRoutes = [
-      {
-        source: '/',
-        destination: '/infer',
-        permanent: true,
-      }
-    ]
+    let redirectRoutes = []
 
     if (process.env.NEXT_PUBLIC_BASE_PATH) {
       redirectRoutes = [
