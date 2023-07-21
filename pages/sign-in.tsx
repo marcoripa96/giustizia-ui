@@ -45,7 +45,7 @@ const Login: NextPage<{}> = () => {
     event.preventDefault();
     signIn('credentials', {
       ...value,
-      callbackUrl: `${process.env.NEXT_PUBLIC_BASE_PATH}/infer`
+      callbackUrl: `${process.env.NEXT_PUBLIC_BASE_PATH}/`
     });
   }
 
