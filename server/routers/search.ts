@@ -112,7 +112,6 @@ export const search = createRouter()
         })
       }).then((r) => r.json()) as GetSimilarDocumentResponse
 
-      console.log(documents)
 
       return processResponseMostSImilartDocuments(documents)
     },

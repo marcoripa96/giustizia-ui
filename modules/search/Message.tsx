@@ -47,8 +47,6 @@ const variants: Variants = {
 }
 
 const Message = ({ role, content, usrMessage, context, isDoneStreaming }: ReplyProps) => {
-  console.log(context);
-  console.log(isDoneStreaming);
   return (
     <motion.div animate={{ translateY: 0 }} initial={{ translateY: 20 }} className={cn("flex gap-2", {
       'ml-8': role === 'user'

@@ -87,7 +87,6 @@ const FacetFilter = ({ facet, filterType }: FacetFilterProps) => {
 
       <div className="flex flex-col">
         {children.map((option) => {
-          console.log(option)
           return (
             <Checkbox key={option.key} isSelected={filters.includes(option.key)} value={filterType === 'annotation' ? option.display_name : option.key} onChange={(checked) => handleChecked(checked, option.key)}>
               <div className="flex flex-row items-center gap-1">

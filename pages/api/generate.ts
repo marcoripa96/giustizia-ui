@@ -28,7 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(401).json({ message: 'messages is required' });
   }
 
-  console.log(params)
+
 
   let systemContent = '';
 
@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     systemContent = defaultSystemPromptSearch;
   }
 
-  console.log(systemContent);
+
 
   // add system prompt
   params.messages.unshift({ role: 'system', content: systemContent })
