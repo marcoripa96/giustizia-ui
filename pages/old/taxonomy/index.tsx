@@ -3,7 +3,7 @@ import Layout from "@/modules/taxonomy/Layout";
 import TaxonomyProvider from "@/modules/taxonomy/TaxonomyProvider";
 import styled from "@emotion/styled";
 import { ReactElement, ReactNode, useState } from "react";
-import { NextPageWithLayout } from "../_app";
+import { NextPageWithLayout } from "../../_app";
 
 export type ContentProps = {
   title: string;
